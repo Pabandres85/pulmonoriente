@@ -1,4 +1,4 @@
-# 🌿 Pulmón del Oriente — Visualización de Inversión Pública
+# Pulmón del Oriente — Visualización de Inversión Pública
 
 Dashboard interactivo de los proyectos del Plan de Desarrollo Distrital 2024–2027 en las **Comunas 13 y 14** de Santiago de Cali, Colombia.
 
@@ -91,4 +91,4 @@ Ambas vistas incluyen un **switcher flotante** en la parte inferior para navegar
 
 ---
 
-*Municipio de Santiago de Cali · Secretaría de Planeación · Plan de Desarrollo 2024–2027*
+
