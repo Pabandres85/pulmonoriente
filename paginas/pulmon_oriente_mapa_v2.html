@@ -65,7 +65,7 @@
 
     @media(max-width:480px) {
       #filter-bar { min-height:40px; }
-      #map { top:130px; } /* header(48px) + filter(~82px) when wrapped */
+      #map { top:130px; } 
     }
     @media(max-width:360px) {
       #map { top:120px; }
@@ -146,11 +146,6 @@
     .badge-ejecucion { background:#2E7D52; color:white; }
     .badge-alistamiento { background:#C9A227; color:#1A1A1A; }
     .badge-terminado { background:#1565C0; color:white; }
-    .progress-bar {
-      background:rgba(255,255,255,0.15); border-radius:4px;
-      height:6px; width:100%; margin-top:8px;
-    }
-    .progress-fill { height:100%; border-radius:4px; background:var(--verde-claro); transition:width 0.5s; }
 
     /* Switcher nav */
     .page-switcher {
@@ -167,6 +162,7 @@
     }
     .switcher-btn:hover { color:white; background:rgba(76,175,119,0.2); }
     .switcher-btn.active { background:var(--verde-claro); color:var(--verde-bosque); }
+    
     @media(max-width:768px) {
       .kpi-num { font-size:14px; }
       .kpi-lab { font-size:9px; }
@@ -196,6 +192,15 @@
       .filter-label { display:none; }
       .filter-btn { font-size:9px; padding:3px 6px; }
     }
+    .page-switcher { position: fixed; bottom: 24px; left: 50%; transform: translateX(-50%); z-index: 2000; display: flex; align-items: center; gap: 0; background: rgba(27, 77, 46, 0.96); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); border-radius: 40px; padding: 6px 10px; box-shadow: 0 6px 28px rgba(0,0,0,0.28), 0 1px 4px rgba(0,0,0,0.15); border: 1px solid rgba(76, 175, 119, 0.25); }
+    .switcher-home { display: flex; align-items: center; justify-content: center; width: 30px; height: 30px; border-radius: 50%; color: rgba(255,255,255,0.65); text-decoration: none; transition: all 0.2s; flex-shrink: 0; }
+    .switcher-home:hover { color: #fff; background: rgba(255,255,255,0.12); }
+    .switcher-divider { width: 1px; height: 20px; background: rgba(255,255,255,0.18); margin: 0 6px; flex-shrink: 0; }
+    .switcher-btn { display: flex; align-items: center; gap: 5px; padding: 6px 14px; border-radius: 30px; font-family: 'IBM Plex Sans', sans-serif; font-size: 12px; font-weight: 500; color: rgba(255,255,255,0.72); text-decoration: none; letter-spacing: 0.03em; transition: all 0.2s; white-space: nowrap; }
+    .switcher-btn:hover { color: #fff; background: rgba(255,255,255,0.1); }
+    .switcher-btn.active { background: #4CAF77; color: #1B4D2E; font-weight: 600; }
+    .switcher-btn.active:hover { background: #5DC88A; }
+    @media (max-width: 480px) { .page-switcher { bottom: 14px; padding: 5px 8px; } .switcher-btn { padding: 5px 10px; font-size: 11px; } }
   </style>
 </head>
 <body>
@@ -209,26 +214,18 @@
     </div>
   </div>
   <div class="kpis">
-    <div class="kpi"><div class="kpi-num">208</div><div class="kpi-lab">Proyectos</div></div>
+    <div class="kpi"><div class="kpi-num" id="kpi-frentes">...</div><div class="kpi-lab" id="kpi-frentes-lbl">Frentes de Obra</div></div>
     <div class="kpi-div"></div>
-    <div class="kpi"><div class="kpi-num">$52,975M</div><div class="kpi-lab">Inversión</div></div>
-    <div class="kpi-div"></div>
-    <div class="kpi"><div class="kpi-num">6.6%</div><div class="kpi-lab">Avance</div></div>
+    <div class="kpi"><div class="kpi-num" id="kpi-inversion">...</div><div class="kpi-lab">Inversión COP</div></div>
   </div>
 </div>
 
 <div id="filter-bar">
-  <span class="filter-label">Secretaría:</span>
   <div class="filter-group" id="filter-sec">
-    <button class="filter-btn active" data-filter="all">Todas</button>
-    <button class="filter-btn" data-filter="Vivienda" style="border-color:#E67E22;">Vivienda</button>
-    <button class="filter-btn" data-filter="Educación" style="border-color:#3498DB;">Educación</button>
-    <button class="filter-btn" data-filter="Salud" style="border-color:#E74C3C;">Salud</button>
-    <button class="filter-btn" data-filter="Deporte" style="border-color:#9B59B6;">Deporte</button>
-    <button class="filter-btn" data-filter="Cultura" style="border-color:#F1C40F;">Cultura</button>
-    <button class="filter-btn" data-filter="Otras" style="border-color:#1ABC9C;">Otras</button>
-  </div>
+    </div>
+  
   <div class="filter-sep"></div>
+  
   <span class="filter-label">Estado:</span>
   <div class="filter-group" id="filter-estado">
     <button class="filter-btn active" data-estado="all">Todos</button>
@@ -238,10 +235,10 @@
   </div>
 
   <div class="filter-group" id="filter-modo">
-      <span class="filter-label">Modo de Vista:</span>
+      <span class="filter-label" style="margin-left: 10px;">Modo de Vista:</span>
       <button class="filter-btn active" data-modo="ups">Frentes de Obra (UPS)</button>
       <button class="filter-btn" data-modo="contratos">Todos los Contratos</button>
-    </div>
+  </div>
   <button id="btn-reset">↺ Limpiar</button>
 </div>
 
@@ -265,10 +262,11 @@
   <div class="legend-item"><div class="legend-dot" style="background:#E74C3C;"></div> Salud</div>
   <div class="legend-item"><div class="legend-dot" style="background:#9B59B6;"></div> Deporte</div>
   <div class="legend-item"><div class="legend-dot" style="background:#F1C40F;"></div> Cultura</div>
+  <div class="legend-item"><div class="legend-dot" style="background:#E91E63;"></div> Bienestar</div>
+  <div class="legend-item"><div class="legend-dot" style="background:#34495E;"></div> Seguridad</div>
   <div class="legend-item"><div class="legend-dot" style="background:#1ABC9C;"></div> Otras</div>
 </div>
 
-<!-- ── NAV SWITCHER ── -->
 <nav class="page-switcher" aria-label="Navegación entre vistas">
   <a class="switcher-home" href="../index.html" title="Inicio">
     <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/></svg>
@@ -283,23 +281,18 @@
     Mapa
   </a>
 </nav>
-<style>
-.page-switcher { position: fixed; bottom: 24px; left: 50%; transform: translateX(-50%); z-index: 2000; display: flex; align-items: center; gap: 0; background: rgba(27, 77, 46, 0.96); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); border-radius: 40px; padding: 6px 10px; box-shadow: 0 6px 28px rgba(0,0,0,0.28), 0 1px 4px rgba(0,0,0,0.15); border: 1px solid rgba(76, 175, 119, 0.25); }
-.switcher-home { display: flex; align-items: center; justify-content: center; width: 30px; height: 30px; border-radius: 50%; color: rgba(255,255,255,0.65); text-decoration: none; transition: all 0.2s; flex-shrink: 0; }
-.switcher-home:hover { color: #fff; background: rgba(255,255,255,0.12); }
-.switcher-divider { width: 1px; height: 20px; background: rgba(255,255,255,0.18); margin: 0 6px; flex-shrink: 0; }
-.switcher-btn { display: flex; align-items: center; gap: 5px; padding: 6px 14px; border-radius: 30px; font-family: 'IBM Plex Sans', sans-serif; font-size: 12px; font-weight: 500; color: rgba(255,255,255,0.72); text-decoration: none; letter-spacing: 0.03em; transition: all 0.2s; white-space: nowrap; }
-.switcher-btn:hover { color: #fff; background: rgba(255,255,255,0.1); }
-.switcher-btn.active { background: #4CAF77; color: #1B4D2E; font-weight: 600; }
-.switcher-btn.active:hover { background: #5DC88A; }
-@media (max-width: 480px) { .page-switcher { bottom: 14px; padding: 5px 8px; } .switcher-btn { padding: 5px 10px; font-size: 11px; } }
-</style>
+
 <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet.markercluster/1.5.3/leaflet.markercluster.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/@turf/turf@6/turf.min.js"></script>
 <script>
+// --- MOTOR DE COLORES AMPLIADO ---
+const SEC_COLORS = { 
+  "Vivienda": "#E67E22", "Educación": "#3498DB", "Salud": "#E74C3C", 
+  "Deporte": "#9B59B6", "Cultura": "#F1C40F", "Bienestar": "#E91E63", 
+  "Seguridad": "#34495E", "Otras": "#1ABC9C" 
+};
 
-const SEC_COLORS = { "Vivienda": "#E67E22", "Educación": "#3498DB", "Salud": "#E74C3C", "Deporte": "#9B59B6", "Cultura": "#F1C40F", "Otras": "#1ABC9C" };
 function secGroup(s) {
   if (!s) return "Otras";
   if (s.includes("Vivienda") || s.includes("Hábitat")) return "Vivienda";
@@ -307,10 +300,13 @@ function secGroup(s) {
   if (s.includes("Salud")) return "Salud";
   if (s.includes("Deporte") || s.includes("Recreación")) return "Deporte";
   if (s.includes("Cultura")) return "Cultura";
+  if (s.includes("Bienestar")) return "Bienestar";
+  if (s.includes("Seguridad")) return "Seguridad";
   return "Otras";
 }
-function getColor(s) { return SEC_COLORS[secGroup(s)]; }
+function getColor(s) { return SEC_COLORS[secGroup(s)] || SEC_COLORS["Otras"]; }
 
+// --- CONFIGURACIÓN DEL MAPA ---
 const map = L.map('map', {zoomControl:true, attributionControl:false}).setView([3.430, -76.488], 14);
 
 const baseLayers = {
@@ -322,6 +318,17 @@ const labelsLayer = L.tileLayer('https://{s}.basemaps.cartocdn.com/light_only_la
 baseLayers.streets.addTo(map);
 
 const baseMaps = { "🗺️ Calles": baseLayers.streets, "🛰️ Satélite Puro": baseLayers.satellite, "🌐 Satélite + Calles": L.layerGroup([baseLayers.hybrid, labelsLayer]) };
+
+let currentLayerBtn = 'btn-streets';
+window.setLayer = function(type) {
+  map.eachLayer(layer => { if(layer !== clusters && !layer.feature) map.removeLayer(layer); });
+  if(type === 'streets') baseLayers.streets.addTo(map);
+  if(type === 'satellite') baseLayers.satellite.addTo(map);
+  if(type === 'hybrid') { baseLayers.hybrid.addTo(map); labelsLayer.addTo(map); }
+  
+  document.querySelectorAll('.layer-btn').forEach(b => b.classList.remove('active'));
+  document.getElementById('btn-'+type).classList.add('active');
+}
 
 const clusters = L.markerClusterGroup({
   maxClusterRadius: 45, showCoverageOnHover: false,
@@ -337,7 +344,7 @@ let globalPerimetro = null;
 let allMarkers = [];
 let activeFilter = 'all';
 let activeEstado = 'all';
-let currentMode = 'ups'; // 'ups' o 'contratos'
+let currentMode = 'ups'; 
 
 function applyFilters() {
   clusters.clearLayers();
@@ -348,6 +355,7 @@ function applyFilters() {
   });
 }
 
+// --- RENDERIZADO Y DEDUPLICACIÓN ---
 function renderMapData() {
   clusters.clearLayers();
   allMarkers = [];
@@ -355,7 +363,7 @@ function renderMapData() {
   let totalInversion = 0;
 
   if (currentMode === 'contratos') {
-    // MODO CONTRATOS (190 filas)
+    // MODO CONTRATOS BRUTOS (190)
     globalPtsData.features.forEach(f => {
       if (!f.geometry || !turf.booleanPointInPolygon(f, globalPerimetro)) return;
       const props = f.properties;
@@ -371,7 +379,7 @@ function renderMapData() {
       totalInversion += ppto;
     });
   } else {
-    // MODO UPS / FRENTES (Deduplicado por dir+lat+lon+tipo, tomando el MAX presupuesto)
+    // MODO FRENTES FÍSICOS UPS (144) - Deduplicación por Huella Espacial
     const upsMap = new Map();
     globalPtsData.features.forEach(f => {
       if (!f.geometry || !turf.booleanPointInPolygon(f, globalPerimetro)) return;
@@ -392,7 +400,7 @@ function renderMapData() {
         });
       } else {
         const ups = upsMap.get(uniqueKey);
-        ups.presupuesto = Math.max(ups.presupuesto, ppto); // Usa el presupuesto máximo para no duplicar
+        if (ppto > ups.presupuesto) ups.presupuesto = ppto; // Evita el doble conteo, toma el maximo
         ups.avance = Math.max(ups.avance, parseFloat(props.avance_obr) || 0);
       }
     });
@@ -400,11 +408,34 @@ function renderMapData() {
     totalInversion = proyectos.reduce((sum, p) => sum + p.presupuesto, 0);
   }
 
-  // Actualizar KPIs Header
-  document.querySelectorAll('.kpi-num')[0].innerText = proyectos.length;
-  document.querySelectorAll('.kpi-num')[1].innerText = '$' + (totalInversion / 1e6).toLocaleString('es-CO', {maximumFractionDigits:0}) + 'M';
+  // --- FILTRO DINÁMICO DE SECRETARÍAS ---
+  const secContainer = document.getElementById('filter-sec');
+  const secretariasActivas = [...new Set(proyectos.map(p => p.secretaria))].sort();
+  
+  if (activeFilter !== 'all' && !secretariasActivas.includes(activeFilter)) { activeFilter = 'all'; }
 
-  // Pintar Marcadores
+  let htmlBotones = `<span class="filter-label">Secretaría:</span><button class="filter-btn ${activeFilter === 'all' ? 'active' : ''}" data-filter="all">Todas</button>`;
+  secretariasActivas.forEach(sec => {
+    const color = SEC_COLORS[sec] || SEC_COLORS["Otras"];
+    htmlBotones += `<button class="filter-btn ${activeFilter === sec ? 'active' : ''}" data-filter="${sec}" style="border-color:${color};">${sec}</button>`;
+  });
+  secContainer.innerHTML = htmlBotones;
+
+  secContainer.querySelectorAll('.filter-btn').forEach(btn => {
+    btn.addEventListener('click', e => {
+      secContainer.querySelectorAll('.filter-btn').forEach(x => x.classList.remove('active'));
+      e.target.classList.add('active');
+      activeFilter = e.target.dataset.filter;
+      applyFilters();
+    });
+  });
+
+  // --- ACTUALIZACIÓN DE KPIs ---
+  document.getElementById('kpi-frentes').innerText = proyectos.length;
+  document.getElementById('kpi-frentes-lbl').innerText = currentMode === 'ups' ? 'Frentes de Obra' : 'Contratos Totales';
+  document.getElementById('kpi-inversion').innerText = '$' + (totalInversion / 1e6).toLocaleString('es-CO', {maximumFractionDigits:0}) + 'M';
+
+  // --- PINTAR MARCADORES ---
   proyectos.forEach(p => {
     const color = getColor(p.secretaria);
     const icon = L.divIcon({ html: `<div style="width:14px;height:14px;border-radius:50%; background:${color};border:2.5px solid white; box-shadow:0 2px 6px rgba(0,0,0,0.5);"></div>`, className:'', iconSize:[14,14], iconAnchor:[7,7] });
@@ -415,7 +446,7 @@ function renderMapData() {
     const marker = L.marker([p.lat, p.lon], {icon}).bindPopup(`
       <div style="min-width:240px;">
         <div class="popup-title">${p.nombre}</div>
-        <div class="popup-row"><span class="popup-label">Secretaría</span><span class="popup-val" style="color:${color};">${p.secretaria}</span></div>
+        <div class="popup-row"><span class="popup-label">Secretaría</span><span class="popup-val" style="color:${color};font-weight:600;">${p.secretaria}</span></div>
         <div class="popup-row"><span class="popup-label">Tipo</span><span class="popup-val">${p.tipo}</span></div>
         <div class="popup-row"><span class="popup-label">Dirección</span><span class="popup-val" style="white-space:normal; max-width:140px;">${p.direccion}</span></div>
         <div class="popup-row"><span class="popup-label">Presupuesto</span><span class="popup-val">${presStr}</span></div>
@@ -429,16 +460,19 @@ function renderMapData() {
   applyFilters();
 }
 
+// --- CARGA INICIAL GEOJSON ---
 async function initDynamicMap() {
   const [ptsRes, polyRes, tramosRes] = await Promise.all([ fetch('../Total_secretarias.geojson'), fetch('../poligonos.geojson'), fetch('../tramos_oriente.geojson') ]);
   globalPtsData = await ptsRes.json();
   const polyData = await polyRes.json();
   const tramosData = await tramosRes.json();
 
+  // Pintar Perímetro
   globalPerimetro = polyData.features.find(f => f.properties.Name === 'Perimetro Proyecto') || polyData.features[0];
   const perimeterLayer = L.geoJSON(globalPerimetro, { style: { color: '#E91E8C', weight: 4, fill: false } }).addTo(map);
   map.fitBounds(perimeterLayer.getBounds(), {padding:[20,20]});
 
+  // Pintar Áreas Extra
   const areasLayer = L.layerGroup().addTo(map);
   const polyColors = ['#F1C40F', '#E67E22', '#4CAF77', '#9B59B6'];
   let cIdx = 0;
@@ -449,44 +483,42 @@ async function initDynamicMap() {
     }
   });
 
+  // Pintar Corredor
   const tramosLayer = L.geoJSON(tramosData, { style: { color: '#00BCD4', weight: 4, opacity: 0.9 } }).bindTooltip('<b>Corredor Hídrico</b>').addTo(map);
   
   map.addLayer(clusters);
-  L.control.layers(baseMaps, { "📍 Puntos de Obra": clusters, "🟣 Límite del Pulmón": perimeterLayer, "💧 Corredor Hídrico": tramosLayer, "🟩 Áreas de Proyecto": areasLayer }, { position: 'topright' }).addTo(map);
+  L.control.layers(null, { "📍 Puntos de Obra": clusters, "🟣 Límite del Pulmón": perimeterLayer, "💧 Corredor Hídrico": tramosLayer, "🟩 Áreas de Proyecto": areasLayer }, { position: 'topright' }).addTo(map);
 
-  renderMapData(); // Pinta el mapa por primera vez (En modo UPS)
+  renderMapData(); 
 }
 
-// Listeners de los filtros y Toggles
-document.querySelectorAll('.filter-btn').forEach(btn => {
+// --- LISTENERS ESTÁTICOS ---
+document.querySelectorAll('#filter-modo .filter-btn').forEach(btn => {
   btn.addEventListener('click', e => {
-    const b = e.target;
-    if (b.dataset.modo) { // Botones de Modo (UPS vs Contratos)
-      document.querySelectorAll('#filter-modo .filter-btn').forEach(x => x.classList.remove('active'));
-      b.classList.add('active');
-      currentMode = b.dataset.modo;
-      // Actualiza la etiqueta del KPI (Frentes vs Contratos)
-      document.querySelectorAll('.kpi-lab')[0].innerText = currentMode === 'ups' ? 'Frentes de Obra' : 'Contratos Totales';
-      renderMapData();
-    } else if (b.dataset.filter) {
-      document.querySelectorAll('#filter-sec .filter-btn').forEach(x => x.classList.remove('active'));
-      b.classList.add('active'); activeFilter = b.dataset.filter; applyFilters();
-    } else if (b.dataset.estado) {
-      document.querySelectorAll('#filter-estado .filter-btn').forEach(x => x.classList.remove('active'));
-      b.classList.add('active'); activeEstado = b.dataset.estado; applyFilters();
-    }
+    document.querySelectorAll('#filter-modo .filter-btn').forEach(x => x.classList.remove('active'));
+    e.target.classList.add('active');
+    currentMode = e.target.dataset.modo;
+    renderMapData();
   });
 });
+
+document.querySelectorAll('#filter-estado .filter-btn').forEach(btn => {
+  btn.addEventListener('click', e => {
+    document.querySelectorAll('#filter-estado .filter-btn').forEach(x => x.classList.remove('active'));
+    e.target.classList.add('active');
+    activeEstado = e.target.dataset.estado; 
+    applyFilters();
+  });
+});
+
 document.getElementById('btn-reset').addEventListener('click', () => {
   activeFilter = 'all'; activeEstado = 'all';
-  document.querySelectorAll('.filter-btn[data-filter], .filter-btn[data-estado]').forEach(b => b.classList.remove('active'));
-  document.querySelectorAll('.filter-btn[data-filter="all"], .filter-btn[data-estado="all"]').forEach(b => b.classList.add('active'));
+  document.querySelectorAll('.filter-btn[data-estado], .filter-btn[data-filter]').forEach(b => b.classList.remove('active'));
+  document.querySelectorAll('.filter-btn[data-estado="all"], .filter-btn[data-filter="all"]').forEach(b => b.classList.add('active'));
   applyFilters();
 });
 
 initDynamicMap();
-</script>
-
 </script>
 </body>
 </html>
