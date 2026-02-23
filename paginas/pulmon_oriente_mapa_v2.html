@@ -236,6 +236,12 @@
     <button class="filter-btn" data-estado="En alistamiento">Alistamiento</button>
     <button class="filter-btn" data-estado="Terminado">Terminado</button>
   </div>
+
+  <div class="filter-group" id="filter-modo">
+      <span class="filter-label">Modo de Vista:</span>
+      <button class="filter-btn active" data-modo="ups">Frentes de Obra (UPS)</button>
+      <button class="filter-btn" data-modo="contratos">Todos los Contratos</button>
+    </div>
   <button id="btn-reset">↺ Limpiar</button>
 </div>
 
@@ -292,11 +298,8 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet.markercluster/1.5.3/leaflet.markercluster.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/@turf/turf@6/turf.min.js"></script>
 <script>
-const SEC_COLORS = {
-  "Vivienda": "#E67E22", "Educación": "#3498DB", "Salud": "#E74C3C", 
-  "Deporte": "#9B59B6", "Cultura": "#F1C40F", "Otras": "#1ABC9C"
-};
 
+const SEC_COLORS = { "Vivienda": "#E67E22", "Educación": "#3498DB", "Salud": "#E74C3C", "Deporte": "#9B59B6", "Cultura": "#F1C40F", "Otras": "#1ABC9C" };
 function secGroup(s) {
   if (!s) return "Otras";
   if (s.includes("Vivienda") || s.includes("Hábitat")) return "Vivienda";
@@ -310,60 +313,31 @@ function getColor(s) { return SEC_COLORS[secGroup(s)]; }
 
 const map = L.map('map', {zoomControl:true, attributionControl:false}).setView([3.430, -76.488], 14);
 
-/* const baseLayers = {
-  streets: L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {maxZoom:19, subdomains:'abc'}),
-  satellite: L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}', {maxZoom:19}),
-  hybrid: L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}', {maxZoom:19}),
-}; */
-
 const baseLayers = {
   streets: L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {maxZoom:19, subdomains:'abc'}),
   satellite: L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}', {maxZoom:19}),
-  hybrid: L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}', {maxZoom:19}),
+  hybrid: L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}', {maxZoom:19})
 };
-
-// Capa de etiquetas (solo texto de calles) para el modo híbrido
 const labelsLayer = L.tileLayer('https://{s}.basemaps.cartocdn.com/light_only_labels/{z}/{x}/{y}{r}.png', {maxZoom:19, subdomains:'abcd', pane:'shadowPane'});
-
-// Definir "Calles" como el mapa por defecto
 baseLayers.streets.addTo(map);
 
-// NUEVO: Crear el control elegante en la esquina superior derecha
-const baseMaps = {
-  "🗺️ Calles": baseLayers.streets,
-  "🛰️ Satélite Puro": baseLayers.satellite,
-  "🌐 Satélite + Calles": L.layerGroup([baseLayers.hybrid, labelsLayer])
-};
-L.control.layers(baseMaps, null, { position: 'topright' }).addTo(map);
-/* const labelsLayer = L.tileLayer('https://{s}.basemaps.cartocdn.com/light_only_labels/{z}/{x}/{y}{r}.png', {maxZoom:19, subdomains:'abcd', pane:'shadowPane'}); */
-baseLayers.streets.addTo(map);
-
-let currentLayer = 'streets';
-function setLayer(type) {
-  ['streets','satellite','hybrid'].forEach(k => { if (baseLayers[k]) map.removeLayer(baseLayers[k]); });
-  map.removeLayer(labelsLayer);
-  baseLayers[type].addTo(map);
-  if (type === 'hybrid') labelsLayer.addTo(map);
-  document.querySelectorAll('.layer-btn').forEach(b => b.classList.remove('active'));
-  document.getElementById('btn-'+type).classList.add('active');
-}
+const baseMaps = { "🗺️ Calles": baseLayers.streets, "🛰️ Satélite Puro": baseLayers.satellite, "🌐 Satélite + Calles": L.layerGroup([baseLayers.hybrid, labelsLayer]) };
 
 const clusters = L.markerClusterGroup({
-  maxClusterRadius: 45,
-  showCoverageOnHover: false,
+  maxClusterRadius: 45, showCoverageOnHover: false,
   iconCreateFunction: (c) => {
     const n = c.getChildCount();
     const sz = n < 10 ? 36 : n < 50 ? 44 : 52;
-    return L.divIcon({
-      html: `<div style="width:${sz}px;height:${sz}px;border-radius:50%; background:rgba(27,77,46,0.95);border:3px solid #4CAF77; display:flex;align-items:center;justify-content:center; font-size:13px;font-weight:700;color:white; box-shadow:0 3px 10px rgba(0,0,0,0.4),0 0 0 2px rgba(76,175,119,0.3);">${n}</div>`,
-      className:'', iconSize:[sz,sz]
-    });
+    return L.divIcon({ html: `<div style="width:${sz}px;height:${sz}px;border-radius:50%; background:rgba(27,77,46,0.95);border:3px solid #4CAF77; display:flex;align-items:center;justify-content:center; font-size:13px;font-weight:700;color:white; box-shadow:0 3px 10px rgba(0,0,0,0.4);">${n}</div>`, className:'', iconSize:[sz,sz] });
   }
 });
 
+let globalPtsData = null;
+let globalPerimetro = null;
 let allMarkers = [];
 let activeFilter = 'all';
 let activeEstado = 'all';
+let currentMode = 'ups'; // 'ups' o 'contratos'
 
 function applyFilters() {
   clusters.clearLayers();
@@ -374,163 +348,138 @@ function applyFilters() {
   });
 }
 
-async function initDynamicMap() {
-  const [ptsRes, polyRes, tramosRes] = await Promise.all([
-    fetch('../Total_secretarias.geojson'),
-    fetch('../poligonos.geojson'),
-    fetch('../tramos_oriente.geojson')
-  ]);
-  const ptsData = await ptsRes.json();
-  const polyData = await polyRes.json();
-  const tramosData = await tramosRes.json();
-
-  // 1. Dibujar Polígonos y Tramos
-  const perimetroFeature = polyData.features.find(f => f.properties.Name === 'Perimetro Proyecto') || polyData.features[0];
-  const perimeterLayer = L.geoJSON(perimetroFeature, { style: { color: '#E91E8C', weight: 4, fill: false } }).addTo(map);
-  map.fitBounds(perimeterLayer.getBounds(), {padding:[20,20]});
-
-  const polyColors = ['#F1C40F', '#E67E22', '#4CAF77', '#9B59B6'];
-  let cIdx = 0;
-  polyData.features.forEach(f => {
-    if (f.properties.Name !== 'Perimetro Proyecto') {
-      L.geoJSON(f, { style: { color: polyColors[cIdx % polyColors.length], weight: 2, fillOpacity: 0.2 } }).bindTooltip(f.properties.Name || 'Obra').addTo(map);
-      cIdx++;
-    }
-  });
-
-  L.geoJSON(tramosData, { style: { color: '#00BCD4', weight: 4, opacity: 0.9 } }).bindTooltip('Corredor Hídrico').addTo(map);
-
-  // 2. Filtro Espacial y Agrupación (UPS)
-  // 2. Filtro Espacial Estricto 
-  const proyectos = [];
+function renderMapData() {
+  clusters.clearLayers();
+  allMarkers = [];
+  let proyectos = [];
   let totalInversion = 0;
 
-  ptsData.features.forEach(f => {
-    // Corte estricto: Solo lo que cae matemáticamente dentro del polígono magenta
-    if (!f.geometry || !turf.booleanPointInPolygon(f, perimetroFeature)) return;
-    
-    const props = f.properties;
-    
-    // 2.1 Limpieza ultra-robusta del presupuesto
-    let pptoStr = (props.presupuest || '0').toString().trim();
-    pptoStr = pptoStr.replace(/[^0-9\.,]/g, ''); // Quita letras o símbolos de moneda
-    if (pptoStr.endsWith('.00') || pptoStr.endsWith(',00')) pptoStr = pptoStr.slice(0, -3); // Quita decimales nulos
-    const ppto = parseFloat(pptoStr.replace(/[\.,]/g, '')) || 0; // Quita separadores de miles
-
-    proyectos.push({
-      nombre: props.nombre_up || 'Sin Nombre', 
-      secretaria: (typeof secGroup === 'function') ? secGroup(props.nombre_cen) : (props.nombre_cen || 'Otra'), 
-      estado: props.estado || 'Alistamiento',
-      tipo: props.tipo_equip || 'Otro', 
-      barrio: props.barrio_ver || 'Sin dato', 
-      direccion: props.direccion || 'No registrada', // Captura la dirección
-      avance: parseFloat(props.avance_obr) || 0,
-      presupuesto: ppto, 
-      lat: f.geometry.coordinates[1], 
-      lon: f.geometry.coordinates[0]
+  if (currentMode === 'contratos') {
+    // MODO CONTRATOS (190 filas)
+    globalPtsData.features.forEach(f => {
+      if (!f.geometry || !turf.booleanPointInPolygon(f, globalPerimetro)) return;
+      const props = f.properties;
+      let pptoStr = (props.presupuest || '0').toString().replace(/[^0-9\.,]/g, '');
+      if (pptoStr.endsWith('.00') || pptoStr.endsWith(',00')) pptoStr = pptoStr.slice(0, -3);
+      const ppto = parseFloat(pptoStr.replace(/[\.,]/g, '')) || 0;
+      
+      proyectos.push({
+        nombre: props.nombre_up || 'Sin Nombre', secretaria: secGroup(props.nombre_cen), 
+        estado: props.estado || 'Alistamiento', tipo: props.tipo_equip || 'Otro', direccion: props.direccion || 'No registrada',
+        avance: parseFloat(props.avance_obr) || 0, presupuesto: ppto, lat: f.geometry.coordinates[1], lon: f.geometry.coordinates[0]
+      });
+      totalInversion += ppto;
     });
-    
-    totalInversion += ppto;
-  });
+  } else {
+    // MODO UPS / FRENTES (Deduplicado por dir+lat+lon+tipo, tomando el MAX presupuesto)
+    const upsMap = new Map();
+    globalPtsData.features.forEach(f => {
+      if (!f.geometry || !turf.booleanPointInPolygon(f, globalPerimetro)) return;
+      const props = f.properties;
+      let pptoStr = (props.presupuest || '0').toString().replace(/[^0-9\.,]/g, '');
+      if (pptoStr.endsWith('.00') || pptoStr.endsWith(',00')) pptoStr = pptoStr.slice(0, -3);
+      const ppto = parseFloat(pptoStr.replace(/[\.,]/g, '')) || 0;
+      
+      const lat = f.geometry.coordinates[1];
+      const lon = f.geometry.coordinates[0];
+      const uniqueKey = `${props.direccion}_${lat}_${lon}_${props.tipo_equip}`;
 
-  // Actualizar Header Dinámico
-  const kpis = document.querySelectorAll('.kpi-num');
-  if(kpis.length >= 2) {
-    kpis[0].innerText = proyectos.length;
-    kpis[1].innerText = '$' + Math.round(totalInversion / 1e6).toLocaleString('es-CO') + 'M';
+      if (!upsMap.has(uniqueKey)) {
+        upsMap.set(uniqueKey, {
+          nombre: props.nombre_up || 'Sin Nombre', secretaria: secGroup(props.nombre_cen),
+          estado: props.estado || 'Alistamiento', tipo: props.tipo_equip || 'Otro', direccion: props.direccion || 'No registrada',
+          avance: parseFloat(props.avance_obr) || 0, presupuesto: ppto, lat: lat, lon: lon
+        });
+      } else {
+        const ups = upsMap.get(uniqueKey);
+        ups.presupuesto = Math.max(ups.presupuesto, ppto); // Usa el presupuesto máximo para no duplicar
+        ups.avance = Math.max(ups.avance, parseFloat(props.avance_obr) || 0);
+      }
+    });
+    proyectos = Array.from(upsMap.values());
+    totalInversion = proyectos.reduce((sum, p) => sum + p.presupuesto, 0);
   }
 
-  // 3. Crear Marcadores y Popups
+  // Actualizar KPIs Header
+  document.querySelectorAll('.kpi-num')[0].innerText = proyectos.length;
+  document.querySelectorAll('.kpi-num')[1].innerText = '$' + (totalInversion / 1e6).toLocaleString('es-CO', {maximumFractionDigits:0}) + 'M';
+
+  // Pintar Marcadores
   proyectos.forEach(p => {
     const color = getColor(p.secretaria);
-    const icon = L.divIcon({
-      html: `<div style="width:14px;height:14px;border-radius:50%; background:${color};border:2.5px solid white; box-shadow:0 2px 6px rgba(0,0,0,0.5),0 0 0 1px ${color}44;"></div>`,
-      className:'', iconSize:[14,14], iconAnchor:[7,7]
-    });
-    
+    const icon = L.divIcon({ html: `<div style="width:14px;height:14px;border-radius:50%; background:${color};border:2.5px solid white; box-shadow:0 2px 6px rgba(0,0,0,0.5);"></div>`, className:'', iconSize:[14,14], iconAnchor:[7,7] });
     let estClean = p.estado.toLowerCase();
     const badgeClass = estClean.includes('ejecuc') ? 'badge-ejecucion' : estClean.includes('terminad') ? 'badge-terminado' : 'badge-alistamiento';
-    
-    // Si no hay presupuesto, muestra la alerta roja
-    const presStr = p.presupuesto > 0 
-      ? `$${Math.round(p.presupuesto/1e6).toLocaleString('es-CO')}M` 
-      : '<span style="color:#E74C3C; font-weight:bold;">No reportado</span>';
+    const presStr = p.presupuesto > 0 ? `$${Math.round(p.presupuesto/1e6).toLocaleString('es-CO')}M` : '<span style="color:#E74C3C;">No reportado</span>';
 
     const marker = L.marker([p.lat, p.lon], {icon}).bindPopup(`
       <div style="min-width:240px;">
         <div class="popup-title">${p.nombre}</div>
         <div class="popup-row"><span class="popup-label">Secretaría</span><span class="popup-val" style="color:${color};">${p.secretaria}</span></div>
         <div class="popup-row"><span class="popup-label">Tipo</span><span class="popup-val">${p.tipo}</span></div>
-        <div class="popup-row"><span class="popup-label">Dirección</span><span class="popup-val" style="white-space:normal; text-align:right; max-width:140px;">${p.direccion}</span></div>
+        <div class="popup-row"><span class="popup-label">Dirección</span><span class="popup-val" style="white-space:normal; max-width:140px;">${p.direccion}</span></div>
         <div class="popup-row"><span class="popup-label">Presupuesto</span><span class="popup-val">${presStr}</span></div>
         <span class="popup-badge ${badgeClass}">${p.estado}</span>
-        <div class="progress-bar"><div class="progress-fill" style="width:${p.avance}%"></div></div>
-        <div style="font-size:11px;opacity:0.6;margin-top:4px;">Avance: ${p.avance}%</div>
       </div>
     `, {maxWidth:320});
-
     marker._secGroup = p.secretaria;
     marker._estado = estClean.includes('ejecuc') ? 'En ejecución' : estClean.includes('terminad') ? 'Terminado' : 'En alistamiento';
     allMarkers.push(marker);
-    clusters.addLayer(marker);
   });
-  map.addLayer(clusters);
+  applyFilters();
 }
 
- /*  const proyectos = Array.from(upsMap.values());
-  const totalInversion = proyectos.reduce((s, p) => s + p.presupuesto, 0);
-  
-  // Actualizar Header
-  const kpis = document.querySelectorAll('.kpi-num');
-  kpis[0].innerText = proyectos.length;
-  kpis[1].innerText = '$' + Math.round(totalInversion / 1e6).toLocaleString('es-CO') + 'M';
+async function initDynamicMap() {
+  const [ptsRes, polyRes, tramosRes] = await Promise.all([ fetch('../Total_secretarias.geojson'), fetch('../poligonos.geojson'), fetch('../tramos_oriente.geojson') ]);
+  globalPtsData = await ptsRes.json();
+  const polyData = await polyRes.json();
+  const tramosData = await tramosRes.json();
 
-  // 3. Crear Marcadores
-  proyectos.forEach(p => {
-    const color = getColor(p.secretaria);
-    const icon = L.divIcon({
-      html: `<div style="width:14px;height:14px;border-radius:50%; background:${color};border:2.5px solid white; box-shadow:0 2px 6px rgba(0,0,0,0.5),0 0 0 1px ${color}44;"></div>`,
-      className:'', iconSize:[14,14], iconAnchor:[7,7]
-    });
-    
-    let estClean = p.estado.toLowerCase();
-    const badgeClass = estClean.includes('ejecuc') ? 'badge-ejecucion' : estClean.includes('terminad') ? 'badge-terminado' : 'badge-alistamiento';
-    const presStr = p.presupuesto ? `$${Math.round(p.presupuesto/1e6).toLocaleString('es-CO')}M` : 'N/D';
+  globalPerimetro = polyData.features.find(f => f.properties.Name === 'Perimetro Proyecto') || polyData.features[0];
+  const perimeterLayer = L.geoJSON(globalPerimetro, { style: { color: '#E91E8C', weight: 4, fill: false } }).addTo(map);
+  map.fitBounds(perimeterLayer.getBounds(), {padding:[20,20]});
 
-    const marker = L.marker([p.lat, p.lon], {icon}).bindPopup(`
-      <div style="min-width:220px;">
-        <div class="popup-title">${p.nombre}</div>
-        <div class="popup-row"><span class="popup-label">Secretaría</span><span class="popup-val" style="color:${color};">${secGroup(p.secretaria)}</span></div>
-        <div class="popup-row"><span class="popup-label">Tipo</span><span class="popup-val">${p.tipo}</span></div>
-        <div class="popup-row"><span class="popup-label">Presupuesto</span><span class="popup-val">${presStr}</span></div>
-        <span class="popup-badge ${badgeClass}">${p.estado}</span>
-        <div class="progress-bar"><div class="progress-fill" style="width:${p.avance}%"></div></div>
-        <div style="font-size:11px;opacity:0.6;margin-top:4px;">Avance: ${p.avance}%</div>
-      </div>
-    `, {maxWidth:280});
-
-    marker._secGroup = secGroup(p.secretaria);
-    marker._estado = estClean.includes('ejecuc') ? 'En ejecución' : estClean.includes('terminad') ? 'Terminado' : 'En alistamiento';
-    allMarkers.push(marker);
-    clusters.addLayer(marker);
+  const areasLayer = L.layerGroup().addTo(map);
+  const polyColors = ['#F1C40F', '#E67E22', '#4CAF77', '#9B59B6'];
+  let cIdx = 0;
+  polyData.features.forEach(f => {
+    if (f.properties.Name !== 'Perimetro Proyecto') {
+      L.geoJSON(f, { style: { color: polyColors[cIdx % polyColors.length], weight: 2, fillOpacity: 0.3 } }).bindTooltip(`<b>Polígono de Obra:</b><br>${f.properties.Name}`).addTo(areasLayer);
+      cIdx++;
+    }
   });
-  map.addLayer(clusters);
-} */
 
-// Listeners de filtros
-document.getElementById('filter-sec').addEventListener('click', e => {
-  const btn = e.target.closest('.filter-btn'); if(!btn) return;
-  document.querySelectorAll('#filter-sec .filter-btn').forEach(b => b.classList.remove('active'));
-  btn.classList.add('active'); activeFilter = btn.dataset.filter; applyFilters();
-});
-document.getElementById('filter-estado').addEventListener('click', e => {
-  const btn = e.target.closest('.filter-btn'); if(!btn) return;
-  document.querySelectorAll('#filter-estado .filter-btn').forEach(b => b.classList.remove('active'));
-  btn.classList.add('active'); activeEstado = btn.dataset.estado; applyFilters();
+  const tramosLayer = L.geoJSON(tramosData, { style: { color: '#00BCD4', weight: 4, opacity: 0.9 } }).bindTooltip('<b>Corredor Hídrico</b>').addTo(map);
+  
+  map.addLayer(clusters);
+  L.control.layers(baseMaps, { "📍 Puntos de Obra": clusters, "🟣 Límite del Pulmón": perimeterLayer, "💧 Corredor Hídrico": tramosLayer, "🟩 Áreas de Proyecto": areasLayer }, { position: 'topright' }).addTo(map);
+
+  renderMapData(); // Pinta el mapa por primera vez (En modo UPS)
+}
+
+// Listeners de los filtros y Toggles
+document.querySelectorAll('.filter-btn').forEach(btn => {
+  btn.addEventListener('click', e => {
+    const b = e.target;
+    if (b.dataset.modo) { // Botones de Modo (UPS vs Contratos)
+      document.querySelectorAll('#filter-modo .filter-btn').forEach(x => x.classList.remove('active'));
+      b.classList.add('active');
+      currentMode = b.dataset.modo;
+      // Actualiza la etiqueta del KPI (Frentes vs Contratos)
+      document.querySelectorAll('.kpi-lab')[0].innerText = currentMode === 'ups' ? 'Frentes de Obra' : 'Contratos Totales';
+      renderMapData();
+    } else if (b.dataset.filter) {
+      document.querySelectorAll('#filter-sec .filter-btn').forEach(x => x.classList.remove('active'));
+      b.classList.add('active'); activeFilter = b.dataset.filter; applyFilters();
+    } else if (b.dataset.estado) {
+      document.querySelectorAll('#filter-estado .filter-btn').forEach(x => x.classList.remove('active'));
+      b.classList.add('active'); activeEstado = b.dataset.estado; applyFilters();
+    }
+  });
 });
 document.getElementById('btn-reset').addEventListener('click', () => {
   activeFilter = 'all'; activeEstado = 'all';
-  document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+  document.querySelectorAll('.filter-btn[data-filter], .filter-btn[data-estado]').forEach(b => b.classList.remove('active'));
   document.querySelectorAll('.filter-btn[data-filter="all"], .filter-btn[data-estado="all"]').forEach(b => b.classList.add('active'));
   applyFilters();
 });

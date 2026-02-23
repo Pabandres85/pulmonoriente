@@ -12,7 +12,7 @@ Dashboard interactivo de los proyectos del Plan de Desarrollo Distrital 2024–2
 |-------|-------------|
 | [Inicio](index.html) | Landing page con acceso a ambas vistas |
 | [Informe](paginas/pulmon_oriente_informe-v2.html) | Dashboard analítico con gráficas y estadísticas |
-| [Mapa](paginas/pulmon_oriente_mapa_v2.html) | Mapa interactivo con los 325 proyectos geolocalizados |
+| [Mapa](paginas/pulmon_oriente_mapa_v2.html) | Mapa interactivo con los  proyectos geolocalizados |
 
 ---
 
