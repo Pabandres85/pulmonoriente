@@ -20,10 +20,25 @@
     html { scroll-behavior: smooth; }
     body {
       font-family: 'IBM Plex Sans', sans-serif;
-      background: var(--verde-bosque);
+      background: #ffffff;
+      color: #1B4D2E;
       min-height: 100vh;
       display: flex;
       flex-direction: column;
+    }
+
+        /* ── LOGO ALCALDÍA ── */
+    .alcaldia-logo{
+      width: 130px;          
+      height: auto;
+      display: block;
+      margin: 0 auto 14px;   
+      filter: drop-shadow(0 10px 18px rgba(0,0,0,0.25));
+      opacity: 0.95;
+    }
+
+    @media (max-width: 580px){
+      .alcaldia-logo{ width: 105px; }
     }
 
     /* ── BACKGROUND PATTERN ── */
@@ -87,19 +102,19 @@
       0%, 100% { opacity: 1; transform: scale(1); }
       50%       { opacity: 0.6; transform: scale(0.85); }
     }
-    h1 {
+      h1 {
       font-family: 'Playfair Display', serif;
       font-size: clamp(36px, 6vw, 64px);
       font-weight: 900;
-      color: #fff;
+      color: #1B4D2E;   /* verde institucional oscuro */
       line-height: 1.1;
       letter-spacing: -0.02em;
       margin-bottom: 16px;
     }
-    h1 span { color: var(--verde-claro); }
+    h1 span {  color: #2E7D52;  /* verde esmeralda */ }
     .subtitle {
       font-size: 15px;
-      color: rgba(255,255,255,0.65);
+      color: #4A5F53;
       line-height: 1.65;
       max-width: 480px;
       margin: 0 auto 28px;
@@ -115,13 +130,13 @@
       font-family: 'Playfair Display', serif;
       font-size: clamp(18px, 5vw, 26px);
       font-weight: 700;
-      color: var(--verde-claro);
+      color: #2E7D52;
       line-height: 1;
       white-space: nowrap;
     }
     .kpi-lab {
       font-size: 10px;
-      color: rgba(255,255,255,0.5);
+      color: #6B7C73;
       text-transform: uppercase;
       letter-spacing: 0.1em;
       margin-top: 3px;
@@ -140,31 +155,44 @@
       width: 100%;
       max-width: 760px;
     }
-    .card {
-      position: relative;
-      background: rgba(255,255,255,0.06);
-      border: 1px solid rgba(255,255,255,0.1);
-      border-radius: 20px;
-      padding: 32px 28px;
-      text-decoration: none;
-      color: inherit;
-      overflow: hidden;
-      transition: transform 0.25s ease, border-color 0.25s ease, background 0.25s ease;
-      display: flex;
-      flex-direction: column;
-      gap: 16px;
-    }
-    .card::before {
-      content: '';
-      position: absolute;
-      inset: 0;
-      border-radius: 20px;
-      background: radial-gradient(ellipse 80% 60% at 50% 0%, rgba(76,175,119,0.12), transparent 70%);
-      opacity: 0;
-      transition: opacity 0.3s;
-    }
-    .card:hover { transform: translateY(-4px); border-color: rgba(76,175,119,0.45); background: rgba(255,255,255,0.09); }
-    .card:hover::before { opacity: 1; }
+    
+ .card {
+  position: relative;              /* CLAVE: ancla el ::before */
+  overflow: hidden;                /* para que el brillo no se salga */
+  background: #ffffff;
+  border: 1px solid #E6ECE9;
+  border-radius: 20px;
+  padding: 32px 28px;
+  text-decoration: none;
+  color: inherit;
+  box-shadow: 0 10px 30px rgba(27,77,46,0.06);
+  transition: transform 0.25s ease, border-color 0.25s ease, box-shadow 0.25s ease;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.card::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: 20px;
+  background: radial-gradient(ellipse 80% 60% at 50% 0%, rgba(76,175,119,0.12), transparent 70%);
+  opacity: 0;
+  transition: opacity 0.3s;
+  pointer-events: none;            /* evita que “intercepte” hover/click */
+  z-index: 0;
+}
+
+/* Asegura que el contenido quede encima del overlay */
+.card > * { position: relative; z-index: 1; }
+
+.card:hover {
+  transform: translateY(-4px);
+  border-color: #2E7D52;
+  box-shadow: 0 15px 35px rgba(27,77,46,0.12);
+}
+.card:hover::before { opacity: 1; }
 
     .card-icon {
       width: 48px; height: 48px;
@@ -192,12 +220,12 @@
       font-family: 'Playfair Display', serif;
       font-size: 22px;
       font-weight: 700;
-      color: #fff;
+      color: #1B4D2E;
       line-height: 1.2;
     }
     .card p {
       font-size: 13px;
-      color: rgba(255,255,255,0.58);
+      color: #5E6F66;
       line-height: 1.6;
       flex: 1;
     }
@@ -249,8 +277,13 @@
   <div class="wrapper">
 
     <section class="hero">
+       <img
+              class="alcaldia-logo"
+              src="imag/logo_alcaldia.png"
+              alt="Escudo Alcaldía de Santiago de Cali"
+             />
       <div class="badge">
-        <div class="badge-dot"></div>
+          <div class="badge-dot"></div>
         Así recuperamos Cali
       </div>
       <h1>Pulmón del<br><span>Oriente</span></h1>

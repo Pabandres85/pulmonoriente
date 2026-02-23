@@ -29,20 +29,169 @@
   .section-num, .hero-date, .chart-badge, .barrio-bar-val, th { font-family: 'JetBrains Mono', monospace; }
 
   /* ─── HERO ─── */
-  .hero { background: linear-gradient(155deg, var(--verde-bosque) 0%, #0D2E1A 40%, #1B3A2A 70%, #0A2218 100%); position: relative; overflow: hidden; padding: 0; }
-  .hero-bg-art { position: absolute; inset: 0; opacity: 0.07; background-image: radial-gradient(circle at 20% 50%, #4CAF50 0%, transparent 50%), radial-gradient(circle at 80% 20%, #81C784 0%, transparent 40%); }
-  .hero-inner { position: relative; z-index: 2; max-width: 1200px; margin: 0 auto; padding: 72px 40px 56px; display: grid; grid-template-columns: 1fr auto; gap: 40px; align-items: end; }
-  .hero-tag { display: inline-flex; align-items: center; gap: 8px; background: rgba(76,175,80,0.2); border: 1px solid rgba(76,175,80,0.4); border-radius: 100px; padding: 6px 16px; color: var(--verde-menta); font-size: 11px; font-weight: 600; letter-spacing: 2px; text-transform: uppercase; margin-bottom: 20px; }
-  h1 { font-size: clamp(36px, 5vw, 64px); font-weight: 800; color: #fff; line-height: 1.05; }
-  h1 span { color: var(--verde-menta); }
-  .hero-sub { color: rgba(255,255,255,0.7); font-size: 15px; font-style: italic; margin-top: 12px; line-height: 1.6; }
-  .hero-date { color: var(--verde-menta); font-size: 12px; margin-top: 20px; letter-spacing: 1px; }
-  .hero-kpi-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; min-width: 260px; }
-  .hero-kpi { background: rgba(255,255,255,0.07); border: 1px solid rgba(255,255,255,0.12); border-radius: 12px; padding: 16px 20px; backdrop-filter: blur(8px); }
-  .hero-kpi-val { font-size: 26px; font-weight: 700; color: #fff; line-height: 1; }
-  .hero-kpi-lbl { font-size: 10px; color: rgba(255,255,255,0.55); margin-top: 4px; text-transform: uppercase; letter-spacing: 1px; }
-  .hero-kpi.accent { background: rgba(76,175,80,0.25); border-color: rgba(76,175,80,0.4); }
-  .hero-kpi.accent .hero-kpi-val { color: var(--verde-menta); }
+.hero {
+  position: relative;
+  background: #ffffff;
+  overflow: hidden;
+  padding: 0;
+}
+
+/* Gradientes suaves */
+.hero::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(ellipse 80% 60% at 20% 30%, rgba(46,125,82,0.25) 0%, transparent 70%),
+    radial-gradient(ellipse 60% 50% at 80% 70%, rgba(76,175,119,0.12) 0%, transparent 65%);
+  pointer-events: none;
+}
+
+/* Malla sutil */
+.hero::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background-image:
+    linear-gradient(rgba(76,175,119,0.05) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(76,175,119,0.05) 1px, transparent 1px);
+  background-size: 48px 48px;
+  pointer-events: none;
+}
+
+.hero-inner {
+  position: relative;
+  z-index: 2;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 72px 60px 56px;
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 40px;
+  align-items: end;
+}
+ /* ─── BRAND (ESCUDO + TITULO) ─── */
+.hero-brand{
+  display: flex;
+  align-items: flex-start;
+  gap: 28px;                 /* más separación con el título */
+  margin-top: 6px;
+}
+
+.hero-logo{
+  width: 110px;              /* más grande */
+  height: auto;
+  flex: 0 0 auto;
+  margin-left: -6px;         /* lo mueve un poco hacia la izquierda */
+  filter: drop-shadow(0 14px 24px rgba(0,0,0,0.35));
+}
+
+.hero-brand-text{
+  min-width: 0;
+  padding-top: 6px;          /* pequeño ajuste vertical */
+}
+
+/* Responsive: logo arriba del título */
+@media (max-width: 640px){
+  .hero-brand{
+    flex-direction: column;
+    align-items: center;      /* en móvil se ve más institucional centrado */
+    gap: 10px;
+    text-align: center;
+  }
+  .hero-logo{
+    width: 72px;
+    margin-top: 0;
+  }
+  .hero-brand-text{
+    text-align: center;
+  }
+}
+ /* TAG SUPERIOR */
+.hero-tag{
+  display:inline-flex;
+  align-items:center;
+  gap:8px;
+  background: rgba(165,214,167,0.35);          
+  border: 1px solid rgba(46,125,82,0.28);
+  border-radius:100px;
+  padding:6px 16px;
+  color: var(--verde-bosque);                  
+  font-size:11px;
+  font-weight:600;
+  letter-spacing:2px;
+  text-transform:uppercase;
+  margin-bottom:20px;
+}
+
+/* TITULO */
+h1{
+  font-size: clamp(36px, 5vw, 64px);
+  font-weight: 800;
+  color: var(--verde-bosque);                
+  line-height: 1.05;
+}
+
+h1 span{
+  color: var(--verde-esmeralda);              
+}
+
+/* SUBTITULOS */
+.hero-sub{
+  color: rgba(27,77,46,0.75);                 
+  font-size:15px;
+  font-style: italic;
+  margin-top:12px;
+  line-height:1.6;
+}
+
+.hero-date{
+  color: rgba(27,77,46,0.62);                 
+  font-size:12px;
+  margin-top:20px;
+  letter-spacing:1px;
+}
+
+/* KPI */
+.hero-kpi-grid{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:12px;
+  min-width:260px;
+}
+
+.hero-kpi{
+  background: rgba(255,255,255,0.70);          
+  border: 1px solid rgba(27,77,46,0.12);
+  border-radius:12px;
+  padding:16px 20px;
+  backdrop-filter: blur(10px);
+  box-shadow: 0 12px 30px rgba(27,77,46,0.08);
+}
+
+.hero-kpi-val{
+  font-size:26px;
+  font-weight:700;
+  color: var(--verde-bosque);                 
+  line-height:1;
+}
+
+.hero-kpi-lbl{
+  font-size:10px;
+  color: rgba(27,77,46,0.58);                  
+  margin-top:4px;
+  text-transform:uppercase;
+  letter-spacing:1px;
+}
+
+.hero-kpi.accent{
+  background: rgba(165,214,167,0.40);
+  border-color: rgba(46,125,82,0.22);
+}
+
+.hero-kpi.accent .hero-kpi-val{
+  color: var(--verde-bosque);                  
+}
 
   /* ─── TOOLBAR (TOGGLE Y AÑO) ─── */
   .toolbar-strip { background: #fff; border-bottom: 1px solid #E0E0E0; padding: 14px 40px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 16px; }
@@ -111,11 +260,17 @@
   <div class="hero-lines"></div>
   <div class="hero-inner">
     <div>
-      <div class="hero-tag">Distrito de Aguablanca · Cali</div>
+  <div class="hero-tag">Distrito de Aguablanca · Cali</div>
+  <div class="hero-brand">
+    <img class="hero-logo" src="../imag/logo_alcaldia.png" alt="Escudo Alcaldía de Santiago de Cali">
+
+    <div class="hero-brand-text">
       <h1>Pulmón del<br><span>Oriente</span></h1>
       <p class="hero-sub">Informe Analítico de Inversión Pública</p>
       <p class="hero-date">// FUENTE: SECRETARÍAS DISTRITALES · CÁLCULO DINÁMICO</p>
     </div>
+  </div>
+</div>
     <div class="hero-kpi-grid">
       <div class="hero-kpi accent">
         <div class="hero-kpi-val" id="kpi-count">...</div>
@@ -241,12 +396,31 @@
   </div>
 </section>
 
-<nav class="page-switcher" style="position:fixed; bottom:24px; left:50%; transform:translateX(-50%); z-index:2000; display:flex; background:rgba(27,77,46,0.96); backdrop-filter:blur(12px); border-radius:40px; padding:6px 10px; border:1px solid rgba(76,175,119,0.25);">
-  <a href="../index.html" style="color:rgba(255,255,255,0.65); display:flex; align-items:center; padding:0 10px;"><svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/></svg></a>
-  <div style="width:1px; height:20px; background:rgba(255,255,255,0.18); margin:0 6px;"></div>
-  <a href="pulmon_oriente_informe-v2.html" style="color:#1B4D2E; background:#4CAF77; font-weight:600; padding:6px 14px; border-radius:30px; font-size:12px; text-decoration:none;">Informe</a>
-  <a href="pulmon_oriente_mapa_v2.html" style="color:rgba(255,255,255,0.72); padding:6px 14px; font-size:12px; text-decoration:none;">Mapa</a>
+<nav class="page-switcher" aria-label="Navegación entre vistas">
+  <a class="switcher-home" href="../index.html" title="Inicio">
+    <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/></svg>
+  </a>
+  <div class="switcher-divider"></div>
+  <a class="switcher-btn" href="pulmon_oriente_informe-v2.html"aria-current="page">
+    <svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor"><path d="M9 17H7v-7h2v7zm4 0h-2V7h2v10zm4 0h-2v-4h2v4zm2.5 2.1H4.5V5h15v14.1zm0-16.1h-15C3.6 3 3 3.6 3 4.5v15C3 20.4 3.6 21 4.5 21h15c.9 0 1.5-.6 1.5-1.5v-15C21 3.6 20.4 3 19.5 3z"/></svg>
+    Informe
+  </a>
+  <a class="switcher-btn active" href="pulmon_oriente_mapa_v2.html" >
+    <svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor"><path d="M20.5 3l-.16.03L15 5.1 9 3 3.36 4.9c-.21.07-.36.25-.36.48V20.5c0 .28.22.5.5.5l.16-.03L9 18.9l6 2.1 5.64-1.9c.21-.07.36-.25.36-.48V3.5c0-.28-.22-.5-.5-.5zM15 19l-6-2.11V5l6 2.11V19z"/></svg>
+    Mapa
+  </a>
 </nav>
+<style>
+.page-switcher { position: fixed; bottom: 24px; left: 50%; transform: translateX(-50%); z-index: 2000; display: flex; align-items: center; gap: 0; background: rgba(27, 77, 46, 0.96); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); border-radius: 40px; padding: 6px 10px; box-shadow: 0 6px 28px rgba(0,0,0,0.28), 0 1px 4px rgba(0,0,0,0.15); border: 1px solid rgba(76, 175, 119, 0.25); }
+.switcher-home { display: flex; align-items: center; justify-content: center; width: 30px; height: 30px; border-radius: 50%; color: rgba(255,255,255,0.65); text-decoration: none; transition: all 0.2s; flex-shrink: 0; }
+.switcher-home:hover { color: #fff; background: rgba(255,255,255,0.12); }
+.switcher-divider { width: 1px; height: 20px; background: rgba(255,255,255,0.18); margin: 0 6px; flex-shrink: 0; }
+.switcher-btn { display: flex; align-items: center; gap: 5px; padding: 6px 14px; border-radius: 30px; font-family: 'IBM Plex Sans', sans-serif; font-size: 12px; font-weight: 500; color: rgba(255,255,255,0.72); text-decoration: none; letter-spacing: 0.03em; transition: all 0.2s; white-space: nowrap; }
+.switcher-btn:hover { color: #fff; background: rgba(255,255,255,0.1); }
+.switcher-btn.active { background: #4CAF77; color: #1B4D2E; font-weight: 600; }
+.switcher-btn.active:hover { background: #5DC88A; }
+@media (max-width: 480px) { .page-switcher { bottom: 14px; padding: 5px 8px; } .switcher-btn { padding: 5px 10px; font-size: 11px; } }
+</style>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.0/chart.umd.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/@turf/turf@6/turf.min.js"></script>
