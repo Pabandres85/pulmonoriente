@@ -3,7 +3,8 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Pulmón del Oriente · Cali </title>
+  
+  <title>Equipo gobierno de datos</title>
   <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=IBM+Plex+Sans:wght@300;400;600&display=swap" rel="stylesheet">
   <style>
     :root {
@@ -112,10 +113,11 @@
     .kpi { text-align: center; }
     .kpi-num {
       font-family: 'Playfair Display', serif;
-      font-size: 26px;
+      font-size: clamp(18px, 5vw, 26px);
       font-weight: 700;
       color: var(--verde-claro);
       line-height: 1;
+      white-space: nowrap;
     }
     .kpi-lab {
       font-size: 10px;
@@ -229,10 +231,17 @@
     @media (max-width: 580px) {
       .cards { grid-template-columns: 1fr; max-width: 400px; }
       .kpi-sep { display: none; }
+      .kpi-row { gap: 20px; }
+    }
+    @media (max-width: 420px) {
+      .kpi-row { gap: 14px; flex-wrap: wrap; justify-content: center; }
+      .kpi-num { font-size: 20px; }
+      .subtitle { font-size: 13px; }
+      h1 { font-size: clamp(28px, 9vw, 56px); }
     }
     @media (max-width: 360px) {
-      .kpi-row { gap: 20px; }
-      .kpi-num { font-size: 22px; }
+      .kpi-row { gap: 12px; }
+      .kpi-num { font-size: 18px; }
     }
   </style>
 </head>
@@ -243,32 +252,32 @@
     <section class="hero">
       <div class="badge">
         <div class="badge-dot"></div>
-        Plan de Desarrollo Cali 2024–2027
+        Así recuperamos Cali
       </div>
       <h1>Pulmón del<br><span>Oriente</span></h1>
       <p class="subtitle">
-        Visualización de la inversión pública en el area que abarca el pulmon del oriente de Santiago de Cali.
-        Datos de la Unidad de Proyectos — corte febrero de 2026.
+        Visualización de la inversión pública en el Área de Influencia del Pulmón del Oriente · Santiago de Cali.
+        Datos de la Unidad de Proyectos — corte 21 de febrero de 2026.
       </p>
       <div class="kpi-row">
         <div class="kpi">
-          <div class="kpi-num">325</div>
+          <div class="kpi-num">208</div>
           <div class="kpi-lab">Proyectos</div>
         </div>
         <div class="kpi-sep"></div>
         <div class="kpi">
-          <div class="kpi-num">$81.7B</div>
+          <div class="kpi-num">$52,975M</div>
           <div class="kpi-lab">Inversión COP</div>
         </div>
-        <div class="kpi-sep"></div>
+       <!--  <div class="kpi-sep"></div>
         <div class="kpi">
-          <div class="kpi-num">9</div>
+          <div class="kpi-num">7</div>
           <div class="kpi-lab">Secretarías</div>
-        </div>
+        </div> -->
         <div class="kpi-sep"></div>
         <div class="kpi">
-          <div class="kpi-num">2</div>
-          <div class="kpi-lab">Comunas</div>
+          <div class="kpi-num">1</div>
+          <div class="kpi-lab">Área Pulmón</div>
         </div>
       </div>
     </section>
@@ -303,7 +312,7 @@
           <div class="card-tag">Mapa interactivo</div>
           <h2>Mapa de Proyectos</h2>
         </div>
-        <p>325 proyectos geolocalizados sobre Area del pulmon del oriente. Filtra por estado y secretaría, consulta detalle de cada proyecto y cambia capas base.</p>
+        <p>208 proyectos geolocalizados dentro del área de influencia del Pulmón del Oriente. Delineación del polígono, corredor hídrico y zonas de obra. Filtra por estado y secretaría.</p>
         <div class="card-cta">
           Explorar mapa
           <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M12 4l-1.41 1.41L16.17 11H4v2h12.17l-5.58 5.59L12 20l8-8z"/></svg>
@@ -315,7 +324,7 @@
 
   <footer>
     Fuente: Unidad de Proyectos (UP) · Secretarías Distritales · Municipio de Santiago de Cali<br>
-   · Puilmon del oriente ·
+    Área de Influencia Pulmón del Oriente · Plan de Desarrollo 2024–2027 ·
     <a href="https://www.cali.gov.co" target="_blank" rel="noopener">cali.gov.co</a>
   </footer>
 </body>

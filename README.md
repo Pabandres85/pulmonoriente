@@ -16,24 +16,6 @@ Dashboard interactivo de los proyectos del Plan de Desarrollo Distrital 2024–2
 
 ---
 
-## Datos principales
-
-- **325** proyectos en Comunas 13 y 14
-- **$81.7B COP** de inversión total
-- **9** secretarías distritales
-- **86.5%** de proyectos en fase de alistamiento
-
-### Distribución por secretaría
-
-| Secretaría | Proyectos | Inversión |
-|---|---|---|
-| Vivienda y Hábitat | 262 | $45.1B |
-| Educación | 18 | $24.2B |
-| Salud Pública | 13 | $6.5B |
-| DAGMA | 4 | $0.5B |
-| Otras | 28 | $5.4B |
-
----
 
 ## Estructura del repositorio
 
