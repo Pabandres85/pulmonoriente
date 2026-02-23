@@ -260,12 +260,11 @@
       </p>
       <div class="kpi-row">
         <div class="kpi">
-          <div class="kpi-num">...</div>
-          <div class="kpi-lab">Proyectos</div>
-        </div>
+          <div class="kpi-num" id="kpi-frentes">...</div>
+          <div class="kpi-lab">Frentes de Obra</div> </div>
         <div class="kpi-sep"></div>
         <div class="kpi">
-          <div class="kpi-num">...</div>
+          <div class="kpi-num" id="kpi-inversion">...</div>
           <div class="kpi-lab">Inversión COP</div>
         </div>
         <div class="kpi-sep"></div>
@@ -305,7 +304,7 @@
           <div class="card-tag">Mapa interactivo</div>
           <h2>Mapa de Proyectos</h2>
         </div>
-        <p id="map-desc">Proyectos geolocalizados dentro del área de influencia del Pulmón del Oriente. Delineación del polígono, corredor hídrico y zonas de obra. Filtra por estado y secretaría.</p>
+        <p id="map-desc">Frentes de obra geolocalizados dentro del área de influencia. Delineación del polígono, corredor hídrico y zonas. Filtra por estado y secretaría.</p>
         <div class="card-cta">
           Explorar mapa
           <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M12 4l-1.41 1.41L16.17 11H4v2h12.17l-5.58 5.59L12 20l8-8z"/></svg>
@@ -333,33 +332,46 @@
         const polyData = await polyRes.json();
 
         const perimetro = polyData.features.find(f => f.properties.Name === 'Perimetro Proyecto') || polyData.features[0];
-        const proyectos = [];
-        let totalInversion = 0;
+        
+        // El motor de Deduplicación Espacial (La Llave Invulnerable)
+        const upsMap = new Map();
 
-        // Filtro estricto sin agrupar
         ptsData.features.forEach(f => {
           if (!f.geometry || !turf.booleanPointInPolygon(f, perimetro)) return;
           
-          let pptoStr = (f.properties.presupuest || '0').toString().trim();
+          const p = f.properties;
+          let pptoStr = (p.presupuest || '0').toString().trim();
           pptoStr = pptoStr.replace(/[^0-9\.,]/g, ''); 
           if (pptoStr.endsWith('.00') || pptoStr.endsWith(',00')) pptoStr = pptoStr.slice(0, -3);
           const ppto = parseFloat(pptoStr.replace(/[\.,]/g, '')) || 0;
 
-          proyectos.push(f.properties);
-          totalInversion += ppto;
+          const lat = f.geometry.coordinates[1];
+          const lon = f.geometry.coordinates[0];
+          // Llave: Dirección + Latitud + Longitud + Tipo
+          const key = `${p.direccion}_${lat}_${lon}_${p.tipo_equip}`;
+
+          if (!upsMap.has(key)) {
+            upsMap.set(key, { presupuesto: ppto });
+          } else {
+            const u = upsMap.get(key);
+            if (ppto > u.presupuesto) {
+              u.presupuesto = ppto; // Tomamos el máximo valor
+            }
+          }
         });
 
+        const frentes = Array.from(upsMap.values());
+        const totalFrentes = frentes.length;
+        const totalInversion = frentes.reduce((sum, f) => sum + f.presupuesto, 0);
+
         // Actualiza los KPIs del DOM
-        const kpiNums = document.querySelectorAll('.kpi-num');
-        if(kpiNums.length >= 2) {
-          kpiNums[0].innerText = proyectos.length;
-          kpiNums[1].innerText = '$' + Math.round(totalInversion / 1e6).toLocaleString('es-CO') + 'M';
-        }
+        document.getElementById('kpi-frentes').innerText = totalFrentes;
+        document.getElementById('kpi-inversion').innerText = '$' + Math.round(totalInversion / 1e6).toLocaleString('es-CO') + 'M';
 
         // Actualiza el texto descriptivo de la tarjeta del mapa
         const mapDesc = document.getElementById('map-desc');
         if(mapDesc) {
-          mapDesc.innerText = proyectos.length + ' proyectos geolocalizados dentro del área de influencia del Pulmón del Oriente. Delineación del polígono, corredor hídrico y zonas de obra. Filtra por estado y secretaría.';
+          mapDesc.innerText = totalFrentes + ' frentes de obra (UPS) geolocalizados dentro del área de influencia del Pulmón del Oriente. Delineación del polígono, corredor hídrico y zonas de obra.';
         }
       } catch (error) {
         console.error("Error cargando la data geoespacial:", error);

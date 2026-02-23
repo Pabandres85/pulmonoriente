@@ -14,11 +14,8 @@
     --verde-hielo:    #E8F5E9;
     --tierra:         #5D4037;
     --ocre:           #F57F17;
-    --ocre-claro:     #FFF8E1;
     --rojo-alerta:    #7B3535;
-    --rojo-claro:     #F5EDED;
     --azul-agua:      #0277BD;
-    --azul-claro:     #E1F5FE;
     --blanco:         #FAFAFA;
     --gris-papel:     #F4F1EC;
     --gris-text:      #37474F;
@@ -27,41 +24,19 @@
   }
 
   *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-  
-  body {
-    background: var(--gris-papel);
-    font-family: 'Inter', sans-serif;
-    color: var(--negro);
-    min-height: 100vh;
-  }
-
+  body { background: var(--gris-papel); font-family: 'Inter', sans-serif; color: var(--negro); min-height: 100vh; }
   h1, h2, h3, .hero-kpi-val, .stat-num { font-family: 'Montserrat', sans-serif; }
-  .section-num, .hero-date, .chart-badge, .barrio-bar-val, .ring-pct, th { font-family: 'JetBrains Mono', monospace; }
+  .section-num, .hero-date, .chart-badge, .barrio-bar-val, th { font-family: 'JetBrains Mono', monospace; }
 
   /* ─── HERO ─── */
-  .hero {
-    background: linear-gradient(155deg, var(--verde-bosque) 0%, #0D2E1A 40%, #1B3A2A 70%, #0A2218 100%);
-    position: relative; overflow: hidden; padding: 0;
-  }
-  .hero-bg-art {
-    position: absolute; inset: 0; opacity: 0.07;
-    background-image: radial-gradient(circle at 20% 50%, #4CAF50 0%, transparent 50%), radial-gradient(circle at 80% 20%, #81C784 0%, transparent 40%);
-  }
-  .hero-inner {
-    position: relative; z-index: 2; max-width: 1200px; margin: 0 auto;
-    padding: 72px 40px 56px; display: grid; grid-template-columns: 1fr auto; gap: 40px; align-items: end;
-  }
-  .hero-tag {
-    display: inline-flex; align-items: center; gap: 8px;
-    background: rgba(76,175,80,0.2); border: 1px solid rgba(76,175,80,0.4);
-    border-radius: 100px; padding: 6px 16px; color: var(--verde-menta); font-size: 11px; font-weight: 600;
-    letter-spacing: 2px; text-transform: uppercase; margin-bottom: 20px;
-  }
-  h1 { font-size: clamp(36px, 5vw, 64px); font-weight: 800; color: #fff; line-height: 1.05; text-shadow: 0 2px 20px rgba(0,0,0,0.3); }
+  .hero { background: linear-gradient(155deg, var(--verde-bosque) 0%, #0D2E1A 40%, #1B3A2A 70%, #0A2218 100%); position: relative; overflow: hidden; padding: 0; }
+  .hero-bg-art { position: absolute; inset: 0; opacity: 0.07; background-image: radial-gradient(circle at 20% 50%, #4CAF50 0%, transparent 50%), radial-gradient(circle at 80% 20%, #81C784 0%, transparent 40%); }
+  .hero-inner { position: relative; z-index: 2; max-width: 1200px; margin: 0 auto; padding: 72px 40px 56px; display: grid; grid-template-columns: 1fr auto; gap: 40px; align-items: end; }
+  .hero-tag { display: inline-flex; align-items: center; gap: 8px; background: rgba(76,175,80,0.2); border: 1px solid rgba(76,175,80,0.4); border-radius: 100px; padding: 6px 16px; color: var(--verde-menta); font-size: 11px; font-weight: 600; letter-spacing: 2px; text-transform: uppercase; margin-bottom: 20px; }
+  h1 { font-size: clamp(36px, 5vw, 64px); font-weight: 800; color: #fff; line-height: 1.05; }
   h1 span { color: var(--verde-menta); }
   .hero-sub { color: rgba(255,255,255,0.7); font-size: 15px; font-style: italic; margin-top: 12px; line-height: 1.6; }
   .hero-date { color: var(--verde-menta); font-size: 12px; margin-top: 20px; letter-spacing: 1px; }
-  
   .hero-kpi-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; min-width: 260px; }
   .hero-kpi { background: rgba(255,255,255,0.07); border: 1px solid rgba(255,255,255,0.12); border-radius: 12px; padding: 16px 20px; backdrop-filter: blur(8px); }
   .hero-kpi-val { font-size: 26px; font-weight: 700; color: #fff; line-height: 1; }
@@ -69,13 +44,15 @@
   .hero-kpi.accent { background: rgba(76,175,80,0.25); border-color: rgba(76,175,80,0.4); }
   .hero-kpi.accent .hero-kpi-val { color: var(--verde-menta); }
 
-  /* ─── TOGGLE Y ALERTAS ─── */
+  /* ─── TOOLBAR (TOGGLE Y AÑO) ─── */
   .toolbar-strip { background: #fff; border-bottom: 1px solid #E0E0E0; padding: 14px 40px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 16px; }
+  .toolbar-left { display: flex; align-items: center; gap: 32px; flex-wrap: wrap; }
   .toggle-group { display: flex; align-items: center; gap: 10px; }
   .toggle-lbl { font-size: 13px; font-weight: 600; color: var(--gris-text); }
-  .toggle-btn { padding: 6px 16px; border: 1px solid var(--verde-claro); background: #fff; color: var(--verde-bosque); border-radius: 20px; cursor: pointer; font-family: 'Inter', sans-serif; font-size: 12px; font-weight: 600; transition: all 0.2s; }
+  .toggle-btn { padding: 6px 16px; border: 1px solid var(--verde-claro); background: #fff; color: var(--verde-bosque); border-radius: 20px; cursor: pointer; font-family: 'Inter', sans-serif; font-size: 12px; font-weight: 600; transition: all 0.2s; outline: none; }
   .toggle-btn:hover { background: var(--verde-hielo); }
   .toggle-btn.active { background: var(--verde-claro); color: #fff; }
+  select.toggle-btn { padding: 5px 30px 5px 16px; appearance: auto; }
   
   .alert-strip { background: #5C2E2E; color: #F9ECEC; padding: 12px 40px; font-size: 13px; font-weight: 600; display: flex; align-items: center; gap: 12px; transition: background 0.3s; }
 
@@ -103,7 +80,6 @@
   .chart-card { background: #fff; border-radius: 16px; box-shadow: 0 4px 24px rgba(0,0,0,0.06); border: 1px solid rgba(0,0,0,0.05); }
   .chart-card-header { padding: 20px 24px 0; display: flex; justify-content: space-between; align-items: flex-start; }
   .chart-card-title { font-size: 14px; font-weight: 600; color: var(--verde-bosque); text-transform: uppercase; letter-spacing: 1px; }
-  .chart-card-sub { font-size: 12px; color: var(--gris-light); margin-top: 3px; }
   .chart-body { padding: 16px 24px 20px; }
   .chart-wrap { position: relative; height: 260px; width: 100%; }
   .chart-wrap-tall { height: 320px; }
@@ -117,7 +93,6 @@
   tr:nth-child(even) td { background: var(--verde-hielo); }
   .pill { display: inline-block; padding: 4px 10px; border-radius: 100px; font-size: 11px; font-weight: 600; }
   .pill-ej { background: #DCEDC8; color: #33691E; }
-  
   .barrio-bar-item { margin-bottom: 14px; }
   .barrio-bar-top { display: flex; justify-content: space-between; margin-bottom: 4px; }
   .barrio-bar-name { font-size: 13px; font-weight: 500; color: var(--gris-text); }
@@ -125,16 +100,8 @@
   .barrio-bar-track { height: 8px; background: var(--gris-papel); border-radius: 100px; overflow: hidden; }
   .barrio-bar-fill { height: 100%; background: linear-gradient(to right, var(--verde-esmeralda), var(--verde-claro)); border-radius: 100px; }
 
-  /* ─── RESPONSIVE ─── */
-  @media (max-width: 960px) {
-    .charts-grid.wide, .charts-grid { grid-template-columns: 1fr; }
-    .stats-row { grid-template-columns: repeat(3, 1fr); }
-  }
-  @media (max-width: 640px) {
-    .hero-inner { padding: 36px 16px; grid-template-columns: 1fr; }
-    .container, .toolbar-strip { padding: 16px; }
-    .stats-row { grid-template-columns: 1fr 1fr; }
-  }
+  @media (max-width: 960px) { .charts-grid.wide, .charts-grid { grid-template-columns: 1fr; } .stats-row { grid-template-columns: repeat(3, 1fr); } }
+  @media (max-width: 640px) { .hero-inner { padding: 36px 16px; grid-template-columns: 1fr; } .container, .toolbar-strip { padding: 16px; } .stats-row { grid-template-columns: 1fr 1fr; } .toolbar-left { gap: 16px; } }
 </style>
 </head>
 <body>
@@ -163,23 +130,33 @@
 </header>
 
 <div class="toolbar-strip">
-  <div class="toggle-group" id="filter-modo">
-    <span class="toggle-lbl">Modo de Análisis:</span>
-    <button class="toggle-btn active" data-modo="ups">Frentes de Obra (UPS)</button>
-    <button class="toggle-btn" data-modo="contratos">Todos los Contratos</button>
+  <div class="toolbar-left">
+    <div class="toggle-group" id="filter-modo">
+      <span class="toggle-lbl">Modo de Análisis:</span>
+      <button class="toggle-btn active" data-modo="ups">Frentes de Obra (UPS)</button>
+      <button class="toggle-btn" data-modo="contratos">Todos los Contratos</button>
+    </div>
+    <div class="toggle-group">
+      <span class="toggle-lbl">Filtrar por Año:</span>
+      <select id="select-anio" class="toggle-btn">
+        <option value="all">Todos los años</option>
+        <option value="2024">2024</option>
+        <option value="2025">2025</option>
+        <option value="2026">2026</option>
+        <option value="2027">2027</option>
+      </select>
+    </div>
   </div>
   <span style="font-size: 12px; color: var(--gris-light);">Geofiltro activo: Polígono Magenta</span>
 </div>
 
 <div class="alert-strip" id="alert-banner">
-  Procesando información geoespacial y deduplicando contratos...
+  Procesando información geoespacial y aplicando filtros...
 </div>
 
 <section class="section">
   <div class="container">
-    <div class="section-header">
-      <span class="section-num">01 —</span><h2>Estado General</h2>
-    </div>
+    <div class="section-header"><span class="section-num">01 —</span><h2>Estado General</h2></div>
     <div class="divider"></div>
     <div class="stats-row">
       <div class="stat-card">
@@ -206,15 +183,11 @@
 
     <div class="charts-grid wide">
       <div class="chart-card">
-        <div class="chart-card-header">
-          <div><div class="chart-card-title">Inversión por Secretaría</div></div>
-        </div>
+        <div class="chart-card-header"><div><div class="chart-card-title">Inversión por Secretaría</div></div></div>
         <div class="chart-body"><div class="chart-wrap"><canvas id="chartSecretaria"></canvas></div></div>
       </div>
       <div class="chart-card">
-        <div class="chart-card-header">
-          <div><div class="chart-card-title">Estado Físico</div></div>
-        </div>
+        <div class="chart-card-header"><div><div class="chart-card-title">Estado Físico</div></div></div>
         <div class="chart-body"><div class="chart-wrap chart-wrap-donut"><canvas id="chartEstado"></canvas></div></div>
       </div>
     </div>
@@ -227,15 +200,11 @@
     <div class="divider"></div>
     <div class="charts-grid">
       <div class="chart-card">
-        <div class="chart-card-header">
-          <div><div class="chart-card-title">Inversión por Tipo</div></div>
-        </div>
+        <div class="chart-card-header"><div><div class="chart-card-title">Inversión por Tipo</div></div></div>
         <div class="chart-body"><div class="chart-wrap chart-wrap-tall"><canvas id="chartTipo"></canvas></div></div>
       </div>
-      <div class="chart-card">
-        <div class="chart-card-header">
-          <div><div class="chart-card-title">Inversión por Año</div></div>
-        </div>
+      <div class="chart-card" id="card-anio">
+        <div class="chart-card-header"><div><div class="chart-card-title">Inversión por Año</div></div></div>
         <div class="chart-body"><div class="chart-wrap"><canvas id="chartAnio"></canvas></div></div>
       </div>
     </div>
@@ -248,15 +217,11 @@
     <div class="divider"></div>
     <div class="charts-grid wide">
       <div class="chart-card">
-        <div class="chart-card-header">
-          <div><div class="chart-card-title">Top 10 Barrios (Presupuesto)</div></div>
-        </div>
+        <div class="chart-card-header"><div><div class="chart-card-title">Top Barrios (Presupuesto)</div></div></div>
         <div class="chart-body"><div id="barriosBars"></div></div>
       </div>
       <div class="chart-card">
-        <div class="chart-card-header">
-          <div><div class="chart-card-title">Conteo por Barrio</div></div>
-        </div>
+        <div class="chart-card-header"><div><div class="chart-card-title">Conteo por Barrio</div></div></div>
         <div class="chart-body"><div class="chart-wrap chart-wrap-tall"><canvas id="chartBarrios"></canvas></div></div>
       </div>
     </div>
@@ -269,7 +234,7 @@
     <div class="divider"></div>
     <div class="table-wrap">
       <table>
-        <thead><tr><th>Secretaría</th><th>Tipo</th><th>Nombre</th><th>Barrio</th><th>Presupuesto</th><th>Avance</th><th>Estado</th></tr></thead>
+        <thead><tr><th>Secretaría</th><th>Tipo</th><th>Nombre</th><th>Barrio</th><th>Año</th><th>Presupuesto</th><th>Avance</th></tr></thead>
         <tbody id="proyectosTable"></tbody>
       </table>
     </div>
@@ -292,7 +257,8 @@ const COLORES = { v1:'#1B4D2E', v2:'#2E7D52', v3:'#4CAF50', v4:'#A5D6A7', ocre:'
 let globalPts = null;
 let globalPoly = null;
 let currentMode = 'ups';
-let myCharts = {}; // Para guardar y destruir gráficos al cambiar de modo
+let currentAnio = 'all'; // Filtro de Año
+let myCharts = {};
 
 function secGroup(s) {
   if (!s) return "Otras";
@@ -309,7 +275,6 @@ function renderDashboard() {
   let proyectos = [];
   let totalInversion = 0;
 
-  // Agrupadores matemáticos
   const dataSec = {}; const dataEst = {'En ejecución':0, 'En alistamiento':0, 'Terminado':0, 'Suspendido':0};
   const dataTipo = {}; const dataBarrio = {}; const barrioCount = {}; const dataAnio = {};
 
@@ -317,10 +282,16 @@ function renderDashboard() {
     globalPts.features.forEach(f => {
       if (!f.geometry || !turf.booleanPointInPolygon(f, perimetro)) return;
       const p = f.properties;
+      let yr = (p.año || '2025').toString().trim();
+      if(yr === 'null' || yr === '') yr = '2025';
+      
+      // Aplicar filtro de año interactivo
+      if(currentAnio !== 'all' && yr !== currentAnio) return;
+
       let ppto = parseFloat((p.presupuest||'0').toString().replace(/[^0-9\.,]/g, '').replace(/\.00$|,00$/, '').replace(/[\.,]/g, '')) || 0;
       proyectos.push({
         nombre: p.nombre_up, secretaria: secGroup(p.nombre_cen), estado: p.estado || 'Alistamiento',
-        tipo: p.tipo_equip || 'Otro', barrio: p.barrio_ver || 'Sin dato', avance: parseFloat(p.avance_obr)||0, presupuesto: ppto, año: p.año||'2025'
+        tipo: p.tipo_equip || 'Otro', barrio: p.barrio_ver || 'Sin dato', avance: parseFloat(p.avance_obr)||0, presupuesto: ppto, año: yr
       });
     });
   } else {
@@ -328,17 +299,31 @@ function renderDashboard() {
     globalPts.features.forEach(f => {
       if (!f.geometry || !turf.booleanPointInPolygon(f, perimetro)) return;
       const p = f.properties;
+      let yr = (p.año || '2025').toString().trim();
+      if(yr === 'null' || yr === '') yr = '2025';
+
+      // Aplicar filtro de año interactivo
+      if(currentAnio !== 'all' && yr !== currentAnio) return;
+
       let ppto = parseFloat((p.presupuest||'0').toString().replace(/[^0-9\.,]/g, '').replace(/\.00$|,00$/, '').replace(/[\.,]/g, '')) || 0;
+      
+      //Lave estrictamente física sin el año para evitar duplicar
       const key = `${p.direccion}_${f.geometry.coordinates[1]}_${f.geometry.coordinates[0]}_${p.tipo_equip}`;
       
       if (!upsMap.has(key)) {
         upsMap.set(key, {
           nombre: p.nombre_up, secretaria: secGroup(p.nombre_cen), estado: p.estado || 'Alistamiento',
-          tipo: p.tipo_equip || 'Otro', barrio: p.barrio_ver || 'Sin dato', avance: parseFloat(p.avance_obr)||0, presupuesto: ppto, año: p.año||'2025'
+          tipo: p.tipo_equip || 'Otro', barrio: p.barrio_ver || 'Sin dato', avance: parseFloat(p.avance_obr)||0, 
+          presupuesto: ppto, año: yr // Año inicial
         });
       } else {
         const u = upsMap.get(key);
-        u.presupuesto = Math.max(u.presupuesto, ppto);
+        // Si el nuevo contrato tiene un presupuesto MAYOR, actualizamos el valor y "heredamos" su año
+        if (ppto > u.presupuesto) {
+          u.presupuesto = ppto;
+          u.año = yr; // El año manda el contrato más grande
+        }
+        // El avance nos quedamos con el más alto reportado
         u.avance = Math.max(u.avance, parseFloat(p.avance_obr)||0);
       }
     });
@@ -375,31 +360,47 @@ function renderDashboard() {
   // Alerta Dinámica
   const alertStrip = document.getElementById('alert-banner');
   const pctAlist = proyectos.length ? ((dataEst['En alistamiento'] / proyectos.length) * 100).toFixed(1) : 0;
+  let txtAño = currentAnio === 'all' ? 'todos los años' : `el año ${currentAnio}`;
+  
   if(dataEst['Suspendido'] > 0) {
-    alertStrip.innerHTML = `⚠️ ALERTA: ${dataEst['Suspendido']} obras SUSPENDIDAS · ${dataEst['En alistamiento']} en alistamiento (${pctAlist}%).`;
+    alertStrip.innerHTML = `⚠️ ALERTA: ${dataEst['Suspendido']} obras SUSPENDIDAS en ${txtAño} · ${dataEst['En alistamiento']} en alistamiento (${pctAlist}%).`;
     alertStrip.style.background = '#7B3535';
   } else {
-    alertStrip.innerHTML = `✅ ${proyectos.length} ${currentMode === 'ups' ? 'frentes' : 'contratos'} analizados · ${pctAlist}% en alistamiento. No hay suspensiones.`;
+    alertStrip.innerHTML = `✅ ${proyectos.length} ${currentMode === 'ups' ? 'frentes' : 'contratos'} filtrados para ${txtAño} · ${pctAlist}% en alistamiento. No hay suspensiones.`;
     alertStrip.style.background = '#1B4D2E';
   }
 
-  // 2. Destruir gráficos viejos si existen
+  // 2. Destruir gráficos
   Object.keys(myCharts).forEach(k => { if(myCharts[k]) myCharts[k].destroy(); });
 
   // 3. Crear Gráficos Nuevos
   const cSec = Object.entries(dataSec).sort((a,b)=>b[1]-a[1]);
-  myCharts.sec = new Chart(document.getElementById('chartSecretaria'), { type: 'bar', data: { labels: cSec.map(s=>s[0]), datasets: [{ data: cSec.map(s=>s[1]/1e6), backgroundColor: [COLORES.v1, COLORES.v2, COLORES.azul, COLORES.v3, COLORES.tierra], borderRadius: 4 }] }, options: { indexAxis: 'y', plugins:{legend:{display:false}}, scales:{x:{ticks:{callback:v=>`$${v}M`}}} } });
+  if(cSec.length > 0) {
+    myCharts.sec = new Chart(document.getElementById('chartSecretaria'), { type: 'bar', data: { labels: cSec.map(s=>s[0]), datasets: [{ data: cSec.map(s=>s[1]/1e6), backgroundColor: [COLORES.v1, COLORES.v2, COLORES.azul, COLORES.v3, COLORES.tierra], borderRadius: 4 }] }, options: { indexAxis: 'y', plugins:{legend:{display:false}}, scales:{x:{ticks:{callback:v=>`$${v}M`}}} } });
+  }
 
-  myCharts.est = new Chart(document.getElementById('chartEstado'), { type: 'doughnut', data: { labels: Object.keys(dataEst), datasets: [{ data: Object.values(dataEst), backgroundColor: [COLORES.v3, COLORES.azul, COLORES.v1, COLORES.rojo] }] }, options: { cutout:'65%', plugins:{legend:{position:'bottom'}} } });
+  if(proyectos.length > 0) {
+    myCharts.est = new Chart(document.getElementById('chartEstado'), { type: 'doughnut', data: { labels: Object.keys(dataEst), datasets: [{ data: Object.values(dataEst), backgroundColor: [COLORES.v3, COLORES.azul, COLORES.v1, COLORES.rojo] }] }, options: { cutout:'65%', plugins:{legend:{position:'bottom'}} } });
+  }
 
   const cTipo = Object.entries(dataTipo).sort((a,b)=>b[1]-a[1]).slice(0,8);
-  myCharts.tipo = new Chart(document.getElementById('chartTipo'), { type: 'bar', data: { labels: cTipo.map(s=>s[0]), datasets: [{ data: cTipo.map(s=>s[1]/1e6), backgroundColor: COLORES.v4, borderRadius: 4 }] }, options: { indexAxis: 'y', plugins:{legend:{display:false}}, scales:{x:{ticks:{callback:v=>`$${v}M`}}} } });
+  if(cTipo.length > 0) {
+    myCharts.tipo = new Chart(document.getElementById('chartTipo'), { type: 'bar', data: { labels: cTipo.map(s=>s[0]), datasets: [{ data: cTipo.map(s=>s[1]/1e6), backgroundColor: COLORES.v4, borderRadius: 4 }] }, options: { indexAxis: 'y', plugins:{legend:{display:false}}, scales:{x:{ticks:{callback:v=>`$${v}M`}}} } });
+  }
 
+  // Si se filtra por un solo año, la gráfica de años no aporta mucho, pero igual la pintamos
   const cAnio = Object.entries(dataAnio).sort((a,b)=>a[0].localeCompare(b[0]));
-  myCharts.anio = new Chart(document.getElementById('chartAnio'), { type: 'bar', data: { labels: cAnio.map(s=>s[0]), datasets: [{ data: cAnio.map(s=>s[1]/1e6), backgroundColor: COLORES.v2, borderRadius: 6 }] }, options: { plugins:{legend:{display:false}}, scales:{y:{ticks:{callback:v=>`$${v}M`}}} } });
+  if(cAnio.length > 0) {
+    document.getElementById('card-anio').style.display = 'block';
+    myCharts.anio = new Chart(document.getElementById('chartAnio'), { type: 'bar', data: { labels: cAnio.map(s=>s[0]), datasets: [{ data: cAnio.map(s=>s[1]/1e6), backgroundColor: COLORES.v2, borderRadius: 6 }] }, options: { plugins:{legend:{display:false}}, scales:{y:{ticks:{callback:v=>`$${v}M`}}} } });
+  } else {
+    document.getElementById('card-anio').style.display = 'none';
+  }
 
   const cBCount = Object.entries(barrioCount).sort((a,b)=>b[1]-a[1]).slice(0,10);
-  myCharts.bCount = new Chart(document.getElementById('chartBarrios'), { type: 'bar', data: { labels: cBCount.map(s=>s[0]), datasets: [{ data: cBCount.map(s=>s[1]), backgroundColor: COLORES.v2, borderRadius: 4 }] }, options: { indexAxis: 'y', plugins:{legend:{display:false}} } });
+  if(cBCount.length > 0) {
+    myCharts.bCount = new Chart(document.getElementById('chartBarrios'), { type: 'bar', data: { labels: cBCount.map(s=>s[0]), datasets: [{ data: cBCount.map(s=>s[1]), backgroundColor: COLORES.v2, borderRadius: 4 }] }, options: { indexAxis: 'y', plugins:{legend:{display:false}} } });
+  }
 
   // HTML Custom Barrios
   const bPpto = Object.entries(dataBarrio).sort((a,b)=>b[1]-a[1]).slice(0,10);
@@ -409,15 +410,22 @@ function renderDashboard() {
     bPpto.forEach(b => {
       htmlB += `<div class="barrio-bar-item"><div class="barrio-bar-top"><span class="barrio-bar-name">${b[0]}</span><span class="barrio-bar-val">$${Math.round(b[1]/1e6).toLocaleString('es-CO')}M</span></div><div class="barrio-bar-track"><div class="barrio-bar-fill" style="width:${(b[1]/maxB*100)}%"></div></div></div>`;
     });
+  } else {
+    htmlB = '<p style="font-size:13px; color:#90A4AE;">No hay datos para este año</p>';
   }
   document.getElementById('barriosBars').innerHTML = htmlB;
 
   // Tabla Ejecución
   const tb = document.getElementById('proyectosTable');
   tb.innerHTML = '';
-  proyectos.filter(p=>p.estado.toLowerCase().includes('ejecuc') && p.presupuesto>0).sort((a,b)=>b.presupuesto-a.presupuesto).slice(0,12).forEach(p => {
-    tb.innerHTML += `<tr><td><strong>${p.secretaria}</strong></td><td>${p.tipo}</td><td>${p.nombre}</td><td>${p.barrio}</td><td><strong>$${Math.round(p.presupuesto/1e6).toLocaleString('es-CO')}M</strong></td><td><span style="color:#2E7D52; font-weight:600;">${p.avance}%</span></td><td><span class="pill pill-ej">En ejecución</span></td></tr>`;
-  });
+  const ejecucion = proyectos.filter(p=>p.estado.toLowerCase().includes('ejecuc') && p.presupuesto>0);
+  if(ejecucion.length > 0) {
+    ejecucion.sort((a,b)=>b.presupuesto-a.presupuesto).slice(0,12).forEach(p => {
+      tb.innerHTML += `<tr><td><strong>${p.secretaria}</strong></td><td>${p.tipo}</td><td>${p.nombre}</td><td>${p.barrio}</td><td>${p.año}</td><td><strong>$${Math.round(p.presupuesto/1e6).toLocaleString('es-CO')}M</strong></td><td><span style="color:#2E7D52; font-weight:600;">${p.avance}%</span></td></tr>`;
+    });
+  } else {
+    tb.innerHTML = `<tr><td colspan="7" style="text-align:center; padding: 20px;">No hay proyectos en ejecución reportados para esta selección.</td></tr>`;
+  }
 }
 
 // Inicialización
@@ -427,14 +435,20 @@ async function initData() {
   renderDashboard();
 }
 
-// Listeners Toggle
-document.querySelectorAll('.toggle-btn').forEach(btn => {
+// Listeners Toggle Modo
+document.querySelectorAll('.toggle-btn[data-modo]').forEach(btn => {
   btn.addEventListener('click', e => {
-    document.querySelectorAll('.toggle-btn').forEach(b => b.classList.remove('active'));
+    document.querySelectorAll('.toggle-btn[data-modo]').forEach(b => b.classList.remove('active'));
     e.target.classList.add('active');
     currentMode = e.target.dataset.modo;
     renderDashboard();
   });
+});
+
+// Listener Selector Año
+document.getElementById('select-anio').addEventListener('change', (e) => {
+  currentAnio = e.target.value;
+  renderDashboard();
 });
 
 initData();
