@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Pulmón del Oriente · Informe de Inversión · Cali 2024–2027</title>
-<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=IBM+Plex+Sans:ital,wght@0,300;0,400;0,600;1,300&family=IBM+Plex+Mono:wght@400;600&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Montserrat:wght@600;700;800&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
 <style>
   :root {
     --verde-bosque:   #1B4D2E;
@@ -30,9 +30,15 @@
   
   body {
     background: var(--gris-papel);
-    font-family: 'IBM Plex Sans', sans-serif;
+    font-family: 'Inter', sans-serif; /* <-- Letra limpia para lectura */
     color: var(--negro);
     min-height: 100vh;
+  }
+  h1, h2, h3, .hero-kpi-val, .stat-num { 
+    font-family: 'Montserrat', sans-serif; /* <-- Letra potente para títulos y KPIs */
+  }
+  .section-num, .hero-date, .chart-badge, .barrio-bar-val, .ring-pct { 
+    font-family: 'JetBrains Mono', monospace; /* <-- Letra técnica para códigos */
   }
 
   /* ─── HERO ─── */
@@ -266,15 +272,7 @@
   }
   .footer strong { color: rgba(255,255,255,0.9); }
 
-  /* ─── PROGRESS RING ─── */
-  .progress-rings { display: flex; gap: 20px; flex-wrap: wrap; justify-content: center; padding: 16px 0; }
-  .ring-item { text-align: center; }
-  .ring-label { font-size: 11px; color: var(--gris-light); margin-top: 6px; text-transform: uppercase; letter-spacing: 0.5px; }
-  .ring-pct { font-family: 'IBM Plex Mono', monospace; font-size: 13px; font-weight: 600; color: var(--verde-bosque); }
-
   /* ─── RESPONSIVE ─── */
-
-  /* Tablet: ≤ 960px */
   @media (max-width: 960px) {
     .hero-inner { grid-template-columns: 1fr; gap: 28px; }
     .hero-kpi-grid { grid-template-columns: repeat(4, 1fr); min-width: unset; width: 100%; }
@@ -282,47 +280,29 @@
     .charts-grid.three { grid-template-columns: 1fr 1fr; }
     .stats-row { grid-template-columns: repeat(3, 1fr); }
     .analysis-grid { grid-template-columns: 1fr; }
-    .reco-grid { grid-template-columns: 1fr 1fr !important; }
   }
-
-  /* Mobile: ≤ 640px */
   @media (max-width: 640px) {
     .hero-inner { padding: 36px 16px 28px; }
     .container  { padding: 0 16px; }
     .section    { padding: 32px 0; }
-
     .hero-kpi-grid { grid-template-columns: 1fr 1fr; gap: 8px; }
     .hero-kpi      { padding: 12px 14px; }
     .hero-kpi-val  { font-size: 20px; }
-
     .alert-strip   { padding: 10px 16px; font-size: 11px; flex-wrap: wrap; gap: 6px; }
-
-    .charts-grid,
-    .charts-grid.three,
-    .charts-grid.wide { grid-template-columns: 1fr; }
-
+    .charts-grid, .charts-grid.three, .charts-grid.wide { grid-template-columns: 1fr; }
     .stats-row { grid-template-columns: 1fr 1fr; gap: 10px; }
     .stat-card { padding: 16px 14px; }
     .stat-num  { font-size: 26px; }
-
-    .analysis-grid { grid-template-columns: 1fr; }
-    .reco-grid     { grid-template-columns: 1fr !important; }
-
     .table-wrap  { overflow-x: auto; -webkit-overflow-scrolling: touch; }
     table        { min-width: 600px; font-size: 11px; }
     th, td       { padding: 8px 10px; }
-
     h2 { font-size: 20px; }
     .section-header { gap: 8px; flex-wrap: wrap; }
-
     .footer { padding: 24px 16px; font-size: 10px; }
     .analysis-card { padding: 20px 16px; }
     .analysis-card h3 { font-size: 15px; }
-
     .chart-card-header { flex-direction: column; gap: 6px; }
   }
-
-  /* Extra small: ≤ 400px */
   @media (max-width: 400px) {
     .stats-row { grid-template-columns: 1fr; }
     .hero-kpi-grid { grid-template-columns: 1fr 1fr; }
@@ -349,7 +329,6 @@
 </head>
 <body>
 
-<!-- HERO -->
 <header class="hero">
   <div class="hero-bg-art"></div>
   <div class="hero-lines"></div>
@@ -358,20 +337,16 @@
       <div class="hero-tag">Distrito de Aguablanca · Cali, Colombia</div>
       <h1>Pulmón del<br><span>Oriente</span></h1>
       <p class="hero-sub">Informe de Inversión Pública <br>Municipio de Santiago de Cali · Pulmon del oriente</p>
-      <p class="hero-date">// ACTUALIZACIÓN: 21 FEBRERO 2026 · FUENTE: SECRETARÍAS DISTRITALES</p>
+      <p class="hero-date">// ACTUALIZACIÓN: DINÁMICA GEOJSON · FUENTE: SECRETARÍAS DISTRITALES</p>
     </div>
     <div class="hero-kpi-grid">
       <div class="hero-kpi accent">
-        <div class="hero-kpi-val">325</div>
+        <div class="hero-kpi-val">...</div>
         <div class="hero-kpi-lbl">Proyectos Totales</div>
       </div>
       <div class="hero-kpi">
-        <div class="hero-kpi-val">$81.7B</div>
+        <div class="hero-kpi-val">...</div>
         <div class="hero-kpi-lbl">Inversión COP</div>
-      </div>
-      <div class="hero-kpi">
-        <div class="hero-kpi-val">9</div>
-        <div class="hero-kpi-lbl">Secretarías</div>
       </div>
       <div class="hero-kpi">
         <div class="hero-kpi-val">2027</div>
@@ -381,13 +356,10 @@
   </div>
 </header>
 
-<!-- ALERT STRIP -->
 <div class="alert-strip">
-  ALERTA: 4 proyectos SUSPENDIDOS por $538M COP · 281 proyectos (86.5%) en fase de alistamiento sin iniciar obras
-  <span>· Principales afectados: DAGMA parques, Sector Los Robles</span>
+  ALERTA DINÁMICA: Procesando la información geoespacial y calculando el estado actual de los proyectos en el Área de Influencia...
 </div>
 
-<!-- SECTION 1: ESTADO GENERAL -->
 <section class="section">
   <div class="container">
     <div class="section-header">
@@ -396,44 +368,41 @@
     </div>
     <div class="divider"></div>
 
-    <!-- KPI Cards -->
     <div class="stats-row">
       <div class="stat-card">
-        <div class="stat-num">325</div>
+        <div class="stat-num">...</div>
         <div class="stat-lbl">Total Proyectos</div>
         <div class="stat-sub">Inventario completo zona Pulmón del Oriente</div>
       </div>
       <div class="stat-card alistamiento">
-        <div class="stat-num">281</div>
+        <div class="stat-num">...</div>
         <div class="stat-lbl">En Alistamiento</div>
-        <div class="stat-sub">86.5% del total — pendientes de iniciar</div>
+        <div class="stat-sub">Pendientes de iniciar obras constructivas</div>
       </div>
       <div class="stat-card ejecucion">
-        <div class="stat-num">29</div>
+        <div class="stat-num">...</div>
         <div class="stat-lbl">En Ejecución</div>
-        <div class="stat-sub">8.9% — obras actualmente en marcha</div>
+        <div class="stat-sub">Obras y proyectos actualmente en marcha</div>
       </div>
       <div class="stat-card terminado">
-        <div class="stat-num">9</div>
+        <div class="stat-num">...</div>
         <div class="stat-lbl">Terminados</div>
-        <div class="stat-sub">2.8% — obras completadas</div>
+        <div class="stat-sub">Proyectos con obra civil finalizada</div>
       </div>
       <div class="stat-card alerta">
-        <div class="stat-num">4</div>
+        <div class="stat-num">...</div>
         <div class="stat-lbl">Suspendidos</div>
-        <div class="stat-sub">$538M COP en posible riesgo · Parques DAGMA</div>
+        <div class="stat-sub">Obras detenidas temporal o indefinidamente</div>
       </div>
     </div>
 
-    <!-- Charts Row -->
     <div class="charts-grid wide">
       <div class="chart-card">
         <div class="chart-card-header">
           <div>
             <div class="chart-card-title">Inversión por Secretaría</div>
-            <div class="chart-card-sub">Distribución del presupuesto total $81.7B COP</div>
+            <div class="chart-card-sub">Distribución del presupuesto consolidado</div>
           </div>
-          <span class="chart-badge">9 entidades</span>
         </div>
         <div class="chart-body">
           <div class="chart-wrap"><canvas id="chartSecretaria"></canvas></div>
@@ -445,7 +414,6 @@
             <div class="chart-card-title">Estado de Proyectos</div>
             <div class="chart-card-sub">Distribución por número de obras</div>
           </div>
-          <span class="chart-badge">325 obras</span>
         </div>
         <div class="chart-body chart-body-center">
           <div class="chart-wrap chart-wrap-donut"><canvas id="chartEstado"></canvas></div>
@@ -455,7 +423,6 @@
   </div>
 </section>
 
-<!-- SECTION 2: TIPOS DE EQUIPAMIENTO -->
 <section class="section" style="padding-top:0">
   <div class="container">
     <div class="section-header">
@@ -469,7 +436,7 @@
         <div class="chart-card-header">
           <div>
             <div class="chart-card-title">Inversión por Tipo de Equipamiento</div>
-            <div class="chart-card-sub">Miles de millones COP</div>
+            <div class="chart-card-sub">Millones de COP invertidos por categoría</div>
           </div>
         </div>
         <div class="chart-body">
@@ -480,7 +447,7 @@
         <div class="chart-card-header">
           <div>
             <div class="chart-card-title">Inversión Anualizada</div>
-            <div class="chart-card-sub">COP por año de ejecución 2024–2027</div>
+            <div class="chart-card-sub">Presupuesto asignado por año de reporte</div>
           </div>
         </div>
         <div class="chart-body">
@@ -491,7 +458,6 @@
   </div>
 </section>
 
-<!-- SECTION 3: BARRIOS -->
 <section class="section" style="padding-top:0">
   <div class="container">
     <div class="section-header">
@@ -505,7 +471,7 @@
         <div class="chart-card-header">
           <div>
             <div class="chart-card-title">Top 10 Barrios · Mayor Inversión</div>
-            <div class="chart-card-sub">Millones de COP asignados</div>
+            <div class="chart-card-sub">Millones de COP asignados al sector</div>
           </div>
         </div>
         <div class="chart-body" style="padding-top:20px;">
@@ -516,7 +482,7 @@
         <div class="chart-card-header">
           <div>
             <div class="chart-card-title">Proyectos por Barrio</div>
-            <div class="chart-card-sub">Número de obras identificadas</div>
+            <div class="chart-card-sub">Número de obras y contratos identificados</div>
           </div>
         </div>
         <div class="chart-body">
@@ -527,7 +493,6 @@
   </div>
 </section>
 
-<!-- SECTION 4: TABLA DETALLE -->
 <section class="section" style="padding-top:0">
   <div class="container">
     <div class="section-header">
@@ -555,7 +520,6 @@
   </div>
 </section>
 
-<!-- SECTION 5: ANÁLISIS -->
 <section class="section" style="padding-top:0">
   <div class="container">
     <div class="section-header">
@@ -567,58 +531,60 @@
     <div class="analysis-grid">
       <div class="analysis-card">
         <h3>Contexto del Pulmón del Oriente</h3>
-        <p>El Pulmón del Oriente es un corredor ambiental y de desarrollo social.</p>
-        <!-- <div class="highlight-box">
-          <strong>Inversión total confirmada:</strong> $81,732,194,379 pesos (≈ $81.7 mil millones COP) distribuidos en 325 proyectos activos de 9 dependencias distritales.
-        </div> -->
-        <p>El 97% de los proyectos corresponde a inversión social directa: vivienda, educación, salud y recreación. Esto refleja una estrategia de transformación territorial integral que va más allá de la función ecológica.</p>
+        <p>El Pulmón del Oriente es un corredor ambiental y de desarrollo social estratégico para el oriente de Cali.</p>
+        <p>La gran mayoría de los proyectos corresponden a inversión social directa: vivienda, educación, salud y recreación. Esto refleja una estrategia de transformación territorial integral que va más allá de la recuperación ecológica.</p>
       </div>
 
       <div class="analysis-card">
-        <h3>Alertas Críticas</h3>
+        <h3>Alertas Generales</h3>
         <div class="alert-box">
-          <strong>Proyectos DAGMA suspendidos:</strong> Los 4 proyectos de parques y zonas verdes de DAGMA están suspendidos, incluyendo Parque Los Robles, Zona Verde Poblado I y Parque Marroquín II. Esto representa una paradoja: el Pulmón del Oriente avanza sin inversión ambiental activa.
+          <strong>Proyectos Suspendidos:</strong> Los proyectos de parques y zonas verdes que se encuentren suspendidos representan una paradoja para el avance integral del corredor ambiental.
         </div>
         <div class="warn-box">
-          <strong>86.5% sin iniciar obras:</strong> 281 de 325 proyectos están en fase de "alistamiento". Si no se aceleran los procesos contractuales en 2026, existe riesgo de rezago en el Plan de Desarrollo.
-        </div>
-        <div class="alert-box">
-          <strong>IPS Charco Azul al 4%:</strong> La IPS que atiende el sector más crítico del Pulmón muestra el avance más bajo entre las obras en ejecución, pese a ser zona de alta vulnerabilidad social.
-        </div>
-      </div>
-
-      <div class="analysis-card">
-        <h3>Proyecto Estrella: Ciudadela Pondaje–Charco Azul</h3>
-        <p>El macroproyecto de mayor envergadura concentra <strong>$40 mil millones COP</strong> en vivienda nueva para familias relocalizadas del área de riesgo del Pondaje y Charco Azul. Con 47 proyectos de vivienda nueva en múltiples etapas (1B y III) entre 2025 y 2027, es el principal motor de transformación del Pulmón.</p>
-        <div class="highlight-box">
-          La gerencia técnica del proyecto (<strong>100% terminada</strong>) y los estudios del Bulevar Figueroa (<strong>82% avance</strong>) son señales positivas de preparación para la gran fase constructiva 2025–2026.
-        </div>
-        <p>El proyecto I.E. El Diamante ($18.5 mil millones, 97% avance) será la primera gran obra escolar terminada en la zona, con capacidad para reducir el déficit educativo de Charco Azul y sectores vecinos.</p>
-      </div>
-
-      <div class="analysis-card">
-        <h3>Lectura por Sectores</h3>
-        <p><strong>Vivienda (55.1%):</strong> Lidera con $45.1B COP, de los cuales la vivienda nueva representa la mayor parte. Los 211 subsidios de mejoramiento son cobertura masiva pero con impacto individual moderado.</p>
-        <p><strong>Educación (29.6%):</strong> $24.2B en 18 IEs. Fuerte concentración en I.E. El Diamante. Cinco instituciones más comenzarán 2026 con presupuestos similares.</p>
-        <p><strong>Salud (8.0%):</strong> $6.5B en red IPS. La cadena de 13 centros de salud creará cobertura primaria histórica para el oriente.</p>
-        <div class="warn-box">
-          <strong>Recreación y medio ambiente (7.3%)</strong> reciben el menor porcentaje proporcional de inversión a pesar de ser el componente identitario del Pulmón del Oriente.
+          <strong>Fase de Alistamiento:</strong> Una gran porción de la cartera se mantiene en fase inicial. Si no se aceleran los procesos contractuales, existe riesgo de rezago en la ejecución del Plan de Desarrollo.
         </div>
       </div>
     </div>
   </div>
 </section>
 
-<!-- FOOTER -->
 <footer class="footer">
   <strong>Pulmón del Oriente · Cali · Informe de Inversión Pública</strong><br>
   Fuente: Unidad de Proyectos (UP) · Secretarías Distritales · Municipio de Santiago de Cali<br>
-  Corte de datos: 21 de febrero de 2026 · Total proyectos filtrados: 325
+  Cálculo: Generado dinámicamente mediante análisis espacial del perímetro.
 </footer>
 
+<nav class="page-switcher" aria-label="Navegación entre vistas">
+  <a class="switcher-home" href="../index.html" title="Inicio">
+    <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/></svg>
+  </a>
+  <div class="switcher-divider"></div>
+  <a class="switcher-btn active" href="pulmon_oriente_informe-v2.html" aria-current="page">
+    <svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor"><path d="M9 17H7v-7h2v7zm4 0h-2V7h2v10zm4 0h-2v-4h2v4zm2.5 2.1H4.5V5h15v14.1zm0-16.1h-15C3.6 3 3 3.6 3 4.5v15C3 20.4 3.6 21 4.5 21h15c.9 0 1.5-.6 1.5-1.5v-15C21 3.6 20.4 3 19.5 3z"/></svg>
+    Informe
+  </a>
+  <a class="switcher-btn" href="pulmon_oriente_mapa_v2.html">
+    <svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor"><path d="M20.5 3l-.16.03L15 5.1 9 3 3.36 4.9c-.21.07-.36.25-.36.48V20.5c0 .28.22.5.5.5l.16-.03L9 18.9l6 2.1 5.64-1.9c.21-.07.36-.25.36-.48V3.5c0-.28-.22-.5-.5-.5zM15 19l-6-2.11V5l6 2.11V19z"/></svg>
+    Mapa
+  </a>
+</nav>
+
+<style>
+.page-switcher { position: fixed; bottom: 24px; left: 50%; transform: translateX(-50%); z-index: 2000; display: flex; align-items: center; gap: 0; background: rgba(27, 77, 46, 0.96); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); border-radius: 40px; padding: 6px 10px; box-shadow: 0 6px 28px rgba(0,0,0,0.28), 0 1px 4px rgba(0,0,0,0.15); border: 1px solid rgba(76, 175, 119, 0.25); }
+.switcher-home { display: flex; align-items: center; justify-content: center; width: 30px; height: 30px; border-radius: 50%; color: rgba(255,255,255,0.65); text-decoration: none; transition: all 0.2s; flex-shrink: 0; }
+.switcher-home:hover { color: #fff; background: rgba(255,255,255,0.12); }
+.switcher-divider { width: 1px; height: 20px; background: rgba(255,255,255,0.18); margin: 0 6px; flex-shrink: 0; }
+.switcher-btn { display: flex; align-items: center; gap: 5px; padding: 6px 14px; border-radius: 30px; font-family: 'IBM Plex Sans', sans-serif; font-size: 12px; font-weight: 500; color: rgba(255,255,255,0.72); text-decoration: none; letter-spacing: 0.03em; transition: all 0.2s; white-space: nowrap; }
+.switcher-btn:hover { color: #fff; background: rgba(255,255,255,0.1); }
+.switcher-btn.active { background: #4CAF77; color: #1B4D2E; font-weight: 600; }
+.switcher-btn.active:hover { background: #5DC88A; }
+@media (max-width: 480px) { .page-switcher { bottom: 14px; padding: 5px 8px; } .switcher-btn { padding: 5px 10px; font-size: 11px; } }
+</style>
+
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.0/chart.umd.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@turf/turf@6/turf.min.js"></script>
 <script>
-Chart.defaults.font.family = "'IBM Plex Sans', sans-serif";
+Chart.defaults.font.family = "'Inter', sans-serif";
 Chart.defaults.color = '#37474F';
 
 const COLORES = {
@@ -636,324 +602,269 @@ const COLORES = {
   lila_cl:         '#CE93D8',
 };
 
-// ── 1. SECRETARÍAS ──────────────────────────────────────────────
-const secData = {
-  labels: [
-    'Vivienda y Hábitat',
-    'Educación',
-    'Salud Pública',
-    'Deporte y Recreación',
-    'Seguridad y Justicia',
-    'DAGMA',
-    'Bienestar Social',
-    'Desarrollo Territorial',
-    'Cultura',
-  ],
-  valores: [45101, 24164, 6530, 4058, 710, 538, 324, 283, 24], // millones
-};
+function secGroup(s) {
+  if (!s) return "Otras";
+  if (s.includes("Vivienda") || s.includes("Hábitat")) return "Vivienda y Hábitat";
+  if (s.includes("Educación") || s.includes("Educacion")) return "Educación";
+  if (s.includes("Salud")) return "Salud Pública";
+  if (s.includes("Deporte") || s.includes("Recreación")) return "Deporte y Recreación";
+  if (s.includes("Cultura")) return "Cultura";
+  if (s.includes("Seguridad") || s.includes("Justicia")) return "Seguridad y Justicia";
+  if (s.includes("Medio Ambiente") || s.includes("DAGMA")) return "DAGMA";
+  return "Otras";
+}
 
-new Chart(document.getElementById('chartSecretaria'), {
-  type: 'bar',
-  data: {
-    labels: secData.labels,
-    datasets: [{
-      label: 'Inversión (Millones COP)',
-      data: secData.valores,
-      backgroundColor: [
-        COLORES.verde_bosque, COLORES.verde_esmeralda, COLORES.azul,
-        COLORES.verde_claro, COLORES.tierra, COLORES.rojo,
-        COLORES.lila, COLORES.ocre, COLORES.verde_menta
-      ],
-      borderRadius: 6,
-      borderSkipped: false,
-    }]
-  },
-  options: {
-    indexAxis: 'y',
-    responsive: true, maintainAspectRatio: false,
-    plugins: {
-      legend: { display: false },
-      tooltip: {
-        callbacks: {
-          label: ctx => ` $${ctx.parsed.x.toLocaleString('es-CO')}M COP`
+async function initDynamicDashboard() {
+  try {
+    const [ptsRes, polyRes] = await Promise.all([
+      fetch('../Total_secretarias.geojson'),
+      fetch('../poligonos.geojson')
+    ]);
+    const ptsData = await ptsRes.json();
+    const polyData = await polyRes.json();
+
+    const perimetro = polyData.features.find(f => f.properties.Name === 'Perimetro Proyecto') || polyData.features[0];
+    const proyectos = [];
+    let totalInversion = 0;
+
+    // Agrupadores para las gráficas
+    const dataSec = {};
+    const dataEst = {'En ejecución':0, 'En alistamiento':0, 'Terminado':0, 'Suspendido':0};
+    const dataTipo = {};
+    const dataBarrio = {};
+    const barrioCount = {};
+    const dataAnio = {};
+
+    // 1. Filtrado Espacial Estricto
+    ptsData.features.forEach(f => {
+      if (!f.geometry || !turf.booleanPointInPolygon(f, perimetro)) return;
+      
+      const props = f.properties;
+      let pptoStr = (props.presupuest || '0').toString().trim();
+      pptoStr = pptoStr.replace(/[^0-9\.,]/g, ''); 
+      if (pptoStr.endsWith('.00') || pptoStr.endsWith(',00')) pptoStr = pptoStr.slice(0, -3);
+      const ppto = parseFloat(pptoStr.replace(/[\.,]/g, '')) || 0;
+
+      const secReal = props.nombre_cen || 'Otra';
+      const secGrp = secGroup(secReal);
+      
+      let estOriginal = props.estado || 'Alistamiento';
+      let estClean = estOriginal.toLowerCase();
+      let estKey = 'En alistamiento';
+      if(estClean.includes('ejecuc')) estKey = 'En ejecución';
+      else if(estClean.includes('terminad')) estKey = 'Terminado';
+      else if(estClean.includes('suspendid')) estKey = 'Suspendido';
+
+      const tipo = props.tipo_equip || 'Otro';
+      const barrio = props.barrio_ver || 'Sin dato';
+      const avance = parseFloat(props.avance_obr) || 0;
+      
+      let yr = (props.año || '2025').toString().trim();
+      if(yr === 'null' || yr === '') yr = '2025';
+
+      proyectos.push({
+        nombre: props.nombre_up || 'Sin Nombre', 
+        secretaria: secGrp,
+        estadoKey: estKey,
+        estadoOriginal: estOriginal,
+        tipo: tipo, 
+        barrio: barrio,
+        avance: avance, 
+        presupuesto: ppto, 
+        año: yr
+      });
+      
+      totalInversion += ppto;
+
+      // Sumarizadores
+      dataSec[secGrp] = (dataSec[secGrp] || 0) + ppto;
+      dataTipo[tipo] = (dataTipo[tipo] || 0) + ppto;
+      dataBarrio[barrio] = (dataBarrio[barrio] || 0) + ppto;
+      barrioCount[barrio] = (barrioCount[barrio] || 0) + 1;
+      dataAnio[yr] = (dataAnio[yr] || 0) + ppto;
+      dataEst[estKey]++;
+    });
+
+    // 2. Actualizar KPIs del DOM
+    const heroVals = document.querySelectorAll('.hero-kpi-val');
+    if(heroVals.length > 1) {
+      heroVals[0].innerText = proyectos.length;
+      heroVals[1].innerText = '$' + Math.round(totalInversion / 1e6).toLocaleString('es-CO') + 'M';
+    }
+
+    const statNums = document.querySelectorAll('.stat-num');
+    if(statNums.length > 4) {
+      statNums[0].innerText = proyectos.length;
+      statNums[1].innerText = dataEst['En alistamiento'];
+      statNums[2].innerText = dataEst['En ejecución'];
+      statNums[3].innerText = dataEst['Terminado'];
+      statNums[4].innerText = dataEst['Suspendido'];
+    }
+
+    // 2.5 Actualizar la Alerta Dinámica
+    const alertStrip = document.querySelector('.alert-strip');
+    if (alertStrip) {
+      const suspCount = dataEst['Suspendido'] || 0;
+      const alistCount = dataEst['En alistamiento'] || 0;
+      const alistPct = proyectos.length > 0 ? ((alistCount / proyectos.length) * 100).toFixed(1) : 0;
+      
+      if (suspCount > 0) {
+        alertStrip.innerHTML = `⚠️ ALERTA: <strong>${suspCount} proyectos SUSPENDIDOS</strong> · ${alistCount} proyectos (${alistPct}%) en fase de alistamiento sin iniciar obras.`;
+        alertStrip.style.background = '#5C2E2E';
+      } else {
+        alertStrip.innerHTML = `✅ DATOS PROCESADOS: ${proyectos.length} proyectos localizados · ${alistCount} en alistamiento (${alistPct}%). No se reportan obras suspendidas.`;
+        alertStrip.style.background = '#1B4D2E'; // Se pone verde si no hay suspendidos
+      }
+    }
+
+    // 3. Renderizar Gráficas Dinámicas
+    
+    // Gráfica Secretarías
+    const secSorted = Object.entries(dataSec).sort((a,b) => b[1]-a[1]);
+    new Chart(document.getElementById('chartSecretaria'), {
+      type: 'bar',
+      data: {
+        labels: secSorted.map(s => s[0]),
+        datasets: [{
+          data: secSorted.map(s => Math.round(s[1]/1e6)),
+          backgroundColor: [COLORES.verde_bosque, COLORES.verde_esmeralda, COLORES.azul, COLORES.verde_claro, COLORES.tierra, COLORES.rojo, COLORES.lila, COLORES.ocre, COLORES.verde_menta],
+          borderRadius: 6
+        }]
+      },
+      options: {
+        indexAxis: 'y', responsive: true, maintainAspectRatio: false,
+        plugins: { legend: { display: false }, tooltip: { callbacks: { label: ctx => ` $${ctx.parsed.x.toLocaleString('es-CO')}M COP` } } },
+        scales: { x: { ticks: { callback: v => `$${v}M` } }, y: { grid: { display: false }, ticks: { font: { size: 11 } } } }
+      }
+    });
+
+    // Gráfica Estado (Donut)
+    new Chart(document.getElementById('chartEstado'), {
+      type: 'doughnut',
+      data: {
+        labels: Object.keys(dataEst),
+        datasets: [{
+          data: Object.values(dataEst),
+          backgroundColor: [COLORES.verde_claro, COLORES.azul, COLORES.verde_bosque, COLORES.rojo],
+          borderWidth: 2, borderColor: '#fff'
+        }]
+      },
+      options: {
+        responsive: true, maintainAspectRatio: false, cutout: '62%',
+        plugins: {
+          legend: { position: 'bottom', labels: { padding: 12, font: { size: 11 } } },
+          tooltip: { callbacks: { label: ctx => ` ${ctx.label}: ${ctx.parsed} (${(ctx.parsed/proyectos.length*100).toFixed(1)}%)` } }
         }
       }
-    },
-    scales: {
-      x: {
-        grid: { color: 'rgba(0,0,0,0.04)' },
-        ticks: { callback: v => `$${v.toLocaleString('es-CO')}M` }
-      },
-      y: { grid: { display: false }, ticks: { font: { size: 11 } } }
-    }
-  }
-});
+    });
 
-// ── 2. ESTADO DONUT ──────────────────────────────────────────────
-new Chart(document.getElementById('chartEstado'), {
-  type: 'doughnut',
-  data: {
-    labels: ['En alistamiento', 'En ejecución', 'Terminado', 'Suspendido', 'En liquidación'],
-    datasets: [{
-      data: [281, 29, 9, 4, 2],
-      backgroundColor: [COLORES.azul, COLORES.verde_claro, COLORES.verde_bosque, COLORES.rojo, COLORES.ocre],
-      borderWidth: 2, borderColor: '#fff',
-      hoverOffset: 8
-    }]
-  },
-  options: {
-    responsive: true, maintainAspectRatio: false,
-    cutout: '62%',
-    plugins: {
-      legend: {
-        position: 'bottom',
-        labels: { padding: 12, font: { size: 11 }, boxWidth: 12 }
+    // Gráfica Tipo
+    const tipoSorted = Object.entries(dataTipo).sort((a,b) => b[1]-a[1]).slice(0, 10);
+    new Chart(document.getElementById('chartTipo'), {
+      type: 'bar',
+      data: {
+        labels: tipoSorted.map(s => s[0]),
+        datasets: [{
+          data: tipoSorted.map(s => Math.round(s[1]/1e6)),
+          backgroundColor: [COLORES.verde_bosque, COLORES.verde_esmeralda, COLORES.azul, COLORES.verde_claro, COLORES.verde_menta, COLORES.lila, COLORES.azul_claro, COLORES.tierra, COLORES.lila_cl, COLORES.ocre],
+          borderRadius: 6
+        }]
       },
-      tooltip: {
-        callbacks: {
-          label: ctx => ` ${ctx.label}: ${ctx.parsed} (${(ctx.parsed/325*100).toFixed(1)}%)`
-        }
+      options: {
+        indexAxis: 'y', responsive: true, maintainAspectRatio: false,
+        plugins: { legend: { display: false }, tooltip: { callbacks: { label: ctx => ` $${ctx.parsed.x.toLocaleString('es-CO')}M COP` } } },
+        scales: { x: { ticks: { callback: v => `$${v}M` } }, y: { grid: { display: false }, ticks: { font: { size: 10 } } } }
+      }
+    });
+
+    // Gráfica Año
+    const anioSorted = Object.entries(dataAnio).sort((a,b) => a[0].localeCompare(b[0]));
+    new Chart(document.getElementById('chartAnio'), {
+      type: 'bar',
+      data: {
+        labels: anioSorted.map(a => a[0]),
+        datasets: [{
+          data: anioSorted.map(a => Math.round(a[1]/1e6)),
+          backgroundColor: [COLORES.verde_menta, COLORES.verde_bosque, COLORES.verde_esmeralda, COLORES.verde_claro],
+          borderRadius: 8
+        }]
+      },
+      options: {
+        responsive: true, maintainAspectRatio: false,
+        plugins: { legend: { display: false }, tooltip: { callbacks: { label: ctx => ` $${ctx.parsed.y.toLocaleString('es-CO')}M COP` } } },
+        scales: { y: { ticks: { callback: v => `$${v}M` } }, x: { grid: { display: false } } }
+      }
+    });
+
+    // Ranking Barrios (HTML Custom)
+    const bPptoSorted = Object.entries(dataBarrio).sort((a,b) => b[1]-a[1]).slice(0, 10);
+    const bContainer = document.getElementById('barriosBars');
+    if(bPptoSorted.length > 0 && bContainer) {
+      const maxVal = bPptoSorted[0][1];
+      bPptoSorted.forEach(b => {
+        const pct = (b[1] / maxVal * 100).toFixed(1);
+        bContainer.innerHTML += `
+          <div class="barrio-bar-item">
+            <div class="barrio-bar-top">
+              <span class="barrio-bar-name">${b[0]}</span>
+              <span class="barrio-bar-val">$${Math.round(b[1]/1e6).toLocaleString('es-CO')}M</span>
+            </div>
+            <div class="barrio-bar-track">
+              <div class="barrio-bar-fill" style="width:${pct}%"></div>
+            </div>
+          </div>`;
+      });
+    }
+
+    // Gráfica Barrios (Conteo de proyectos)
+    const bCountSorted = Object.entries(barrioCount).sort((a,b) => b[1]-a[1]).slice(0, 10);
+    new Chart(document.getElementById('chartBarrios'), {
+      type: 'bar',
+      data: {
+        labels: bCountSorted.map(b => b[0]),
+        datasets: [{
+          data: bCountSorted.map(b => b[1]),
+          backgroundColor: COLORES.verde_esmeralda,
+          borderRadius: 6
+        }]
+      },
+      options: {
+        indexAxis: 'y', responsive: true, maintainAspectRatio: false,
+        plugins: { legend: { display: false } },
+        scales: { y: { grid: { display: false }, ticks: { font: { size: 9 } } } }
+      }
+    });
+
+    // 4. Poblar Tabla de Ejecución
+    const tbody = document.getElementById('proyectosTable');
+    if(tbody) {
+      const enEjecucion = proyectos.filter(p => p.estadoKey === 'En ejecución' && p.presupuesto > 0);
+      enEjecucion.sort((a,b) => b.presupuesto - a.presupuesto).slice(0, 15).forEach(p => {
+        const avColor = p.avance >= 70 ? '#2E7D52' : p.avance >= 30 ? '#F57F17' : '#C62828';
+        tbody.innerHTML += `
+          <tr>
+            <td><strong>${p.secretaria}</strong></td>
+            <td>${p.tipo}</td>
+            <td>${p.nombre}</td>
+            <td>${p.barrio}</td>
+            <td><strong>$${Math.round(p.presupuesto/1e6).toLocaleString('es-CO')}M</strong></td>
+            <td><span style="color:${avColor}; font-weight:600; font-family:'IBM Plex Mono',monospace">${p.avance}%</span></td>
+            <td><span class="pill pill-ej">En ejecución</span></td>
+          </tr>`;
+      });
+      // Si no hay obras en ejecución, mostrar un mensaje
+      if(enEjecucion.length === 0) {
+        tbody.innerHTML = `<tr><td colspan="7" style="text-align:center; padding: 20px;">No hay proyectos con presupuesto reportado que estén actualmente en ejecución.</td></tr>`;
       }
     }
+
+  } catch (error) {
+    console.error("Error al construir el dashboard dinámico:", error);
   }
-});
+}
 
-// ── 3. TIPO EQUIPAMIENTO ──────────────────────────────────────────
-new Chart(document.getElementById('chartTipo'), {
-  type: 'bar',
-  data: {
-    labels: [
-      'Vivienda Nueva', 'Inst. Educativas', 'IPS Salud',
-      'Recreo Deportiva', 'Viv. Mejoramiento', 'Parques/Zonas V.',
-      'Canchas', 'CAD', 'UTS', 'CALIS', 'Casa Justicia'
-    ],
-    datasets: [{
-      label: 'Inversión (Millones COP)',
-      data: [40174, 24164, 6530, 4058, 3173, 1559, 596, 455, 324, 283, 255],
-      backgroundColor: [
-        COLORES.verde_bosque, COLORES.verde_esmeralda, COLORES.azul,
-        COLORES.verde_claro, COLORES.verde_menta, COLORES.lila,
-        COLORES.azul_claro, COLORES.tierra, COLORES.lila_cl, COLORES.ocre, COLORES.rojo
-      ],
-      borderRadius: 6, borderSkipped: false,
-    }]
-  },
-  options: {
-    indexAxis: 'y', responsive: true, maintainAspectRatio: false,
-    plugins: { legend: { display: false },
-      tooltip: { callbacks: { label: ctx => ` $${ctx.parsed.x.toLocaleString('es-CO')}M COP` } }
-    },
-    scales: {
-      x: { grid: { color: 'rgba(0,0,0,0.04)' }, ticks: { callback: v => `$${(v/1000).toFixed(0)}B` } },
-      y: { grid: { display: false }, ticks: { font: { size: 10 } } }
-    }
-  }
-});
-
-// ── 4. AÑO ──────────────────────────────────────────────────────
-new Chart(document.getElementById('chartAnio'), {
-  type: 'bar',
-  data: {
-    labels: ['2024', '2025', '2026', '2027'],
-    datasets: [{
-      label: 'Inversión',
-      data: [1642, 54724, 19283, 6082],
-      backgroundColor: [COLORES.verde_menta, COLORES.verde_bosque, COLORES.verde_esmeralda, COLORES.verde_claro],
-      borderRadius: 8, borderSkipped: false,
-    }]
-  },
-  options: {
-    responsive: true, maintainAspectRatio: false,
-    plugins: {
-      legend: { display: false },
-      tooltip: { callbacks: { label: ctx => ` $${ctx.parsed.y.toLocaleString('es-CO')}M COP` } }
-    },
-    scales: {
-      y: { grid: { color: 'rgba(0,0,0,0.04)' }, ticks: { callback: v => `$${(v/1000).toFixed(0)}B` } },
-      x: { grid: { display: false } }
-    }
-  }
-});
-
-// ── 5. BARRIOS BARS (custom) ─────────────────────────────────────
-const barriosData = [
-  { nombre: 'Charco Azul y El Pondaje', valor: 39894 },
-  { nombre: 'El Diamante', valor: 19173 },
-  { nombre: 'Calipso', valor: 1477 },
-  { nombre: 'El Vergel', valor: 1266 },
-  { nombre: 'Ulpiano Lloreda', valor: 1240 },
-  { nombre: 'Los Lagos', valor: 1218 },
-  { nombre: 'Villa del Lago', valor: 1090 },
-  { nombre: 'Los Robles', valor: 1028 },
-  { nombre: 'Sector Laguna del Pondaje', valor: 947 },
-  { nombre: 'Ricardo Balcazar', valor: 877 },
-];
-const maxVal = barriosData[0].valor;
-const container = document.getElementById('barriosBars');
-barriosData.forEach(b => {
-  const pct = (b.valor / maxVal * 100).toFixed(1);
-  container.innerHTML += `
-    <div class="barrio-bar-item">
-      <div class="barrio-bar-top">
-        <span class="barrio-bar-name">${b.nombre}</span>
-        <span class="barrio-bar-val">$${b.valor.toLocaleString('es-CO')}M</span>
-      </div>
-      <div class="barrio-bar-track">
-        <div class="barrio-bar-fill" style="width:${pct}%"></div>
-      </div>
-    </div>`;
-});
-
-// ── 6. BARRIOS CHART ──────────────────────────────────────────────
-new Chart(document.getElementById('chartBarrios'), {
-  type: 'bar',
-  data: {
-    labels: [
-      'LOS LAGOS', 'Ricardo Balcazar', 'MANUELA BELTRAN', 'LOS ROBLES',
-      'EL POBLADO II', 'CHARCO AZUL', 'ALFONSO BONILLA', 'J.M. MARROQUIN II',
-      'PUERTA DEL SOL', 'EL POBLADO I'
-    ],
-    datasets: [{
-      label: '# Proyectos',
-      data: [81, 40, 23, 21, 12, 12, 11, 10, 10, 9],
-      backgroundColor: COLORES.verde_esmeralda,
-      borderRadius: 6, borderSkipped: false,
-    }]
-  },
-  options: {
-    indexAxis: 'y', responsive: true, maintainAspectRatio: false,
-    plugins: { legend: { display: false } },
-    scales: {
-      x: { grid: { color: 'rgba(0,0,0,0.04)' } },
-      y: { grid: { display: false }, ticks: { font: { size: 9 } } }
-    }
-  }
-});
-
-// ── 7. TABLA PROYECTOS EN EJECUCIÓN ────────────────────────────────
-const proyectos = [
-  { sec: 'Educación', tipo: 'Inst. Educativa', nombre: 'I.E. El Diamante (Obra Nueva)', barrio: 'El Diamante', ppto: '$18,556M', avance: 97, estado: 'ejecucion' },
-  { sec: 'Educación', tipo: 'Inst. Educativa', nombre: 'I.E. Humberto Jordán Mazuera', barrio: 'Sector Laguna del Pondaje', ppto: '$174M', avance: 81, estado: 'ejecucion' },
-  { sec: 'Salud Pública', tipo: 'IPS', nombre: 'IPS Alirio Mora Beltrán', barrio: 'Alirio Mora (C14)', ppto: '$537M', avance: 56, estado: 'ejecucion' },
-  { sec: 'Salud Pública', tipo: 'IPS', nombre: 'IPS Los Lagos (Omar Torrijos)', barrio: 'Los Lagos (C13)', ppto: '$517M', avance: 52, estado: 'ejecucion' },
-  { sec: 'Deporte', tipo: 'Recreodeportiva', nombre: 'Cancha Múltiple Barrio Poblado II', barrio: 'El Poblado II', ppto: '$248M', avance: 39, estado: 'ejecucion' },
-  { sec: 'Deporte', tipo: 'Recreodeportiva', nombre: 'Cancha Múltiple Manuela Beltrán', barrio: 'Manuela Beltrán', ppto: '$259M', avance: 27, estado: 'ejecucion' },
-  { sec: 'Salud Pública', tipo: 'IPS', nombre: 'IPS Diamante', barrio: 'El Diamante (C13)', ppto: '$617M', avance: 35, estado: 'ejecucion' },
-  { sec: 'Desarrollo Territ.', tipo: 'CALIS', nombre: 'C.A.L.I. 13 – Poblado I', barrio: 'El Poblado I', ppto: '$283M', avance: 81, estado: 'ejecucion' },
-  { sec: 'Salud Pública', tipo: 'IPS', nombre: 'IPS Charco Azul', barrio: 'Charco Azul (C13)', ppto: '$707M', avance: 4, estado: 'alerta' },
-  { sec: 'Vivienda', tipo: 'Vivienda Nueva', nombre: 'Ciudadela Recreativa Pondaje 1B 2025', barrio: 'Charco Azul y El Pondaje', ppto: '$5,000M', avance: 0, estado: 'alistamiento' },
-  { sec: 'Cultura', tipo: 'Biblioteca', nombre: 'Biblioteca Daniel Guillard Los Lagos', barrio: 'Los Lagos', ppto: '$6.5M', avance: 90, estado: 'terminado' },
-  { sec: 'Bienestar Social', tipo: 'UTS', nombre: 'UTS Laguna Azul (El Pondaje)', barrio: 'El Pondaje', ppto: '$178M', avance: 100, estado: 'terminado' },
-  { sec: 'DAGMA', tipo: 'Parque', nombre: 'Parque Los Robles', barrio: 'Los Robles', ppto: '$255M', avance: 0, estado: 'suspendido' },
-  { sec: 'DAGMA', tipo: 'Parque', nombre: 'Zona Verde Poblado I', barrio: 'El Poblado I', ppto: '$78M', avance: 0, estado: 'suspendido' },
-];
-
-const pillMap = {
-  ejecucion: 'pill-ej', alistamiento: 'pill-al',
-  terminado: 'pill-ok', suspendido: 'pill-sus', alerta: 'pill-sus'
-};
-const estadoMap = {
-  ejecucion: 'En ejecución', alistamiento: 'En alistamiento',
-  terminado: 'Terminado', suspendido: 'SUSPENDIDO', alerta: 'En ejecución'
-};
-
-const tbody = document.getElementById('proyectosTable');
-proyectos.forEach(p => {
-  const avColor = p.avance >= 70 ? '#2E7D52' : p.avance >= 30 ? '#F57F17' : '#C62828';
-  tbody.innerHTML += `
-    <tr>
-      <td><strong>${p.sec}</strong></td>
-      <td>${p.tipo}</td>
-      <td>${p.nombre}</td>
-      <td>${p.barrio}</td>
-      <td><strong>${p.ppto}</strong></td>
-      <td><span style="color:${avColor}; font-weight:600; font-family:'IBM Plex Mono',monospace">${p.avance}%</span></td>
-      <td><span class="pill ${pillMap[p.estado]}">${estadoMap[p.estado]}</span></td>
-    </tr>`;
-});
+// Iniciar al cargar
+initDynamicDashboard();
 </script>
-
-<!-- ── NAV SWITCHER ── -->
-<nav class="page-switcher" aria-label="Navegación entre vistas">
-  <a class="switcher-home" href="../index.html" title="Inicio">
-    <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/></svg>
-  </a>
-  <div class="switcher-divider"></div>
-  <a class="switcher-btn active" href="pulmon_oriente_informe-v2.html" aria-current="page">
-    <svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor"><path d="M9 17H7v-7h2v7zm4 0h-2V7h2v10zm4 0h-2v-4h2v4zm2.5 2.1H4.5V5h15v14.1zm0-16.1h-15C3.6 3 3 3.6 3 4.5v15C3 20.4 3.6 21 4.5 21h15c.9 0 1.5-.6 1.5-1.5v-15C21 3.6 20.4 3 19.5 3z"/></svg>
-    Informe
-  </a>
-  <a class="switcher-btn" href="pulmon_oriente_mapa_v2.html">
-    <svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor"><path d="M20.5 3l-.16.03L15 5.1 9 3 3.36 4.9c-.21.07-.36.25-.36.48V20.5c0 .28.22.5.5.5l.16-.03L9 18.9l6 2.1 5.64-1.9c.21-.07.36-.25.36-.48V3.5c0-.28-.22-.5-.5-.5zM15 19l-6-2.11V5l6 2.11V19z"/></svg>
-    Mapa
-  </a>
-</nav>
-
-<style>
-.page-switcher {
-  position: fixed;
-  bottom: 24px;
-  left: 50%;
-  transform: translateX(-50%);
-  z-index: 2000;
-  display: flex;
-  align-items: center;
-  gap: 0;
-  background: rgba(27, 77, 46, 0.96);
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
-  border-radius: 40px;
-  padding: 6px 10px;
-  box-shadow: 0 6px 28px rgba(0,0,0,0.28), 0 1px 4px rgba(0,0,0,0.15);
-  border: 1px solid rgba(76, 175, 119, 0.25);
-}
-.switcher-home {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 30px;
-  height: 30px;
-  border-radius: 50%;
-  color: rgba(255,255,255,0.65);
-  text-decoration: none;
-  transition: all 0.2s;
-  flex-shrink: 0;
-}
-.switcher-home:hover { color: #fff; background: rgba(255,255,255,0.12); }
-.switcher-divider {
-  width: 1px;
-  height: 20px;
-  background: rgba(255,255,255,0.18);
-  margin: 0 6px;
-  flex-shrink: 0;
-}
-.switcher-btn {
-  display: flex;
-  align-items: center;
-  gap: 5px;
-  padding: 6px 14px;
-  border-radius: 30px;
-  font-family: 'IBM Plex Sans', sans-serif;
-  font-size: 12px;
-  font-weight: 500;
-  color: rgba(255,255,255,0.72);
-  text-decoration: none;
-  letter-spacing: 0.03em;
-  transition: all 0.2s;
-  white-space: nowrap;
-}
-.switcher-btn:hover { color: #fff; background: rgba(255,255,255,0.1); }
-.switcher-btn.active {
-  background: #4CAF77;
-  color: #1B4D2E;
-  font-weight: 600;
-}
-.switcher-btn.active:hover { background: #5DC88A; }
-@media (max-width: 480px) {
-  .page-switcher { bottom: 14px; padding: 5px 8px; }
-  .switcher-btn { padding: 5px 10px; font-size: 11px; }
-}
-</style>
-
 </body>
 </html>

@@ -248,7 +248,6 @@
 <body>
   <div class="wrapper">
 
-    <!-- HERO -->
     <section class="hero">
       <div class="badge">
         <div class="badge-dot"></div>
@@ -257,23 +256,18 @@
       <h1>Pulmón del<br><span>Oriente</span></h1>
       <p class="subtitle">
         Visualización de la inversión pública en el Área de Influencia del Pulmón del Oriente · Santiago de Cali.
-        Datos de la Unidad de Proyectos — corte 21 de febrero de 2026.
+        Datos de la Unidad de Proyectos.
       </p>
       <div class="kpi-row">
         <div class="kpi">
-          <div class="kpi-num">208</div>
+          <div class="kpi-num">...</div>
           <div class="kpi-lab">Proyectos</div>
         </div>
         <div class="kpi-sep"></div>
         <div class="kpi">
-          <div class="kpi-num">$52,975M</div>
+          <div class="kpi-num">...</div>
           <div class="kpi-lab">Inversión COP</div>
         </div>
-       <!--  <div class="kpi-sep"></div>
-        <div class="kpi">
-          <div class="kpi-num">7</div>
-          <div class="kpi-lab">Secretarías</div>
-        </div> -->
         <div class="kpi-sep"></div>
         <div class="kpi">
           <div class="kpi-num">1</div>
@@ -282,7 +276,6 @@
       </div>
     </section>
 
-    <!-- CARDS -->
     <div class="cards">
 
       <a class="card" href="paginas/pulmon_oriente_informe-v2.html">
@@ -312,7 +305,7 @@
           <div class="card-tag">Mapa interactivo</div>
           <h2>Mapa de Proyectos</h2>
         </div>
-        <p>208 proyectos geolocalizados dentro del área de influencia del Pulmón del Oriente. Delineación del polígono, corredor hídrico y zonas de obra. Filtra por estado y secretaría.</p>
+        <p id="map-desc">Proyectos geolocalizados dentro del área de influencia del Pulmón del Oriente. Delineación del polígono, corredor hídrico y zonas de obra. Filtra por estado y secretaría.</p>
         <div class="card-cta">
           Explorar mapa
           <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M12 4l-1.41 1.41L16.17 11H4v2h12.17l-5.58 5.59L12 20l8-8z"/></svg>
@@ -327,5 +320,52 @@
     Área de Influencia Pulmón del Oriente · Plan de Desarrollo 2024–2027 ·
     <a href="https://www.cali.gov.co" target="_blank" rel="noopener">cali.gov.co</a>
   </footer>
+
+  <script src="https://cdn.jsdelivr.net/npm/@turf/turf@6/turf.min.js"></script>
+  <script>
+    async function initLandingData() {
+      try {
+        const [ptsRes, polyRes] = await Promise.all([
+          fetch('./Total_secretarias.geojson'),
+          fetch('./poligonos.geojson')
+        ]);
+        const ptsData = await ptsRes.json();
+        const polyData = await polyRes.json();
+
+        const perimetro = polyData.features.find(f => f.properties.Name === 'Perimetro Proyecto') || polyData.features[0];
+        const proyectos = [];
+        let totalInversion = 0;
+
+        // Filtro estricto sin agrupar
+        ptsData.features.forEach(f => {
+          if (!f.geometry || !turf.booleanPointInPolygon(f, perimetro)) return;
+          
+          let pptoStr = (f.properties.presupuest || '0').toString().trim();
+          pptoStr = pptoStr.replace(/[^0-9\.,]/g, ''); 
+          if (pptoStr.endsWith('.00') || pptoStr.endsWith(',00')) pptoStr = pptoStr.slice(0, -3);
+          const ppto = parseFloat(pptoStr.replace(/[\.,]/g, '')) || 0;
+
+          proyectos.push(f.properties);
+          totalInversion += ppto;
+        });
+
+        // Actualiza los KPIs del DOM
+        const kpiNums = document.querySelectorAll('.kpi-num');
+        if(kpiNums.length >= 2) {
+          kpiNums[0].innerText = proyectos.length;
+          kpiNums[1].innerText = '$' + Math.round(totalInversion / 1e6).toLocaleString('es-CO') + 'M';
+        }
+
+        // Actualiza el texto descriptivo de la tarjeta del mapa
+        const mapDesc = document.getElementById('map-desc');
+        if(mapDesc) {
+          mapDesc.innerText = proyectos.length + ' proyectos geolocalizados dentro del área de influencia del Pulmón del Oriente. Delineación del polígono, corredor hídrico y zonas de obra. Filtra por estado y secretaría.';
+        }
+      } catch (error) {
+        console.error("Error cargando la data geoespacial:", error);
+      }
+    }
+    initLandingData();
+  </script>
 </body>
 </html>
