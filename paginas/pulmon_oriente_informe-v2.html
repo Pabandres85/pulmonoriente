@@ -249,6 +249,100 @@ h1 span{
   .barrio-bar-track { height: 8px; background: var(--gris-papel); border-radius: 100px; overflow: hidden; }
   .barrio-bar-fill { height: 100%; background: linear-gradient(to right, var(--verde-esmeralda), var(--verde-claro)); border-radius: 100px; }
 
+  /* ─── FOOTER ─── */
+.site-footer{
+  margin-top: 24px;
+  background: linear-gradient(180deg, rgba(27,77,46,0.04), rgba(27,77,46,0.08));
+  border-top: 1px solid rgba(27,77,46,0.10);
+  padding: 34px 0 22px;
+  color: var(--gris-text);
+}
+
+.footer-inner{
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 40px;
+  display: grid;
+  grid-template-columns: 1.4fr 0.9fr 1fr;
+  gap: 26px;
+}
+
+.footer-title{
+  font-family: 'Montserrat', sans-serif;
+  font-weight: 700;
+  color: var(--verde-bosque);
+  font-size: 14px;
+  letter-spacing: .2px;
+  margin-bottom: 10px;
+}
+
+.footer-text{
+  font-size: 13px;
+  line-height: 1.6;
+  color: rgba(55,71,79,0.85);
+  margin-bottom: 12px;
+}
+
+.footer-meta{
+  font-size: 12px;
+  color: rgba(55,71,79,0.70);
+}
+
+.footer-links{
+  list-style: none;
+  display: grid;
+  gap: 8px;
+}
+
+.footer-links a{
+  text-decoration: none;
+  font-size: 13px;
+  color: rgba(27,77,46,0.85);
+  font-weight: 600;
+}
+
+.footer-links a:hover{
+  color: var(--verde-esmeralda);
+}
+
+.footer-badge{
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 12px;
+  border-radius: 999px;
+  background: rgba(165,214,167,0.35);
+  border: 1px solid rgba(46,125,82,0.25);
+  color: var(--verde-bosque);
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.footer-bottom{
+  max-width: 1200px;
+  margin: 18px auto 0;
+  padding: 14px 40px 0;
+  border-top: 1px dashed rgba(27,77,46,0.18);
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  justify-content: center;
+  font-size: 12px;
+  color: rgba(55,71,79,0.70);
+}
+
+.footer-sep{ opacity: .6; }
+
+/* Responsive footer */
+@media (max-width: 960px){
+  .footer-inner{ grid-template-columns: 1fr; }
+}
+
+@media (max-width: 640px){
+  .footer-inner, .footer-bottom{ padding: 0 16px; }
+  .footer-bottom{ padding-top: 14px; }
+}
+
   @media (max-width: 960px) { .charts-grid.wide, .charts-grid { grid-template-columns: 1fr; } .stats-row { grid-template-columns: repeat(3, 1fr); } }
   @media (max-width: 640px) { .hero-inner { padding: 36px 16px; grid-template-columns: 1fr; } .container, .toolbar-strip { padding: 16px; } .stats-row { grid-template-columns: 1fr 1fr; } .toolbar-left { gap: 16px; } }
 </style>
@@ -627,5 +721,43 @@ document.getElementById('select-anio').addEventListener('change', (e) => {
 
 initData();
 </script>
+<footer class="site-footer">
+  <div class="footer-inner">
+    <div class="footer-col">
+      <div class="footer-title">Pulmón del Oriente · Cali</div>
+      <p class="footer-text">
+        Visualización e informe analítico de inversión pública en el Área de Influencia del Pulmón del Oriente.
+      </p>
+      <div class="footer-meta">
+        Fuente: Unidad de Proyectos (UP) · Secretarías Distritales
+      </div>
+    </div>
+
+    <div class="footer-col">
+      <div class="footer-title">Enlaces</div>
+      <ul class="footer-links">
+        <li><a href="https://www.cali.gov.co" target="_blank" rel="noopener">cali.gov.co</a></li>
+        <li><a href="../index.html">Inicio</a></li>
+        <li><a href="pulmon_oriente_mapa_v2.html">Mapa interactivo</a></li>
+      </ul>
+    </div>
+
+    <div class="footer-col">
+      <div class="footer-title">Notas</div>
+      <p class="footer-text">
+        Cifras calculadas dinámicamente a partir de datos geoespaciales y filtros seleccionados.
+      </p>
+      <div class="footer-badge">
+        2024–2027 · Actualización dinámica
+      </div>
+    </div>
+  </div>
+
+  <div class="footer-bottom">
+    <span>© Municipio de Santiago de Cali</span>
+    <span class="footer-sep">•</span>
+    <span>Equipo Gobierno de Datos</span>
+  </div>
+</footer>
 </body>
 </html>
