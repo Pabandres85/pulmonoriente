@@ -241,11 +241,35 @@ function renderDashboard() {
     : `<tr><td colspan="9" class="empty-td">No hay intervenciones para la selección actual.</td></tr>`;
 }
 
+// ── FORMATO FECHA CORTE ───────────────────────────────────────────────────────
+function fmtCorte(iso) {
+  if (!iso) return '';
+  const meses = ['Enero','Febrero','Marzo','Abril','Mayo','Junio',
+                 'Julio','Agosto','Septiembre','Octubre','Noviembre','Diciembre'];
+  const [y, m] = iso.split('-');
+  return `${meses[parseInt(m, 10) - 1]} ${y}`;
+}
+
 // ── INICIALIZACIÓN ───────────────────────────────────────────────────────────
 async function initData() {
   try {
-    const res  = await fetch('../data/intervenciones.json');
-    _allData   = await res.json();
+    const [resData, resMeta] = await Promise.all([
+      fetch('../data/intervenciones.json'),
+      fetch('../data/intervenciones_meta.json').catch(() => null)
+    ]);
+    _allData = await resData.json();
+
+    // Actualizar textos dinámicos con meta
+    if (resMeta && resMeta.ok) {
+      const meta = await resMeta.json();
+      const corteStr = fmtCorte(meta.corte);
+      const el = document.getElementById('hero-date');
+      if (el) el.textContent = `// FUENTE: SECRETARÍAS DISTRITALES · CORTE: ${corteStr.toUpperCase()} · ${meta.registros.toLocaleString('es-CO')} REGISTROS`;
+      const badge = document.getElementById('footer-corte-badge');
+      if (badge) badge.textContent = `2024–2027 · Corte: ${corteStr}`;
+      const reg = document.getElementById('footer-registros');
+      if (reg) reg.textContent = `${meta.registros.toLocaleString('es-CO')} registros de intervenciones. ${meta.sin_ubicacion.toLocaleString('es-CO')} sin dato de ubicación.`;
+    }
 
     // Poblar selects con opciones dinámicas
     const secs  = [...new Set(_allData.map(r => r.nombre_centro_gestor))].filter(Boolean).sort();

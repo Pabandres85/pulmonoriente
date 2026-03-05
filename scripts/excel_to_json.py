@@ -26,6 +26,7 @@ except ImportError:
 REPO_ROOT   = Path(__file__).resolve().parent.parent
 EXCEL_DIR   = REPO_ROOT / "data" / "excel"
 OUTPUT_FILE = REPO_ROOT / "data" / "intervenciones.json"
+META_FILE   = REPO_ROOT / "data" / "intervenciones_meta.json"
 
 # ── DETECTAR ARCHIVO ─────────────────────────────────────────────────────────
 if len(sys.argv) > 1:
@@ -41,7 +42,11 @@ else:
         sys.exit(1)
     excel_path = all_files[0]
 
-print(f"Convirtiendo: {excel_path.name}")
+# ── EXTRAER FECHA DEL NOMBRE DEL ARCHIVO ─────────────────────────────────────
+m_fecha = re.search(r"(\d{4}-\d{2}-\d{2})", excel_path.stem)
+corte_iso = m_fecha.group(1) if m_fecha else None
+
+print(f"Convirtiendo: {excel_path.name}  (corte: {corte_iso or 'no detectado'})")
 
 # ── PARSEO DE FECHA ───────────────────────────────────────────────────────────
 def parse_date(v):
@@ -114,3 +119,15 @@ with open(OUTPUT_FILE, "w", encoding="utf-8") as f:
 
 size_kb = OUTPUT_FILE.stat().st_size / 1024
 print(f"OK  {len(records)} registros -> {OUTPUT_FILE.relative_to(REPO_ROOT)}  ({size_kb:.0f} KB)")
+
+# ── GUARDAR META ──────────────────────────────────────────────────────────────
+sin_ubicacion = sum(1 for r in records if not r.get("comuna_corregimiento"))
+meta = {
+    "corte":         corte_iso,
+    "archivo":       excel_path.name,
+    "registros":     len(records),
+    "sin_ubicacion": sin_ubicacion,
+}
+with open(META_FILE, "w", encoding="utf-8") as f:
+    json.dump(meta, f, ensure_ascii=False, separators=(",", ":"))
+print(f"OK  meta -> {META_FILE.relative_to(REPO_ROOT)}")
