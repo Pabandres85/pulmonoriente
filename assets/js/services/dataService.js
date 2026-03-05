@@ -24,7 +24,14 @@ const DataService = (() => {
     "Otras":      "#1ABC9C"
   };
 
-  // ── CACHÉ INTERNA ───────────────────────────────────────────────────────
+  // ── CACHÉ ───────────────────────────────────────────────────────────────
+  // Dos niveles:
+  //   1. _cache: variable en memoria (instantáneo, mismo contexto de página)
+  //   2. sessionStorage: persiste entre páginas de la misma sesión del navegador
+  //      Formato guardado: { etag: string|null, data: { pts, poly, tramos } }
+  //      Se invalida automáticamente si el ETag del servidor cambia (datos nuevos)
+  //      Para forzar re-descarga manual: cambiar el sufijo de CACHE_KEY (ej: v2 → v3)
+  const CACHE_KEY = 'pulmon_data_v2';  // v2: incluye etag en el objeto guardado
   let _cache = null;
 
   // ── NORMALIZACIÓN DE SECRETARÍA ─────────────────────────────────────────
@@ -73,13 +80,51 @@ const DataService = (() => {
     };
   }
 
-  // ── CARGA DE DATOS (con caché) ──────────────────────────────────────────
+  // ── CARGA DE DATOS (memoria → sessionStorage → red) ────────────────────
   /**
+   * Orden de prioridad:
+   *   1. _cache en memoria          → misma página, instantáneo, 0 requests
+   *   2. sessionStorage + ETag      → entre páginas, 1 HEAD request de ~200 B
+   *      Si el ETag del servidor coincide con el guardado → usar caché sin descargar
+   *      Si el ETag cambió (datos actualizados)           → re-fetchear todo
+   *   3. fetch() completo           → primera carga de la sesión
+   *
    * @param {string} basePath  Ruta relativa al directorio data/ desde la página.
    *                           Ej: './data/' desde index.html, '../data/' desde paginas/
    */
   async function load(basePath) {
+    // Nivel 1: memoria (misma página)
     if (_cache) return _cache;
+
+    // Nivel 2: verificar ETag del servidor antes de usar sessionStorage
+    let currentEtag = null;
+    try {
+      const headRes = await fetch(basePath + 'Total_secretarias.geojson', { method: 'HEAD' });
+      // Preferimos ETag; si no existe usamos Last-Modified como alternativa
+      currentEtag = headRes.headers.get('etag') || headRes.headers.get('last-modified');
+    } catch (_) {
+      // Sin red o servidor no soporta HEAD → continuar (usaremos caché si existe)
+    }
+
+    try {
+      const stored = sessionStorage.getItem(CACHE_KEY);
+      if (stored) {
+        const { etag, data } = JSON.parse(stored);
+        // Usar caché si:
+        //   a) el servidor no devolvió ETag (no podemos comparar → confiar en caché)
+        //   b) el ETag coincide (datos sin cambios)
+        if (!currentEtag || etag === currentEtag) {
+          _cache = data;
+          return _cache;
+        }
+        // ETag cambió → limpiar caché y continuar al fetch completo
+        sessionStorage.removeItem(CACHE_KEY);
+      }
+    } catch (_) {
+      // sessionStorage no disponible → continuar
+    }
+
+    // Nivel 3: fetch completo (primera carga o datos actualizados)
     const [ptsRes, polyRes, tramosRes] = await Promise.all([
       fetch(basePath + 'Total_secretarias.geojson'),
       fetch(basePath + 'poligonos.geojson'),
@@ -90,6 +135,14 @@ const DataService = (() => {
       poly:   await polyRes.json(),
       tramos: await tramosRes.json()
     };
+
+    // Guardar datos + ETag en sessionStorage
+    try {
+      sessionStorage.setItem(CACHE_KEY, JSON.stringify({ etag: currentEtag, data: _cache }));
+    } catch (_) {
+      // Si excede la cuota simplemente no se cachea
+    }
+
     return _cache;
   }
 
