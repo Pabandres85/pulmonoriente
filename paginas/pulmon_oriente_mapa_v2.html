@@ -8,187 +8,7 @@
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet.markercluster/1.5.3/MarkerCluster.css"/>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet.markercluster/1.5.3/MarkerCluster.Default.css"/>
   <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=IBM+Plex+Sans:wght@300;400;600&display=swap" rel="stylesheet">
-<style>
-    /* ── VARIABLES Y RESET ── */
-    :root {
-      --verde-bosque: #1B4D2E;
-      --verde-medio: #2E7D52;
-      --verde-claro: #4CAF77;
-      --verde-pale: #E8F5EE;
-      --dorado: #C9A227;
-      --rosa-area: #E91E8C;
-      --cyan-tramo: #00BCD4;
-    }
-    * { margin:0; padding:0; box-sizing:border-box; }
-    html, body { height:100%; font-family:'IBM Plex Sans', sans-serif; background:#EEF0EB; overflow: hidden; }
-
-    /* ── ENCABEZADO SUPERIOR (HEADER) ── */
-    #header {
-      position:fixed; top:0; left:0; right:0; z-index:1200;
-      background:var(--verde-bosque); color:white;
-      padding:10px 20px; display:flex; align-items:center;
-      justify-content:space-between; gap:16px;
-      box-shadow:0 2px 12px rgba(0,0,0,0.4); height:58px;
-    }
-    .header-left { display:flex; align-items:center; gap:12px; }
-    .header-icon { width:36px; height:36px; background:var(--verde-claro); border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:18px; flex-shrink:0; }
-    .header-title { font-family:'Playfair Display',serif; font-size:17px; font-weight:700; line-height:1.2; }
-    .header-sub { font-size:11px; opacity:0.72; letter-spacing:0.08em; text-transform:uppercase; margin-top:2px; }
-    .kpis { display:flex; gap:20px; align-items:center; }
-    .kpi { text-align:center; line-height:1.2; }
-    .kpi-num { font-family:'Playfair Display',serif; font-size:18px; font-weight:700; color:var(--verde-claro); }
-    .kpi-lab { font-size:10px; opacity:0.75; text-transform:uppercase; letter-spacing:0.07em; }
-    .kpi-div { width:1px; height:30px; background:rgba(255,255,255,0.2); }
-
-    /* ── BARRA DE FILTROS ── */
-    #filter-bar {
-      position:fixed; top:58px; left:0; right:0; z-index:1100;
-      background:rgba(27,77,46,0.97); backdrop-filter:blur(8px); -webkit-backdrop-filter:blur(8px);
-      padding:8px 16px; display:flex; align-items:center;
-      gap:10px; flex-wrap:wrap; box-shadow:0 2px 8px rgba(0,0,0,0.2);
-    }
-    .filter-label { font-size:11px; color:rgba(255,255,255,0.7); text-transform:uppercase; letter-spacing:0.08em; white-space:nowrap; }
-    .filter-group { display:flex; gap:6px; flex-wrap:wrap; }
-    .filter-btn {
-      padding:4px 10px; border-radius:20px; border:1.5px solid rgba(255,255,255,0.3);
-      background:transparent; color:rgba(255,255,255,0.85);
-      font-size:12px; font-family:'IBM Plex Sans',sans-serif; cursor:pointer; transition:all 0.2s; white-space:nowrap;
-    }
-    .filter-btn:hover { border-color:var(--verde-claro); color:white; }
-    .filter-btn.active { background:var(--verde-claro); border-color:var(--verde-claro); color:var(--verde-bosque); font-weight:600; }
-    .filter-sep { width:1px; height:24px; background:rgba(255,255,255,0.15); }
-    #btn-reset {
-      margin-left:auto; padding:4px 12px; border-radius:20px;
-      border:1.5px solid var(--dorado); background:transparent; color:var(--dorado);
-      font-size:12px; font-family:'IBM Plex Sans',sans-serif; cursor:pointer; transition:all 0.2s;
-    }
-    #btn-reset:hover { background:var(--dorado); color:#1A1A1A; }
-
-    /* ── CONTENEDOR DEL MAPA ── */
-    #map { position:fixed; top:104px; left:0; right:0; bottom:0; z-index: 100;}
-
-    /* ── LEYENDA (Referencias) ── */
-    #legend {
-      position:absolute; bottom:24px; left:16px; z-index:900;
-      background:rgba(27,77,46,0.95); color:white; padding:14px 16px;
-      border-radius:10px; min-width:190px;
-      border:1px solid rgba(76,175,119,0.4);
-      backdrop-filter:blur(8px); -webkit-backdrop-filter:blur(8px);
-      box-shadow:0 4px 16px rgba(0,0,0,0.3);
-    }
-    .legend-title { font-size:11px; text-transform:uppercase; letter-spacing:0.1em; opacity:0.7; margin-bottom:10px; }
-    .legend-item { display:flex; align-items:center; gap:8px; margin-bottom:6px; font-size:12px; }
-    .legend-dot { width:10px; height:10px; border-radius:50%; flex-shrink:0; }
-    .legend-line { width:18px; height:3px; flex-shrink:0; border-radius:2px; }
-    .legend-poly { width:18px; height:12px; border-radius:2px; flex-shrink:0; }
-    .legend-sep { height:1px; background:rgba(255,255,255,0.1); margin:8px 0; }
-
-    /* ── BOTONES DEL MAPA (Satélite, Calles) - POSICIÓN INFERIOR DERECHA ── */
-    #layer-ctrl {
-      position:absolute; bottom:24px; right:16px; z-index:900;
-      display:flex; flex-direction:column; gap:4px;
-    }
-    .layer-btn-group {
-      background:rgba(255,255,255,0.95); border-radius:24px; padding:4px;
-      display:flex; flex-direction: column; gap:4px; 
-      box-shadow:0 2px 12px rgba(0,0,0,0.25);
-      backdrop-filter:blur(8px); -webkit-backdrop-filter:blur(8px);
-      border: 1px solid rgba(0,0,0,0.1);
-    }
-    .layer-btn {
-      box-shadow:none; border-radius:18px; padding:6px 14px;
-      background:transparent; border:none; cursor:pointer;
-      font-family:'IBM Plex Sans',sans-serif; font-size:12px; font-weight:600;
-      color:#333; transition:all 0.18s; text-align: left;
-    }
-    .layer-btn:hover { background:rgba(0,0,0,0.05); }
-    .layer-btn.active { background:var(--verde-bosque); color:white; }
-
-    /* ── POPUP DEL MAPA ── */
-    .leaflet-popup-content-wrapper {
-      background:rgba(13,27,18,0.96) !important; color:white !important;
-      border-radius:10px !important; border:1px solid rgba(76,175,119,0.35) !important;
-      backdrop-filter:blur(12px) !important; -webkit-backdrop-filter:blur(12px) !important; box-shadow:0 8px 32px rgba(0,0,0,0.4) !important;
-    }
-    .leaflet-popup-tip { background:rgba(13,27,18,0.96) !important; }
-    .popup-title { font-family:'Playfair Display',serif; font-size:14px; font-weight:700; margin-bottom:8px; color:white; }
-    .popup-row { display:flex; justify-content:space-between; gap:12px; margin-bottom:4px; font-size:12px; }
-    .popup-label { opacity:0.65; white-space:nowrap; }
-    .popup-val { font-weight:600; text-align:right; }
-    .popup-badge { display:inline-block; padding:2px 8px; border-radius:12px; font-size:11px; font-weight:600; margin-top:6px; }
-    .badge-ejecucion { background:#2E7D52; color:white; }
-    .badge-alistamiento { background:#C9A227; color:#1A1A1A; }
-    .badge-terminado { background:#1565C0; color:white; }
-
-    /* ── MENÚ NAVEGACIÓN INFERIOR (Switcher) - CENTRADO ARRIBA DE TODO ── */
-    .page-switcher {
-      position: fixed; bottom: 32px; left: 50%; transform: translateX(-50%); z-index: 2000;
-      display: flex; align-items: center; gap: 0;
-      background: rgba(27, 77, 46, 0.96); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
-      border-radius: 40px; padding: 6px 10px;
-      box-shadow: 0 6px 28px rgba(0,0,0,0.28), 0 1px 4px rgba(0,0,0,0.15);
-      border: 1px solid rgba(76, 175, 119, 0.25);
-    }
-    .switcher-home { display: flex; align-items: center; justify-content: center; width: 30px; height: 30px; border-radius: 50%; color: rgba(255,255,255,0.65); text-decoration: none; transition: all 0.2s; flex-shrink: 0; }
-    .switcher-home:hover { color: #fff; background: rgba(255,255,255,0.12); }
-    .switcher-divider { width: 1px; height: 20px; background: rgba(255,255,255,0.18); margin: 0 6px; flex-shrink: 0; }
-    .switcher-btn {
-      display: flex; align-items: center; gap: 5px; padding: 6px 14px; border-radius: 30px;
-      font-family: 'IBM Plex Sans', sans-serif; font-size: 12px; font-weight: 500;
-      color: rgba(255,255,255,0.72); text-decoration: none; letter-spacing: 0.03em;
-      transition: all 0.2s; white-space: nowrap;
-    }
-    .switcher-btn:hover { color: #fff; background: rgba(255,255,255,0.1); }
-    .switcher-btn.active { background: #4CAF77; color: #1B4D2E; font-weight: 600; }
-    .switcher-btn.active:hover { background: #5DC88A; }
-
-    /* ── RESPONSIVE PARA TABLETS Y CELULARES ── */
-    @media(max-width:900px) {
-      /* En pantallas medianas pasamos los botones de satélite a horizontales para que ocupen menos espacio vertical */
-      .layer-btn-group { flex-direction: row; }
-    }
-
-    @media(max-width:768px) {
-      .kpi-num { font-size:14px; }
-      .kpi-lab { font-size:9px; }
-      .kpis { gap:12px; }
-      .kpi-div { display:none; }
-      .header-title { font-size:14px; }
-      .header-sub { display:none; }
-      #filter-bar { gap:6px; padding:6px 10px; }
-      .filter-label { font-size:10px; }
-      .filter-btn { font-size:11px; padding:3px 8px; }
-    }
-
-    @media(max-width:540px) {
-      .kpis { display:none; }
-      #filter-bar { padding:5px 8px; gap:5px; flex-wrap:wrap; min-height:40px; }
-      .filter-group { gap:4px; }
-      .filter-sep { display:none; }
-      .filter-btn { font-size:10px; padding:3px 7px; }
-      #btn-reset { font-size:10px; padding:3px 9px; }
-      
-      /* Bajamos el mapa porque el menú superior ocupa 2-3 líneas en celular */
-      #map { top:150px; } 
-
-      /* Reacomodo de controles inferiores en celular */
-      #legend { min-width:140px; padding:10px 12px; font-size:11px; bottom: 85px; left:10px; }
-      .legend-title { font-size:10px; }
-      
-      /* El control de satélite en vertical otra vez y flotando sobre el mapa a la derecha */
-      #layer-ctrl { bottom: 85px; right: 10px; }
-      .layer-btn-group { flex-direction: column; background: rgba(255,255,255,0.95); }
-      .layer-btn { font-size: 11px; padding: 6px 10px; text-align:center; }
-
-      .page-switcher { bottom: 20px; padding: 5px 8px; } 
-      .switcher-btn { padding: 5px 10px; font-size: 11px; } 
-    }
-
-    @media(max-width:360px) {
-      .filter-label { display:none; }
-      .filter-btn { font-size:9px; padding:3px 6px; }
-    }
-  </style>
+  <link rel="stylesheet" href="../assets/css/mapa.css">
 </head>
 <body>
 
@@ -208,11 +28,10 @@
 </div>
 
 <div id="filter-bar">
-  <div class="filter-group" id="filter-sec">
-    </div>
-  
+  <div class="filter-group" id="filter-sec"></div>
+
   <div class="filter-sep"></div>
-  
+
   <span class="filter-label">Estado:</span>
   <div class="filter-group" id="filter-estado">
     <button class="filter-btn active" data-estado="all">Todos</button>
@@ -222,9 +41,9 @@
   </div>
 
   <div class="filter-group" id="filter-modo">
-      <span class="filter-label" style="margin-left: 10px;">Modo de Vista:</span>
-      <button class="filter-btn active" data-modo="ups">Frentes de Obra (UPS)</button>
-      <button class="filter-btn" data-modo="contratos">Todos los Contratos</button>
+    <span class="filter-label">Modo de Vista:</span>
+    <button class="filter-btn active" data-modo="ups">Frentes de Obra (UPS)</button>
+    <button class="filter-btn" data-modo="contratos">Todos los Contratos</button>
   </div>
   <button id="btn-reset">↺ Limpiar</button>
 </div>
@@ -239,28 +58,11 @@
   </div>
 </div>
 
-<!-- <div id="legend">
-  <div class="legend-title">Referencias</div>
-  <div class="legend-item"><div class="legend-poly" style="background:rgba(233,30,140,0.15);border:2px solid #E91E8C;"></div> Perímetro del área</div>
-  <div class="legend-item"><div class="legend-line" style="background:#00BCD4;"></div> Corredor hídrico</div>
-  <div class="legend-sep"></div>
-  <div class="legend-item"><div class="legend-dot" style="background:#E67E22;"></div> Vivienda</div>
-  <div class="legend-item"><div class="legend-dot" style="background:#3498DB;"></div> Educación</div>
-  <div class="legend-item"><div class="legend-dot" style="background:#E74C3C;"></div> Salud</div>
-  <div class="legend-item"><div class="legend-dot" style="background:#9B59B6;"></div> Deporte</div>
-  <div class="legend-item"><div class="legend-dot" style="background:#F1C40F;"></div> Cultura</div>
-  <div class="legend-item"><div class="legend-dot" style="background:#E91E63;"></div> Bienestar</div>
-  <div class="legend-item"><div class="legend-dot" style="background:#34495E;"></div> Seguridad</div>
-  <div class="legend-item"><div class="legend-dot" style="background:#1ABC9C;"></div> Otras</div>
-</div> -->
-
 <div id="legend">
   <div class="legend-title">Referencias</div>
-  
   <div class="legend-item"><div class="legend-poly" style="background:rgba(233,30,140,0.15);border:2px solid #E91E8C;"></div> Perímetro del área</div>
   <div class="legend-item"><div class="legend-line" style="background:#00BCD4;"></div> Corredor hídrico</div>
   <div class="legend-sep"></div>
-  
   <div id="legend-dynamic"></div>
 </div>
 
@@ -269,7 +71,7 @@
     <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/></svg>
   </a>
   <div class="switcher-divider"></div>
-  <a class="switcher-btn " href="pulmon_oriente_informe-v2.html">
+  <a class="switcher-btn" href="pulmon_oriente_informe-v2.html">
     <svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor"><path d="M9 17H7v-7h2v7zm4 0h-2V7h2v10zm4 0h-2v-4h2v4zm2.5 2.1H4.5V5h15v14.1zm0-16.1h-15C3.6 3 3 3.6 3 4.5v15C3 20.4 3.6 21 4.5 21h15c.9 0 1.5-.6 1.5-1.5v-15C21 3.6 20.4 3 19.5 3z"/></svg>
     Informe
   </a>
@@ -282,253 +84,7 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet.markercluster/1.5.3/leaflet.markercluster.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/@turf/turf@6/turf.min.js"></script>
-<script>
-// --- MOTOR DE COLORES AMPLIADO ---
-const SEC_COLORS = { 
-  "Vivienda": "#E67E22", "Educación": "#3498DB", "Salud": "#E74C3C", 
-  "Deporte": "#9B59B6", "Cultura": "#F1C40F", "Bienestar": "#E91E63", 
-  "Seguridad": "#34495E", "Otras": "#1ABC9C" 
-};
+<script src="../assets/js/mapa.js"></script>
 
-function secGroup(s) {
-  if (!s) return "Otras";
-  if (s.includes("Vivienda") || s.includes("Hábitat")) return "Vivienda";
-  if (s.includes("Educación") || s.includes("Educacion")) return "Educación";
-  if (s.includes("Salud")) return "Salud";
-  if (s.includes("Deporte") || s.includes("Recreación")) return "Deporte";
-  if (s.includes("Cultura")) return "Cultura";
-  if (s.includes("Bienestar")) return "Bienestar";
-  if (s.includes("Seguridad")) return "Seguridad";
-  return "Otras";
-}
-function getColor(s) { return SEC_COLORS[secGroup(s)] || SEC_COLORS["Otras"]; }
-
-// --- CONFIGURACIÓN DEL MAPA ---
-const map = L.map('map', {zoomControl:true, attributionControl:false}).setView([3.430, -76.488], 14);
-
-const baseLayers = {
-  streets: L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {maxZoom:19, subdomains:'abc'}),
-  satellite: L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}', {maxZoom:19}),
-  hybrid: L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}', {maxZoom:19})
-};
-const labelsLayer = L.tileLayer('https://{s}.basemaps.cartocdn.com/light_only_labels/{z}/{x}/{y}{r}.png', {maxZoom:19, subdomains:'abcd', pane:'shadowPane'});
-baseLayers.streets.addTo(map);
-
-const baseMaps = { "🗺️ Calles": baseLayers.streets, "🛰️ Satélite Puro": baseLayers.satellite, "🌐 Satélite + Calles": L.layerGroup([baseLayers.hybrid, labelsLayer]) };
-
-let currentLayerBtn = 'btn-streets';
-window.setLayer = function(type) {
-  map.eachLayer(layer => { if(layer !== clusters && !layer.feature) map.removeLayer(layer); });
-  if(type === 'streets') baseLayers.streets.addTo(map);
-  if(type === 'satellite') baseLayers.satellite.addTo(map);
-  if(type === 'hybrid') { baseLayers.hybrid.addTo(map); labelsLayer.addTo(map); }
-  
-  document.querySelectorAll('.layer-btn').forEach(b => b.classList.remove('active'));
-  document.getElementById('btn-'+type).classList.add('active');
-}
-
-const clusters = L.markerClusterGroup({
-  maxClusterRadius: 45, showCoverageOnHover: false,
-  iconCreateFunction: (c) => {
-    const n = c.getChildCount();
-    const sz = n < 10 ? 36 : n < 50 ? 44 : 52;
-    return L.divIcon({ html: `<div style="width:${sz}px;height:${sz}px;border-radius:50%; background:rgba(27,77,46,0.95);border:3px solid #4CAF77; display:flex;align-items:center;justify-content:center; font-size:13px;font-weight:700;color:white; box-shadow:0 3px 10px rgba(0,0,0,0.4);">${n}</div>`, className:'', iconSize:[sz,sz] });
-  }
-});
-
-let globalPtsData = null;
-let globalPerimetro = null;
-let allMarkers = [];
-let activeFilter = 'all';
-let activeEstado = 'all';
-let currentMode = 'ups'; 
-
-function applyFilters() {
-  clusters.clearLayers();
-  allMarkers.forEach(m => {
-    const secOk = activeFilter === 'all' || m._secGroup === activeFilter;
-    const estOk = activeEstado === 'all' || m._estado === activeEstado;
-    if (secOk && estOk) clusters.addLayer(m);
-  });
-}
-
-// --- RENDERIZADO Y DEDUPLICACIÓN ---
-function renderMapData() {
-  clusters.clearLayers();
-  allMarkers = [];
-  let proyectos = [];
-  let totalInversion = 0;
-
-  if (currentMode === 'contratos') {
-    // MODO CONTRATOS BRUTOS (190)
-    globalPtsData.features.forEach(f => {
-      if (!f.geometry || !turf.booleanPointInPolygon(f, globalPerimetro)) return;
-      const props = f.properties;
-      let pptoStr = (props.presupuest || '0').toString().replace(/[^0-9\.,]/g, '');
-      if (pptoStr.endsWith('.00') || pptoStr.endsWith(',00')) pptoStr = pptoStr.slice(0, -3);
-      const ppto = parseFloat(pptoStr.replace(/[\.,]/g, '')) || 0;
-      
-      proyectos.push({
-        nombre: props.nombre_up || 'Sin Nombre', secretaria: secGroup(props.nombre_cen), 
-        estado: props.estado || 'Alistamiento', tipo: props.tipo_equip || 'Otro', direccion: props.direccion || 'No registrada',
-        avance: parseFloat(props.avance_obr) || 0, presupuesto: ppto, lat: f.geometry.coordinates[1], lon: f.geometry.coordinates[0]
-      });
-      totalInversion += ppto;
-    });
-  } else {
-    // MODO FRENTES FÍSICOS UPS (144) - Deduplicación por Huella Espacial
-    const upsMap = new Map();
-    globalPtsData.features.forEach(f => {
-      if (!f.geometry || !turf.booleanPointInPolygon(f, globalPerimetro)) return;
-      const props = f.properties;
-      let pptoStr = (props.presupuest || '0').toString().replace(/[^0-9\.,]/g, '');
-      if (pptoStr.endsWith('.00') || pptoStr.endsWith(',00')) pptoStr = pptoStr.slice(0, -3);
-      const ppto = parseFloat(pptoStr.replace(/[\.,]/g, '')) || 0;
-      
-      const lat = f.geometry.coordinates[1];
-      const lon = f.geometry.coordinates[0];
-      const uniqueKey = `${props.direccion}_${lat}_${lon}_${props.tipo_equip}`;
-
-      if (!upsMap.has(uniqueKey)) {
-        upsMap.set(uniqueKey, {
-          nombre: props.nombre_up || 'Sin Nombre', secretaria: secGroup(props.nombre_cen),
-          estado: props.estado || 'Alistamiento', tipo: props.tipo_equip || 'Otro', direccion: props.direccion || 'No registrada',
-          avance: parseFloat(props.avance_obr) || 0, presupuesto: ppto, lat: lat, lon: lon
-        });
-      } else {
-        const ups = upsMap.get(uniqueKey);
-        if (ppto > ups.presupuesto) ups.presupuesto = ppto; // Evita el doble conteo, toma el maximo
-        ups.avance = Math.max(ups.avance, parseFloat(props.avance_obr) || 0);
-      }
-    });
-    proyectos = Array.from(upsMap.values());
-    totalInversion = proyectos.reduce((sum, p) => sum + p.presupuesto, 0);
-  }
-
-
-
-  // --- FILTRO DINÁMICO DE SECRETARÍAS ---
-  const secContainer = document.getElementById('filter-sec');
-  const secretariasActivas = [...new Set(proyectos.map(p => p.secretaria))].sort();
-  
-  if (activeFilter !== 'all' && !secretariasActivas.includes(activeFilter)) { activeFilter = 'all'; }
-
-  let htmlBotones = `<span class="filter-label">Secretaría:</span><button class="filter-btn ${activeFilter === 'all' ? 'active' : ''}" data-filter="all">Todas</button>`;
-  secretariasActivas.forEach(sec => {
-    const color = SEC_COLORS[sec] || SEC_COLORS["Otras"];
-    htmlBotones += `<button class="filter-btn ${activeFilter === sec ? 'active' : ''}" data-filter="${sec}" style="border-color:${color};">${sec}</button>`;
-  });
-  secContainer.innerHTML = htmlBotones;
-
-  secContainer.querySelectorAll('.filter-btn').forEach(btn => {
-    btn.addEventListener('click', e => {
-      secContainer.querySelectorAll('.filter-btn').forEach(x => x.classList.remove('active'));
-      e.target.classList.add('active');
-      activeFilter = e.target.dataset.filter;
-      applyFilters();
-    });
-  });
-
-  // --- NUEVO: LEYENDA DINÁMICA DE REFERENCIAS ---
-  const legendDynamic = document.getElementById('legend-dynamic');
-  if (legendDynamic) {
-    let htmlLeyenda = '';
-    secretariasActivas.forEach(sec => {
-      const color = SEC_COLORS[sec] || SEC_COLORS["Otras"];
-      htmlLeyenda += `<div class="legend-item"><div class="legend-dot" style="background:${color};"></div> ${sec}</div>`;
-    });
-    legendDynamic.innerHTML = htmlLeyenda;
-  }
-
-  // --- ACTUALIZACIÓN DE KPIs ---
-  document.getElementById('kpi-frentes').innerText = proyectos.length;
-  document.getElementById('kpi-frentes-lbl').innerText = currentMode === 'ups' ? 'Frentes de Obra' : 'Contratos Totales';
-  document.getElementById('kpi-inversion').innerText = '$' + (totalInversion / 1e6).toLocaleString('es-CO', {maximumFractionDigits:0}) + 'M';
-
-  // --- PINTAR MARCADORES ---
-  proyectos.forEach(p => {
-    const color = getColor(p.secretaria);
-    const icon = L.divIcon({ html: `<div style="width:14px;height:14px;border-radius:50%; background:${color};border:2.5px solid white; box-shadow:0 2px 6px rgba(0,0,0,0.5);"></div>`, className:'', iconSize:[14,14], iconAnchor:[7,7] });
-    let estClean = p.estado.toLowerCase();
-    const badgeClass = estClean.includes('ejecuc') ? 'badge-ejecucion' : estClean.includes('terminad') ? 'badge-terminado' : 'badge-alistamiento';
-    const presStr = p.presupuesto > 0 ? `$${Math.round(p.presupuesto/1e6).toLocaleString('es-CO')}M` : '<span style="color:#E74C3C;">No reportado</span>';
-
-    const marker = L.marker([p.lat, p.lon], {icon}).bindPopup(`
-      <div style="min-width:240px;">
-        <div class="popup-title">${p.nombre}</div>
-        <div class="popup-row"><span class="popup-label">Secretaría</span><span class="popup-val" style="color:${color};font-weight:600;">${p.secretaria}</span></div>
-        <div class="popup-row"><span class="popup-label">Tipo</span><span class="popup-val">${p.tipo}</span></div>
-        <div class="popup-row"><span class="popup-label">Dirección</span><span class="popup-val" style="white-space:normal; max-width:140px;">${p.direccion}</span></div>
-        <div class="popup-row"><span class="popup-label">Presupuesto</span><span class="popup-val">${presStr}</span></div>
-        <span class="popup-badge ${badgeClass}">${p.estado}</span>
-      </div>
-    `, {maxWidth:320});
-    marker._secGroup = p.secretaria;
-    marker._estado = estClean.includes('ejecuc') ? 'En ejecución' : estClean.includes('terminad') ? 'Terminado' : 'En alistamiento';
-    allMarkers.push(marker);
-  });
-  applyFilters();
-}
-
-// --- CARGA INICIAL GEOJSON ---
-async function initDynamicMap() {
-  const [ptsRes, polyRes, tramosRes] = await Promise.all([ fetch('../Total_secretarias.geojson'), fetch('../poligonos.geojson'), fetch('../tramos_oriente.geojson') ]);
-  globalPtsData = await ptsRes.json();
-  const polyData = await polyRes.json();
-  const tramosData = await tramosRes.json();
-
-  // Pintar Perímetro
-  globalPerimetro = polyData.features.find(f => f.properties.Name === 'Perimetro Proyecto') || polyData.features[0];
-  const perimeterLayer = L.geoJSON(globalPerimetro, { style: { color: '#E91E8C', weight: 4, fill: false } }).addTo(map);
-  map.fitBounds(perimeterLayer.getBounds(), {padding:[20,20]});
-
-  // Pintar Áreas Extra
-  const areasLayer = L.layerGroup().addTo(map);
-  const polyColors = ['#F1C40F', '#E67E22', '#4CAF77', '#9B59B6'];
-  let cIdx = 0;
-  polyData.features.forEach(f => {
-    if (f.properties.Name !== 'Perimetro Proyecto') {
-      L.geoJSON(f, { style: { color: polyColors[cIdx % polyColors.length], weight: 2, fillOpacity: 0.3 } }).bindTooltip(`<b>Polígono de Obra:</b><br>${f.properties.Name}`).addTo(areasLayer);
-      cIdx++;
-    }
-  });
-
-  // Pintar Corredor
-  const tramosLayer = L.geoJSON(tramosData, { style: { color: '#00BCD4', weight: 4, opacity: 0.9 } }).bindTooltip('<b>Corredor Hídrico</b>').addTo(map);
-  
-  map.addLayer(clusters);
-  L.control.layers(null, { "📍 Puntos de Obra": clusters, "🟣 Límite del Pulmón": perimeterLayer, "💧 Corredor Hídrico": tramosLayer, "🟩 Áreas de Proyecto": areasLayer }, { position: 'topright' }).addTo(map);
-
-  renderMapData(); 
-}
-
-// --- LISTENERS ESTÁTICOS ---
-document.querySelectorAll('#filter-modo .filter-btn').forEach(btn => {
-  btn.addEventListener('click', e => {
-    document.querySelectorAll('#filter-modo .filter-btn').forEach(x => x.classList.remove('active'));
-    e.target.classList.add('active');
-    currentMode = e.target.dataset.modo;
-    renderMapData();
-  });
-});
-
-document.querySelectorAll('#filter-estado .filter-btn').forEach(btn => {
-  btn.addEventListener('click', e => {
-    document.querySelectorAll('#filter-estado .filter-btn').forEach(x => x.classList.remove('active'));
-    e.target.classList.add('active');
-    activeEstado = e.target.dataset.estado; 
-    applyFilters();
-  });
-});
-
-document.getElementById('btn-reset').addEventListener('click', () => {
-  activeFilter = 'all'; activeEstado = 'all';
-  document.querySelectorAll('.filter-btn[data-estado], .filter-btn[data-filter]').forEach(b => b.classList.remove('active'));
-  document.querySelectorAll('.filter-btn[data-estado="all"], .filter-btn[data-filter="all"]').forEach(b => b.classList.add('active'));
-  applyFilters();
-});
-
-initDynamicMap();
-</script>
 </body>
 </html>

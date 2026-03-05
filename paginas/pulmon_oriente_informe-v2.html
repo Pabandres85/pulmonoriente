@@ -1,351 +1,11 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Pulmón de Oriente · Informe de Inversión · Cali 2024–2027</title>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Montserrat:wght@600;700;800&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
-<style>
-  :root {
-    --verde-bosque:   #1B4D2E;
-    --verde-esmeralda:#2E7D52;
-    --verde-claro:    #4CAF50;
-    --verde-menta:    #A5D6A7;
-    --verde-hielo:    #E8F5E9;
-    --tierra:         #5D4037;
-    --ocre:           #F57F17;
-    --rojo-alerta:    #7B3535;
-    --azul-agua:      #0277BD;
-    --blanco:         #FAFAFA;
-    --gris-papel:     #F4F1EC;
-    --gris-text:      #37474F;
-    --gris-light:     #90A4AE;
-    --negro:          #1A1A1A;
-  }
-
-  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-  body { background: var(--gris-papel); font-family: 'Inter', sans-serif; color: var(--negro); min-height: 100vh; }
-  h1, h2, h3, .hero-kpi-val, .stat-num { font-family: 'Montserrat', sans-serif; }
-  .section-num, .hero-date, .chart-badge, .barrio-bar-val, th { font-family: 'JetBrains Mono', monospace; }
-
-  /* ─── HERO ─── */
-.hero {
-  position: relative;
-  background: #ffffff;
-  overflow: hidden;
-  padding: 0;
-}
-
-/* Gradientes suaves */
-.hero::before {
-  content: '';
-  position: absolute;
-  inset: 0;
-  background:
-    radial-gradient(ellipse 80% 60% at 20% 30%, rgba(46,125,82,0.25) 0%, transparent 70%),
-    radial-gradient(ellipse 60% 50% at 80% 70%, rgba(76,175,119,0.12) 0%, transparent 65%);
-  pointer-events: none;
-}
-
-/* Malla sutil */
-.hero::after {
-  content: '';
-  position: absolute;
-  inset: 0;
-  background-image:
-    linear-gradient(rgba(76,175,119,0.05) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(76,175,119,0.05) 1px, transparent 1px);
-  background-size: 48px 48px;
-  pointer-events: none;
-}
-
-.hero-inner {
-  position: relative;
-  z-index: 2;
-  max-width: 1200px;
-  margin: 0 auto;
-  padding: 72px 60px 56px;
-  display: grid;
-  grid-template-columns: 1fr auto;
-  gap: 40px;
-  align-items: end;
-}
- /* ─── BRAND (ESCUDO + TITULO) ─── */
-.hero-brand{
-  display: flex;
-  align-items: flex-start;
-  gap: 28px;                 /* más separación con el título */
-  margin-top: 6px;
-}
-
-.hero-logo{
-  width: 110px;              /* más grande */
-  height: auto;
-  flex: 0 0 auto;
-  margin-left: -6px;         /* lo mueve un poco hacia la izquierda */
-  filter: drop-shadow(0 14px 24px rgba(0,0,0,0.35));
-}
-
-.hero-brand-text{
-  min-width: 0;
-  padding-top: 6px;          /* pequeño ajuste vertical */
-}
-
-/* Responsive: logo arriba del título */
-@media (max-width: 640px){
-  .hero-brand{
-    flex-direction: column;
-    align-items: center;      /* en móvil se ve más institucional centrado */
-    gap: 10px;
-    text-align: center;
-  }
-  .hero-logo{
-    width: 72px;
-    margin-top: 0;
-  }
-  .hero-brand-text{
-    text-align: center;
-  }
-}
- /* TAG SUPERIOR */
-.hero-tag{
-  display:inline-flex;
-  align-items:center;
-  gap:8px;
-  background: rgba(165,214,167,0.35);          
-  border: 1px solid rgba(46,125,82,0.28);
-  border-radius:100px;
-  padding:6px 16px;
-  color: var(--verde-bosque);                  
-  font-size:11px;
-  font-weight:600;
-  letter-spacing:2px;
-  text-transform:uppercase;
-  margin-bottom:20px;
-}
-
-/* TITULO */
-h1{
-  font-size: clamp(36px, 5vw, 64px);
-  font-weight: 800;
-  color: var(--verde-bosque);                
-  line-height: 1.05;
-}
-
-h1 span{
-  color: var(--verde-esmeralda);              
-}
-
-/* SUBTITULOS */
-.hero-sub{
-  color: rgba(27,77,46,0.75);                 
-  font-size:15px;
-  font-style: italic;
-  margin-top:12px;
-  line-height:1.6;
-}
-
-.hero-date{
-  color: rgba(27,77,46,0.62);                 
-  font-size:12px;
-  margin-top:20px;
-  letter-spacing:1px;
-}
-
-/* KPI */
-.hero-kpi-grid{
-  display:grid;
-  grid-template-columns:1fr 1fr;
-  gap:12px;
-  min-width:260px;
-}
-
-.hero-kpi{
-  background: rgba(255,255,255,0.70);          
-  border: 1px solid rgba(27,77,46,0.12);
-  border-radius:12px;
-  padding:16px 20px;
-  backdrop-filter: blur(10px);
-  box-shadow: 0 12px 30px rgba(27,77,46,0.08);
-}
-
-.hero-kpi-val{
-  font-size:26px;
-  font-weight:700;
-  color: var(--verde-bosque);                 
-  line-height:1;
-}
-
-.hero-kpi-lbl{
-  font-size:10px;
-  color: rgba(27,77,46,0.58);                  
-  margin-top:4px;
-  text-transform:uppercase;
-  letter-spacing:1px;
-}
-
-.hero-kpi.accent{
-  background: rgba(165,214,167,0.40);
-  border-color: rgba(46,125,82,0.22);
-}
-
-.hero-kpi.accent .hero-kpi-val{
-  color: var(--verde-bosque);                  
-}
-
-  /* ─── TOOLBAR (TOGGLE Y AÑO) ─── */
-  .toolbar-strip { background: #fff; border-bottom: 1px solid #E0E0E0; padding: 14px 40px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 16px; }
-  .toolbar-left { display: flex; align-items: center; gap: 32px; flex-wrap: wrap; }
-  .toggle-group { display: flex; align-items: center; gap: 10px; }
-  .toggle-lbl { font-size: 13px; font-weight: 600; color: var(--gris-text); }
-  .toggle-btn { padding: 6px 16px; border: 1px solid var(--verde-claro); background: #fff; color: var(--verde-bosque); border-radius: 20px; cursor: pointer; font-family: 'Inter', sans-serif; font-size: 12px; font-weight: 600; transition: all 0.2s; outline: none; }
-  .toggle-btn:hover { background: var(--verde-hielo); }
-  .toggle-btn.active { background: var(--verde-claro); color: #fff; }
-  select.toggle-btn { padding: 5px 30px 5px 16px; appearance: auto; }
-  
-  .alert-strip { background: #5C2E2E; color: #F9ECEC; padding: 12px 40px; font-size: 13px; font-weight: 600; display: flex; align-items: center; gap: 12px; transition: background 0.3s; }
-
-  /* ─── LAYOUT ─── */
-  .container { max-width: 1200px; margin: 0 auto; padding: 0 40px; }
-  .section { padding: 56px 0; }
-  .section-header { display: flex; align-items: baseline; gap: 16px; margin-bottom: 36px; }
-  .section-num { font-size: 12px; color: var(--verde-esmeralda); letter-spacing: 3px; }
-  h2 { font-size: 26px; font-weight: 700; color: var(--verde-bosque); }
-  .divider { height: 1px; background: linear-gradient(to right, var(--verde-menta), transparent); margin: 0 0 36px; }
-
-  /* ─── STAT CARDS ─── */
-  .stats-row { display: grid; grid-template-columns: repeat(5, 1fr); gap: 16px; margin-bottom: 28px; }
-  .stat-card { background: #fff; border-radius: 14px; padding: 22px 20px; box-shadow: 0 2px 12px rgba(0,0,0,0.06); border-top: 4px solid var(--verde-claro); position: relative; overflow: hidden; }
-  .stat-card.alerta { border-top-color: var(--rojo-alerta); }
-  .stat-card.alistamiento { border-top-color: var(--azul-agua); }
-  .stat-num { font-size: 30px; font-weight: 700; color: var(--verde-bosque); }
-  .stat-card.alerta .stat-num { color: var(--rojo-alerta); }
-  .stat-card.alistamiento .stat-num { color: var(--azul-agua); }
-  .stat-lbl { font-size: 11px; color: var(--gris-light); margin-top: 6px; text-transform: uppercase; letter-spacing: 0.5px; font-weight: 600; }
-
-  /* ─── CHARTS ─── */
-  .charts-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 28px; }
-  .charts-grid.wide { grid-template-columns: 2fr 1fr; }
-  .chart-card { background: #fff; border-radius: 16px; box-shadow: 0 4px 24px rgba(0,0,0,0.06); border: 1px solid rgba(0,0,0,0.05); }
-  .chart-card-header { padding: 20px 24px 0; display: flex; justify-content: space-between; align-items: flex-start; }
-  .chart-card-title { font-size: 14px; font-weight: 600; color: var(--verde-bosque); text-transform: uppercase; letter-spacing: 1px; }
-  .chart-body { padding: 16px 24px 20px; }
-  .chart-wrap { position: relative; height: 260px; width: 100%; }
-  .chart-wrap-tall { height: 320px; }
-  .chart-wrap-donut { height: 260px; max-width: 320px; margin: 0 auto; }
-
-  /* ─── TABLA Y BARRIOS ─── */
-  .table-wrap { background: #fff; border-radius: 16px; overflow-x: auto; box-shadow: 0 4px 24px rgba(0,0,0,0.06); }
-  table { width: 100%; border-collapse: collapse; }
-  th { background: var(--verde-bosque); color: #fff; padding: 14px 16px; font-size: 11px; text-transform: uppercase; text-align: left; }
-  td { padding: 12px 16px; font-size: 13px; border-bottom: 1px solid rgba(0,0,0,0.04); color: var(--gris-text); }
-  tr:nth-child(even) td { background: var(--verde-hielo); }
-  .pill { display: inline-block; padding: 4px 10px; border-radius: 100px; font-size: 11px; font-weight: 600; }
-  .pill-ej { background: #DCEDC8; color: #33691E; }
-  .barrio-bar-item { margin-bottom: 14px; }
-  .barrio-bar-top { display: flex; justify-content: space-between; margin-bottom: 4px; }
-  .barrio-bar-name { font-size: 13px; font-weight: 500; color: var(--gris-text); }
-  .barrio-bar-val { font-size: 12px; color: var(--verde-bosque); font-weight: 600; }
-  .barrio-bar-track { height: 8px; background: var(--gris-papel); border-radius: 100px; overflow: hidden; }
-  .barrio-bar-fill { height: 100%; background: linear-gradient(to right, var(--verde-esmeralda), var(--verde-claro)); border-radius: 100px; }
-
-  /* ─── FOOTER ─── */
-.site-footer{
-  margin-top: 24px;
-  background: linear-gradient(180deg, rgba(27,77,46,0.04), rgba(27,77,46,0.08));
-  border-top: 1px solid rgba(27,77,46,0.10);
-  padding: 34px 0 22px;
-  color: var(--gris-text);
-}
-
-.footer-inner{
-  max-width: 1200px;
-  margin: 0 auto;
-  padding: 0 40px;
-  display: grid;
-  grid-template-columns: 1.4fr 0.9fr 1fr;
-  gap: 26px;
-}
-
-.footer-title{
-  font-family: 'Montserrat', sans-serif;
-  font-weight: 700;
-  color: var(--verde-bosque);
-  font-size: 14px;
-  letter-spacing: .2px;
-  margin-bottom: 10px;
-}
-
-.footer-text{
-  font-size: 13px;
-  line-height: 1.6;
-  color: rgba(55,71,79,0.85);
-  margin-bottom: 12px;
-}
-
-.footer-meta{
-  font-size: 12px;
-  color: rgba(55,71,79,0.70);
-}
-
-.footer-links{
-  list-style: none;
-  display: grid;
-  gap: 8px;
-}
-
-.footer-links a{
-  text-decoration: none;
-  font-size: 13px;
-  color: rgba(27,77,46,0.85);
-  font-weight: 600;
-}
-
-.footer-links a:hover{
-  color: var(--verde-esmeralda);
-}
-
-.footer-badge{
-  display: inline-flex;
-  align-items: center;
-  gap: 8px;
-  padding: 8px 12px;
-  border-radius: 999px;
-  background: rgba(165,214,167,0.35);
-  border: 1px solid rgba(46,125,82,0.25);
-  color: var(--verde-bosque);
-  font-size: 12px;
-  font-weight: 600;
-}
-
-.footer-bottom{
-  max-width: 1200px;
-  margin: 18px auto 0;
-  padding: 14px 40px 0;
-  border-top: 1px dashed rgba(27,77,46,0.18);
-  display: flex;
-  flex-wrap: wrap;
-  gap: 10px;
-  justify-content: center;
-  font-size: 12px;
-  color: rgba(55,71,79,0.70);
-}
-
-.footer-sep{ opacity: .6; }
-
-/* Responsive footer */
-@media (max-width: 960px){
-  .footer-inner{ grid-template-columns: 1fr; }
-}
-
-@media (max-width: 640px){
-  .footer-inner, .footer-bottom{ padding: 0 16px; }
-  .footer-bottom{ padding-top: 14px; }
-}
-
-  @media (max-width: 960px) { .charts-grid.wide, .charts-grid { grid-template-columns: 1fr; } .stats-row { grid-template-columns: repeat(3, 1fr); } }
-  @media (max-width: 640px) { .hero-inner { padding: 36px 16px; grid-template-columns: 1fr; } .container, .toolbar-strip { padding: 16px; } .stats-row { grid-template-columns: 1fr 1fr; } .toolbar-left { gap: 16px; } }
-</style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Pulmón de Oriente · Informe de Inversión · Cali 2024–2027</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Montserrat:wght@600;700;800&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../assets/css/informe.css">
 </head>
 <body>
 
@@ -354,17 +14,16 @@ h1 span{
   <div class="hero-lines"></div>
   <div class="hero-inner">
     <div>
-  <div class="hero-tag">Distrito de Aguablanca · Cali</div>
-  <div class="hero-brand">
-    <img class="hero-logo" src="../imag/logo_alcaldia.png" alt="Escudo Alcaldía de Santiago de Cali">
-
-    <div class="hero-brand-text">
-      <h1>Pulmón de<br><span>Oriente</span></h1>
-      <p class="hero-sub">Informe Analítico de Inversión Pública</p>
-      <p class="hero-date">// FUENTE: SECRETARÍAS DISTRITALES · CÁLCULO DINÁMICO</p>
+      <div class="hero-tag">Distrito de Aguablanca · Cali</div>
+      <div class="hero-brand">
+        <img class="hero-logo" src="../imag/logo_alcaldia.png" alt="Escudo Alcaldía de Santiago de Cali">
+        <div class="hero-brand-text">
+          <h1>Pulmón de<br><span>Oriente</span></h1>
+          <p class="hero-sub">Informe Analítico de Inversión Pública</p>
+          <p class="hero-date">// FUENTE: SECRETARÍAS DISTRITALES · CÁLCULO DINÁMICO</p>
+        </div>
+      </div>
     </div>
-  </div>
-</div>
     <div class="hero-kpi-grid">
       <div class="hero-kpi accent">
         <div class="hero-kpi-val" id="kpi-count">...</div>
@@ -396,7 +55,7 @@ h1 span{
       </select>
     </div>
   </div>
-  <span style="font-size: 12px; color: var(--gris-light);">Geofiltro activo: Polígono Magenta</span>
+  <span class="geofiltro-info">Geofiltro activo: Polígono Magenta</span>
 </div>
 
 <div class="alert-strip" id="alert-banner">
@@ -443,7 +102,7 @@ h1 span{
   </div>
 </section>
 
-<section class="section" style="padding-top:0">
+<section class="section pt-0">
   <div class="container">
     <div class="section-header"><span class="section-num">02 —</span><h2>Categorías</h2></div>
     <div class="divider"></div>
@@ -460,7 +119,7 @@ h1 span{
   </div>
 </section>
 
-<section class="section" style="padding-top:0">
+<section class="section pt-0">
   <div class="container">
     <div class="section-header"><span class="section-num">03 —</span><h2>Territorio</h2></div>
     <div class="divider"></div>
@@ -477,7 +136,7 @@ h1 span{
   </div>
 </section>
 
-<section class="section" style="padding-top:0">
+<section class="section pt-0">
   <div class="container">
     <div class="section-header"><span class="section-num">04 —</span><h2>Destacados en Ejecución</h2></div>
     <div class="divider"></div>
@@ -499,228 +158,16 @@ h1 span{
     <svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor"><path d="M9 17H7v-7h2v7zm4 0h-2V7h2v10zm4 0h-2v-4h2v4zm2.5 2.1H4.5V5h15v14.1zm0-16.1h-15C3.6 3 3 3.6 3 4.5v15C3 20.4 3.6 21 4.5 21h15c.9 0 1.5-.6 1.5-1.5v-15C21 3.6 20.4 3 19.5 3z"/></svg>
     Informe
   </a>
-  <a class="switcher-btn" href="pulmon_oriente_mapa_v2.html" >
+  <a class="switcher-btn" href="pulmon_oriente_mapa_v2.html">
     <svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor"><path d="M20.5 3l-.16.03L15 5.1 9 3 3.36 4.9c-.21.07-.36.25-.36.48V20.5c0 .28.22.5.5.5l.16-.03L9 18.9l6 2.1 5.64-1.9c.21-.07.36-.25.36-.48V3.5c0-.28-.22-.5-.5-.5zM15 19l-6-2.11V5l6 2.11V19z"/></svg>
     Mapa
   </a>
 </nav>
-<style>
-.page-switcher { position: fixed; bottom: 24px; left: 50%; transform: translateX(-50%); z-index: 2000; display: flex; align-items: center; gap: 0; background: rgba(27, 77, 46, 0.96); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); border-radius: 40px; padding: 6px 10px; box-shadow: 0 6px 28px rgba(0,0,0,0.28), 0 1px 4px rgba(0,0,0,0.15); border: 1px solid rgba(76, 175, 119, 0.25); }
-.switcher-home { display: flex; align-items: center; justify-content: center; width: 30px; height: 30px; border-radius: 50%; color: rgba(255,255,255,0.65); text-decoration: none; transition: all 0.2s; flex-shrink: 0; }
-.switcher-home:hover { color: #fff; background: rgba(255,255,255,0.12); }
-.switcher-divider { width: 1px; height: 20px; background: rgba(255,255,255,0.18); margin: 0 6px; flex-shrink: 0; }
-.switcher-btn { display: flex; align-items: center; gap: 5px; padding: 6px 14px; border-radius: 30px; font-family: 'IBM Plex Sans', sans-serif; font-size: 12px; font-weight: 500; color: rgba(255,255,255,0.72); text-decoration: none; letter-spacing: 0.03em; transition: all 0.2s; white-space: nowrap; }
-.switcher-btn:hover { color: #fff; background: rgba(255,255,255,0.1); }
-.switcher-btn.active { background: #4CAF77; color: #1B4D2E; font-weight: 600; }
-.switcher-btn.active:hover { background: #5DC88A; }
-@media (max-width: 480px) { .page-switcher { bottom: 14px; padding: 5px 8px; } .switcher-btn { padding: 5px 10px; font-size: 11px; } }
-</style>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.0/chart.umd.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/@turf/turf@6/turf.min.js"></script>
-<script>
-Chart.defaults.font.family = "'Inter', sans-serif";
-const COLORES = { v1:'#1B4D2E', v2:'#2E7D52', v3:'#4CAF50', v4:'#A5D6A7', ocre:'#F57F17', rojo:'#E74C3C', azul:'#0277BD', lila:'#6A1B9A' };
+<script src="../assets/js/informe.js"></script>
 
-let globalPts = null;
-let globalPoly = null;
-let currentMode = 'ups';
-let currentAnio = 'all'; // Filtro de Año
-let myCharts = {};
-
-function secGroup(s) {
-  if (!s) return "Otras";
-  if (s.includes("Vivienda") || s.includes("Hábitat")) return "Vivienda";
-  if (s.includes("Educación") || s.includes("Educacion")) return "Educación";
-  if (s.includes("Salud")) return "Salud";
-  if (s.includes("Deporte") || s.includes("Recreación")) return "Deporte";
-  if (s.includes("Cultura")) return "Cultura";
-  return "Otras";
-}
-
-function renderDashboard() {
-  const perimetro = globalPoly.features.find(f => f.properties.Name === 'Perimetro Proyecto') || globalPoly.features[0];
-  let proyectos = [];
-  let totalInversion = 0;
-
-  const dataSec = {}; const dataEst = {'En ejecución':0, 'En alistamiento':0, 'Terminado':0, 'Suspendido':0};
-  const dataTipo = {}; const dataBarrio = {}; const barrioCount = {}; const dataAnio = {};
-
-  if (currentMode === 'contratos') {
-    globalPts.features.forEach(f => {
-      if (!f.geometry || !turf.booleanPointInPolygon(f, perimetro)) return;
-      const p = f.properties;
-      let yr = (p.año || '2025').toString().trim();
-      if(yr === 'null' || yr === '') yr = '2025';
-      
-      // Aplicar filtro de año interactivo
-      if(currentAnio !== 'all' && yr !== currentAnio) return;
-
-      let ppto = parseFloat((p.presupuest||'0').toString().replace(/[^0-9\.,]/g, '').replace(/\.00$|,00$/, '').replace(/[\.,]/g, '')) || 0;
-      proyectos.push({
-        nombre: p.nombre_up, secretaria: secGroup(p.nombre_cen), estado: p.estado || 'Alistamiento',
-        tipo: p.tipo_equip || 'Otro', barrio: p.barrio_ver || 'Sin dato', avance: parseFloat(p.avance_obr)||0, presupuesto: ppto, año: yr
-      });
-    });
-  } else {
-    const upsMap = new Map();
-    globalPts.features.forEach(f => {
-      if (!f.geometry || !turf.booleanPointInPolygon(f, perimetro)) return;
-      const p = f.properties;
-      let yr = (p.año || '2025').toString().trim();
-      if(yr === 'null' || yr === '') yr = '2025';
-
-      // Aplicar filtro de año interactivo
-      if(currentAnio !== 'all' && yr !== currentAnio) return;
-
-      let ppto = parseFloat((p.presupuest||'0').toString().replace(/[^0-9\.,]/g, '').replace(/\.00$|,00$/, '').replace(/[\.,]/g, '')) || 0;
-      
-      //Lave estrictamente física sin el año para evitar duplicar
-      const key = `${p.direccion}_${f.geometry.coordinates[1]}_${f.geometry.coordinates[0]}_${p.tipo_equip}`;
-      
-      if (!upsMap.has(key)) {
-        upsMap.set(key, {
-          nombre: p.nombre_up, secretaria: secGroup(p.nombre_cen), estado: p.estado || 'Alistamiento',
-          tipo: p.tipo_equip || 'Otro', barrio: p.barrio_ver || 'Sin dato', avance: parseFloat(p.avance_obr)||0, 
-          presupuesto: ppto, año: yr // Año inicial
-        });
-      } else {
-        const u = upsMap.get(key);
-        // Si el nuevo contrato tiene un presupuesto MAYOR, actualizamos el valor y "heredamos" su año
-        if (ppto > u.presupuesto) {
-          u.presupuesto = ppto;
-          u.año = yr; // El año manda el contrato más grande
-        }
-        // El avance nos quedamos con el más alto reportado
-        u.avance = Math.max(u.avance, parseFloat(p.avance_obr)||0);
-      }
-    });
-    proyectos = Array.from(upsMap.values());
-  }
-
-  // Poblar sumadores
-  proyectos.forEach(p => {
-    totalInversion += p.presupuesto;
-    dataSec[p.secretaria] = (dataSec[p.secretaria] || 0) + p.presupuesto;
-    dataTipo[p.tipo] = (dataTipo[p.tipo] || 0) + p.presupuesto;
-    dataBarrio[p.barrio] = (dataBarrio[p.barrio] || 0) + p.presupuesto;
-    barrioCount[p.barrio] = (barrioCount[p.barrio] || 0) + 1;
-    dataAnio[p.año] = (dataAnio[p.año] || 0) + p.presupuesto;
-    
-    let est = p.estado.toLowerCase();
-    if(est.includes('ejecuc')) dataEst['En ejecución']++;
-    else if(est.includes('terminad')) dataEst['Terminado']++;
-    else if(est.includes('suspendid')) dataEst['Suspendido']++;
-    else dataEst['En alistamiento']++;
-  });
-
-  // 1. Actualizar Textos
-  document.getElementById('kpi-count').innerText = proyectos.length;
-  document.getElementById('kpi-count-lbl').innerText = currentMode === 'ups' ? 'Frentes Únicos' : 'Contratos Totales';
-  document.getElementById('kpi-budget').innerText = '$' + Math.round(totalInversion/1e6).toLocaleString('es-CO') + 'M';
-  document.getElementById('stat-total').innerText = proyectos.length;
-  document.getElementById('stat-total-lbl').innerText = currentMode === 'ups' ? 'Frentes' : 'Contratos';
-  document.getElementById('stat-alistamiento').innerText = dataEst['En alistamiento'];
-  document.getElementById('stat-ejecucion').innerText = dataEst['En ejecución'];
-  document.getElementById('stat-terminado').innerText = dataEst['Terminado'];
-  document.getElementById('stat-suspendido').innerText = dataEst['Suspendido'];
-
-  // Alerta Dinámica
-  const alertStrip = document.getElementById('alert-banner');
-  const pctAlist = proyectos.length ? ((dataEst['En alistamiento'] / proyectos.length) * 100).toFixed(1) : 0;
-  let txtAño = currentAnio === 'all' ? 'todos los años' : `el año ${currentAnio}`;
-  
-  if(dataEst['Suspendido'] > 0) {
-    alertStrip.innerHTML = `⚠️ ALERTA: ${dataEst['Suspendido']} obras SUSPENDIDAS en ${txtAño} · ${dataEst['En alistamiento']} en alistamiento (${pctAlist}%).`;
-    alertStrip.style.background = '#7B3535';
-  } else {
-    alertStrip.innerHTML = `✅ ${proyectos.length} ${currentMode === 'ups' ? 'frentes' : 'contratos'} filtrados para ${txtAño} · ${pctAlist}% en alistamiento. No hay suspensiones.`;
-    alertStrip.style.background = '#1B4D2E';
-  }
-
-  // 2. Destruir gráficos
-  Object.keys(myCharts).forEach(k => { if(myCharts[k]) myCharts[k].destroy(); });
-
-  // 3. Crear Gráficos Nuevos
-  const cSec = Object.entries(dataSec).sort((a,b)=>b[1]-a[1]);
-  if(cSec.length > 0) {
-    myCharts.sec = new Chart(document.getElementById('chartSecretaria'), { type: 'bar', data: { labels: cSec.map(s=>s[0]), datasets: [{ data: cSec.map(s=>s[1]/1e6), backgroundColor: [COLORES.v1, COLORES.v2, COLORES.azul, COLORES.v3, COLORES.tierra], borderRadius: 4 }] }, options: { indexAxis: 'y', plugins:{legend:{display:false}}, scales:{x:{ticks:{callback:v=>`$${v}M`}}} } });
-  }
-
-  if(proyectos.length > 0) {
-    myCharts.est = new Chart(document.getElementById('chartEstado'), { type: 'doughnut', data: { labels: Object.keys(dataEst), datasets: [{ data: Object.values(dataEst), backgroundColor: [COLORES.v3, COLORES.azul, COLORES.v1, COLORES.rojo] }] }, options: { cutout:'65%', plugins:{legend:{position:'bottom'}} } });
-  }
-
-  const cTipo = Object.entries(dataTipo).sort((a,b)=>b[1]-a[1]).slice(0,8);
-  if(cTipo.length > 0) {
-    myCharts.tipo = new Chart(document.getElementById('chartTipo'), { type: 'bar', data: { labels: cTipo.map(s=>s[0]), datasets: [{ data: cTipo.map(s=>s[1]/1e6), backgroundColor: COLORES.v4, borderRadius: 4 }] }, options: { indexAxis: 'y', plugins:{legend:{display:false}}, scales:{x:{ticks:{callback:v=>`$${v}M`}}} } });
-  }
-
-  // Si se filtra por un solo año, la gráfica de años no aporta mucho, pero igual la pintamos
-  const cAnio = Object.entries(dataAnio).sort((a,b)=>a[0].localeCompare(b[0]));
-  if(cAnio.length > 0) {
-    document.getElementById('card-anio').style.display = 'block';
-    myCharts.anio = new Chart(document.getElementById('chartAnio'), { type: 'bar', data: { labels: cAnio.map(s=>s[0]), datasets: [{ data: cAnio.map(s=>s[1]/1e6), backgroundColor: COLORES.v2, borderRadius: 6 }] }, options: { plugins:{legend:{display:false}}, scales:{y:{ticks:{callback:v=>`$${v}M`}}} } });
-  } else {
-    document.getElementById('card-anio').style.display = 'none';
-  }
-
-  const cBCount = Object.entries(barrioCount).sort((a,b)=>b[1]-a[1]).slice(0,10);
-  if(cBCount.length > 0) {
-    myCharts.bCount = new Chart(document.getElementById('chartBarrios'), { type: 'bar', data: { labels: cBCount.map(s=>s[0]), datasets: [{ data: cBCount.map(s=>s[1]), backgroundColor: COLORES.v2, borderRadius: 4 }] }, options: { indexAxis: 'y', plugins:{legend:{display:false}} } });
-  }
-
-  // HTML Custom Barrios
-  const bPpto = Object.entries(dataBarrio).sort((a,b)=>b[1]-a[1]).slice(0,10);
-  let htmlB = '';
-  if(bPpto.length){
-    const maxB = bPpto[0][1];
-    bPpto.forEach(b => {
-      htmlB += `<div class="barrio-bar-item"><div class="barrio-bar-top"><span class="barrio-bar-name">${b[0]}</span><span class="barrio-bar-val">$${Math.round(b[1]/1e6).toLocaleString('es-CO')}M</span></div><div class="barrio-bar-track"><div class="barrio-bar-fill" style="width:${(b[1]/maxB*100)}%"></div></div></div>`;
-    });
-  } else {
-    htmlB = '<p style="font-size:13px; color:#90A4AE;">No hay datos para este año</p>';
-  }
-  document.getElementById('barriosBars').innerHTML = htmlB;
-
-  // Tabla Ejecución
-  const tb = document.getElementById('proyectosTable');
-  tb.innerHTML = '';
-  const ejecucion = proyectos.filter(p=>p.estado.toLowerCase().includes('ejecuc') && p.presupuesto>0);
-  if(ejecucion.length > 0) {
-    ejecucion.sort((a,b)=>b.presupuesto-a.presupuesto).slice(0,12).forEach(p => {
-      tb.innerHTML += `<tr><td><strong>${p.secretaria}</strong></td><td>${p.tipo}</td><td>${p.nombre}</td><td>${p.barrio}</td><td>${p.año}</td><td><strong>$${Math.round(p.presupuesto/1e6).toLocaleString('es-CO')}M</strong></td><td><span style="color:#2E7D52; font-weight:600;">${p.avance}%</span></td></tr>`;
-    });
-  } else {
-    tb.innerHTML = `<tr><td colspan="7" style="text-align:center; padding: 20px;">No hay proyectos en ejecución reportados para esta selección.</td></tr>`;
-  }
-}
-
-// Inicialización
-async function initData() {
-  const [resPts, resPoly] = await Promise.all([fetch('../Total_secretarias.geojson'), fetch('../poligonos.geojson')]);
-  globalPts = await resPts.json(); globalPoly = await resPoly.json();
-  renderDashboard();
-}
-
-// Listeners Toggle Modo
-document.querySelectorAll('.toggle-btn[data-modo]').forEach(btn => {
-  btn.addEventListener('click', e => {
-    document.querySelectorAll('.toggle-btn[data-modo]').forEach(b => b.classList.remove('active'));
-    e.target.classList.add('active');
-    currentMode = e.target.dataset.modo;
-    renderDashboard();
-  });
-});
-
-// Listener Selector Año
-document.getElementById('select-anio').addEventListener('change', (e) => {
-  currentAnio = e.target.value;
-  renderDashboard();
-});
-
-initData();
-</script>
 <footer class="site-footer">
   <div class="footer-inner">
     <div class="footer-col">
@@ -759,5 +206,6 @@ initData();
     <span>Equipo Gobierno de Datos</span>
   </div>
 </footer>
+
 </body>
 </html>
