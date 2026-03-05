@@ -228,12 +228,12 @@ function renderDashboard() {
                    :                          'pill-alist';
         return `<tr>
           <td><strong>${shortSec(p.nombre_centro_gestor)}</strong></td>
-          <td>${p.clase_up || '-'}</td>
+          <td class="col-opt">${p.clase_up || '-'}</td>
           <td>${p.tipo_intervencion || '-'}</td>
           <td>${p.comuna_corregimiento || '<span style="color:#90A4AE">Sin dato</span>'}</td>
-          <td>${p.barrio_vereda || '<span style="color:#90A4AE">Sin dato</span>'}</td>
-          <td>${p.fecha_inicio || '-'}</td>
-          <td>${p.fecha_fin || '-'}</td>
+          <td class="col-opt">${p.barrio_vereda || '<span style="color:#90A4AE">Sin dato</span>'}</td>
+          <td class="col-opt">${p.fecha_inicio || '-'}</td>
+          <td class="col-opt">${p.fecha_fin || '-'}</td>
           <td><strong>${fmtM(p.presupuesto_base)}</strong></td>
           <td><span class="pill ${cls}">${est}</span></td>
         </tr>`;
