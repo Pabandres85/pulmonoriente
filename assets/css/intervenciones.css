@@ -226,8 +226,9 @@ h2 { font-size: 26px; font-weight: 700; color: var(--azul); }
 .chart-card-title { font-size: 14px; font-weight: 600; color: var(--azul); text-transform: uppercase; letter-spacing: 1px; }
 .chart-body { padding: 16px 24px 20px; }
 .chart-wrap { position: relative; height: 260px; width: 100%; }
-.chart-wrap-tall { height: 320px; }
-.chart-wrap-donut { height: 260px; max-width: 320px; margin: 0 auto; }
+.chart-wrap-tall { position: relative; height: 320px; width: 100%; }
+.chart-wrap-xtall { position: relative; height: 460px; width: 100%; }
+.chart-wrap-donut { position: relative; height: 260px; max-width: 320px; margin: 0 auto; }
 
 /* ─── TABLA Y BARRIOS ─── */
 .table-wrap { background: #fff; border-radius: 16px; overflow: auto; max-height: 560px; box-shadow: 0 4px 24px rgba(0,0,0,0.06); }

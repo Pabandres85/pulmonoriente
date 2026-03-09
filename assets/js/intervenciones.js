@@ -1,4 +1,6 @@
 Chart.defaults.font.family = "'Inter', sans-serif";
+Chart.defaults.responsive = true;
+Chart.defaults.maintainAspectRatio = false;
 
 // ── COLORES ──────────────────────────────────────────────────────────────────
 const COLORES_SEC = [
@@ -153,6 +155,10 @@ function renderDashboard() {
         scales: { x: { ticks: { callback: v => `$${v} MM` } } }
       }
     });
+    const totalInv   = cSec.reduce((s, [, v]) => s + v, 0);
+    const pctSecTop  = totalInv ? (cSec[0][1] / totalInv * 100).toFixed(0) : 0;
+    document.getElementById('insight-sec').innerHTML =
+      `<span class="ci-label">Mayor inversión:</span> <strong>${shortSec(cSec[0][0])}</strong> · <strong>${fmtMM(cSec[0][1])}</strong> · <em>${pctSecTop}% del total filtrado</em>`;
   }
 
   // ── Gráfica: Donut por Estado ────────────────────────────────────────────────
@@ -169,10 +175,15 @@ function renderDashboard() {
       },
       options: { cutout: '65%', plugins: { legend: { position: 'bottom' } } }
     });
+    const topEst    = estLabels.reduce((max, e) => porEstado[e] > porEstado[max] ? e : max, estLabels[0]);
+    const pctTopEst = total ? (porEstado[topEst] / total * 100).toFixed(0) : 0;
+    document.getElementById('insight-estado').innerHTML =
+      `<span class="ci-label">Estado predominante:</span> <strong>${topEst}</strong> · <strong>${porEstado[topEst].toLocaleString('es-CO')}</strong> intervenciones · <em>${pctTopEst}% del total</em>`;
   }
 
   // ── Gráfica: Top Comunas (inversión + conteo agrupado) ───────────────────────
-  const cComunaTop = Object.entries(porComuna).sort((a, b) => b[1] - a[1]).slice(0, 12);
+  const cComunaAll = Object.entries(porComuna).sort((a, b) => b[1] - a[1]);
+  const cComunaTop = cComunaAll.slice(0, 12);
   if (cComunaTop.length) {
     myCharts.comunas = new Chart(document.getElementById('chartComunas'), {
       type: 'bar',
@@ -204,6 +215,12 @@ function renderDashboard() {
         }
       }
     });
+    const topCom     = cComunaTop[0];
+    const totalCom   = cComunaAll.reduce((s, [, v]) => s + v, 0);
+    const pctCom     = totalCom ? (topCom[1] / totalCom * 100).toFixed(0) : 0;
+    const topComCnt  = porComunaCount[topCom[0]] || 0;
+    document.getElementById('insight-comunas').innerHTML =
+      `<span class="ci-label">Mayor inversión:</span> <strong>${topCom[0]}</strong> · <strong>${fmtMM(topCom[1])}</strong> · <strong>${topComCnt.toLocaleString('es-CO')}</strong> intervenciones · <em>${pctCom}% de la inversión territorial</em>`;
   }
 
   // ── Gráfica: Conteo por Tipo de Intervención ─────────────────────────────────
@@ -249,10 +266,20 @@ function renderDashboard() {
       },
       options: {
         indexAxis: 'y',
-        plugins: { legend: { position: 'bottom', labels: { font: { size: 10 }, boxWidth: 12 } } },
-        scales: { x: { stacked: true }, y: { stacked: true } }
+        layout: { padding: { right: 8 } },
+        plugins: { legend: { position: 'bottom', labels: { font: { size: 11 }, boxWidth: 14, padding: 16 } } },
+        scales: {
+          x: { stacked: true, grid: { color: 'rgba(0,0,0,0.04)' } },
+          y: { stacked: true, ticks: { font: { size: 12 } } }
+        }
       }
     });
+    const topSec     = secLabels[0];
+    const topSecTot  = Object.values(secEstadoMap[topSec]).reduce((s, v) => s + v, 0);
+    const topSecTerm = secEstadoMap[topSec]['Terminado'] || 0;
+    const pctSecTerm = topSecTot ? (topSecTerm / topSecTot * 100).toFixed(0) : 0;
+    document.getElementById('insight-secest').innerHTML =
+      `<span class="ci-label">Más intervenciones:</span> <strong>${topSec}</strong> · <strong>${topSecTot.toLocaleString('es-CO')}</strong> intervenciones · <em>${pctSecTerm}% terminadas</em>`;
   }
 
   // ── Gráfica: Fuente de Financiación ─────────────────────────────────────────
