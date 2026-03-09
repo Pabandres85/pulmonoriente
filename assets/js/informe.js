@@ -1,4 +1,6 @@
 Chart.defaults.font.family = "'Inter', sans-serif";
+Chart.defaults.responsive = true;
+Chart.defaults.maintainAspectRatio = false;
 
 const COLORES = { v1:'#1B4D2E', v2:'#2E7D52', v3:'#4CAF50', v4:'#A5D6A7', rojo:'#E74C3C', azul:'#0277BD' };
 
