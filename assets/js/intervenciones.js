@@ -52,8 +52,19 @@ function applyFilters(data) {
   });
 }
 
+// ── UTILIDAD ANTI-XSS ────────────────────────────────────────────────────────
+function esc(str) {
+  if (!str) return '';
+  return String(str)
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;');
+}
+
 // ── RENDER PRINCIPAL ─────────────────────────────────────────────────────────
 function renderDashboard() {
+  if (!_allData) return;
   const data = applyFilters(_allData);
 
   // ── Agregaciones ────────────────────────────────────────────────────────────
@@ -257,7 +268,7 @@ function renderDashboard() {
         labels: cFuente.map(s => s[0]),
         datasets: [{
           data: cFuente.map(s => +(s[1] / 1e9).toFixed(2)),
-          backgroundColor: ['#003087', '#1565C0', '#C1272D', '#E6A800', '#9B59B6'],
+          backgroundColor: COLORES_SEC.slice(0, cFuente.length),
           borderRadius: 4
         }]
       },
@@ -312,16 +323,17 @@ function renderDashboard() {
                   : est === 'Suspendido'   ? 'pill-susp'
                   : est === 'Inaugurado'   ? 'pill-inag'
                   :                          'pill-alist';
+        const nodat = '<span style="color:#90A4AE">Sin dato</span>';
         return `<tr data-idx="${i}">
-          <td><strong>${shortSec(p.nombre_centro_gestor)}</strong></td>
-          <td class="col-opt">${p.clase_up || '-'}</td>
-          <td>${p.tipo_intervencion || '-'}</td>
-          <td>${p.comuna_corregimiento || '<span style="color:#90A4AE">Sin dato</span>'}</td>
-          <td class="col-opt">${p.barrio_vereda || '<span style="color:#90A4AE">Sin dato</span>'}</td>
-          <td class="col-opt">${p.fecha_inicio || '-'}</td>
-          <td class="col-opt">${p.fecha_fin || '-'}</td>
+          <td><strong>${esc(shortSec(p.nombre_centro_gestor))}</strong></td>
+          <td class="col-opt">${esc(p.clase_up) || '-'}</td>
+          <td>${esc(p.tipo_intervencion) || '-'}</td>
+          <td>${esc(p.comuna_corregimiento) || nodat}</td>
+          <td class="col-opt">${esc(p.barrio_vereda) || nodat}</td>
+          <td class="col-opt">${esc(p.fecha_inicio) || '-'}</td>
+          <td class="col-opt">${esc(p.fecha_fin) || '-'}</td>
           <td><strong>${fmtM(p.presupuesto_base)}</strong></td>
-          <td><span class="pill ${cls}">${est}</span></td>
+          <td><span class="pill ${cls}">${esc(est)}</span></td>
         </tr>`;
       }).join('')
     : `<tr><td colspan="9" class="empty-td">No hay intervenciones para la selección actual.</td></tr>`;
@@ -332,8 +344,11 @@ function fmtCorte(iso) {
   if (!iso) return '';
   const meses = ['Enero','Febrero','Marzo','Abril','Mayo','Junio',
                  'Julio','Agosto','Septiembre','Octubre','Noviembre','Diciembre'];
-  const [y, m] = iso.split('-');
-  return `${meses[parseInt(m, 10) - 1]} ${y}`;
+  const parts = iso.split('-');
+  if (parts.length < 2) return iso;
+  const [y, m] = parts;
+  const idx = parseInt(m, 10) - 1;
+  return (idx >= 0 && idx < 12) ? `${meses[idx]} ${y}` : iso;
 }
 
 // ── INICIALIZACIÓN ───────────────────────────────────────────────────────────
