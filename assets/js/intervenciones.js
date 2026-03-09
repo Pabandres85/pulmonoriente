@@ -57,29 +57,40 @@ function renderDashboard() {
   const data = applyFilters(_allData);
 
   // ── Agregaciones ────────────────────────────────────────────────────────────
-  const porEstado  = {};
-  const porSec     = {};
-  const porClase   = {};
-  const porTipo    = {};
-  const porComuna  = {};
-  const porFuente  = {};
-  let   inversion  = 0;
+  const porEstado      = {};
+  const porSec         = {};
+  const porTipo        = {};
+  const porComuna      = {};
+  const porComunaCount = {};
+  const porFuente      = {};
+  const porAnio        = {};
+  const secEstadoMap   = {};
+  let   inversion      = 0;
 
   data.forEach(r => {
     const ppto = r.presupuesto_base || 0;
     inversion += ppto;
 
-    porEstado[r.estado]                = (porEstado[r.estado]                || 0) + 1;
-    porSec[r.nombre_centro_gestor]     = (porSec[r.nombre_centro_gestor]     || 0) + ppto;
-    porClase[r.clase_up]               = (porClase[r.clase_up]               || 0) + ppto;
-    porTipo[r.tipo_intervencion]       = (porTipo[r.tipo_intervencion]       || 0) + 1;
+    porEstado[r.estado]            = (porEstado[r.estado]            || 0) + 1;
+    porSec[r.nombre_centro_gestor] = (porSec[r.nombre_centro_gestor] || 0) + ppto;
+    porTipo[r.tipo_intervencion]   = (porTipo[r.tipo_intervencion]   || 0) + 1;
 
     if (r.comuna_corregimiento) {
-      porComuna[r.comuna_corregimiento] = (porComuna[r.comuna_corregimiento] || 0) + ppto;
+      porComuna[r.comuna_corregimiento]      = (porComuna[r.comuna_corregimiento]      || 0) + ppto;
+      porComunaCount[r.comuna_corregimiento] = (porComunaCount[r.comuna_corregimiento] || 0) + 1;
     }
     if (r.fuente_financiacion) {
-      porFuente[r.fuente_financiacion]  = (porFuente[r.fuente_financiacion]  || 0) + ppto;
+      porFuente[r.fuente_financiacion] = (porFuente[r.fuente_financiacion] || 0) + ppto;
     }
+
+    const anio = r.fecha_inicio ? r.fecha_inicio.substring(0, 4) : null;
+    const anioNum = anio ? parseInt(anio, 10) : null;
+    if (anioNum && anioNum >= 2020 && anioNum <= 2030) porAnio[anio] = (porAnio[anio] || 0) + 1;
+
+    const sec = shortSec(r.nombre_centro_gestor) || 'Sin dato';
+    const est = r.estado || 'Sin dato';
+    if (!secEstadoMap[sec]) secEstadoMap[sec] = {};
+    secEstadoMap[sec][est] = (secEstadoMap[sec][est] || 0) + 1;
   });
 
   const total       = data.length;
@@ -149,21 +160,40 @@ function renderDashboard() {
     });
   }
 
-  // ── Comunas: barras HTML ─────────────────────────────────────────────────────
-  const cComuna = Object.entries(porComuna).sort((a, b) => b[1] - a[1]).slice(0, 14);
-  const maxC    = cComuna[0]?.[1] || 1;
-  document.getElementById('comunasBars').innerHTML = cComuna.length
-    ? cComuna.map(([nom, val]) => `
-        <div class="barrio-bar-item">
-          <div class="barrio-bar-top">
-            <span class="barrio-bar-name">${nom}</span>
-            <span class="barrio-bar-val">${fmtMM(val)}</span>
-          </div>
-          <div class="barrio-bar-track">
-            <div class="barrio-bar-fill" style="width:${val / maxC * 100}%"></div>
-          </div>
-        </div>`).join('')
-    : '<p class="no-data-text">Sin datos de ubicación disponibles para esta selección.</p>';
+  // ── Gráfica: Top Comunas (inversión + conteo agrupado) ───────────────────────
+  const cComunaTop = Object.entries(porComuna).sort((a, b) => b[1] - a[1]).slice(0, 12);
+  if (cComunaTop.length) {
+    myCharts.comunas = new Chart(document.getElementById('chartComunas'), {
+      type: 'bar',
+      data: {
+        labels: cComunaTop.map(([nom]) => nom),
+        datasets: [
+          {
+            label: 'Inversión (miles mill. COP)',
+            data: cComunaTop.map(([, val]) => +(val / 1e9).toFixed(2)),
+            backgroundColor: '#003087',
+            borderRadius: 4,
+            xAxisID: 'x'
+          },
+          {
+            label: 'N° Intervenciones',
+            data: cComunaTop.map(([nom]) => porComunaCount[nom] || 0),
+            backgroundColor: 'rgba(230,168,0,0.85)',
+            borderRadius: 4,
+            xAxisID: 'x2'
+          }
+        ]
+      },
+      options: {
+        indexAxis: 'y',
+        plugins: { legend: { position: 'top', labels: { font: { size: 11 } } } },
+        scales: {
+          x:  { position: 'bottom', ticks: { callback: v => `$${v}MM` }, grid: { color: 'rgba(0,0,0,0.04)' } },
+          x2: { position: 'top',   grid: { drawOnChartArea: false }, ticks: { color: '#B8860B' } }
+        }
+      }
+    });
+  }
 
   // ── Gráfica: Conteo por Tipo de Intervención ─────────────────────────────────
   const cTipo = Object.entries(porTipo).sort((a, b) => b[1] - a[1]).slice(0, 10);
@@ -179,19 +209,35 @@ function renderDashboard() {
     });
   }
 
-  // ── Gráfica: Inversión por Clase UP ─────────────────────────────────────────
-  const cClase = Object.entries(porClase).sort((a, b) => b[1] - a[1]);
-  if (cClase.length) {
-    myCharts.clase = new Chart(document.getElementById('chartClase'), {
-      type: 'doughnut',
+  // ── Gráfica: Estado por Secretaría (stacked) ─────────────────────────────────
+  const secLabels = Object.keys(secEstadoMap).sort((a, b) => {
+    const totA = Object.values(secEstadoMap[a]).reduce((s, v) => s + v, 0);
+    const totB = Object.values(secEstadoMap[b]).reduce((s, v) => s + v, 0);
+    return totB - totA;
+  });
+  const estadosOrden = ['Terminado','En ejecución','En alistamiento','Proyectado','Inaugurado','Suspendido'];
+  const estadoSet2   = new Set(data.map(r => r.estado).filter(Boolean));
+  const estadosPresentes = [
+    ...estadosOrden.filter(e => estadoSet2.has(e)),
+    ...[...estadoSet2].filter(e => !estadosOrden.includes(e))
+  ];
+  if (secLabels.length) {
+    myCharts.secEst = new Chart(document.getElementById('chartSecEstado'), {
+      type: 'bar',
       data: {
-        labels: cClase.map(s => s[0]),
-        datasets: [{
-          data: cClase.map(s => +(s[1] / 1e9).toFixed(2)),
-          backgroundColor: COLORES_SEC.slice(0, cClase.length)
-        }]
+        labels: secLabels,
+        datasets: estadosPresentes.map(est => ({
+          label: est,
+          data: secLabels.map(sec => (secEstadoMap[sec] && secEstadoMap[sec][est]) || 0),
+          backgroundColor: ESTADO_COLORS[est] || '#90A4AE',
+          borderRadius: 2
+        }))
       },
-      options: { cutout: '60%', plugins: { legend: { position: 'bottom', labels: { font: { size: 10 } } } } }
+      options: {
+        indexAxis: 'y',
+        plugins: { legend: { position: 'bottom', labels: { font: { size: 10 }, boxWidth: 12 } } },
+        scales: { x: { stacked: true }, y: { stacked: true } }
+      }
     });
   }
 
@@ -212,6 +258,29 @@ function renderDashboard() {
         indexAxis: 'y',
         plugins: { legend: { display: false } },
         scales: { x: { ticks: { callback: v => `$${v} MM` } } }
+      }
+    });
+  }
+
+  // ── Gráfica: Intervenciones por Año de Inicio ─────────────────────────────────
+  const cAnio = Object.entries(porAnio).sort((a, b) => a[0].localeCompare(b[0]));
+  if (cAnio.length) {
+    myCharts.anio = new Chart(document.getElementById('chartAnio'), {
+      type: 'bar',
+      data: {
+        labels: cAnio.map(s => s[0]),
+        datasets: [{
+          data: cAnio.map(s => s[1]),
+          backgroundColor: COLORES_SEC.slice(0, cAnio.length),
+          borderRadius: 6
+        }]
+      },
+      options: {
+        plugins: { legend: { display: false } },
+        scales: {
+          y: { beginAtZero: true, ticks: { stepSize: 1 } },
+          x: { grid: { display: false } }
+        }
       }
     });
   }

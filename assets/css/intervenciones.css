@@ -215,6 +215,8 @@ h2 { font-size: 26px; font-weight: 700; color: var(--azul); }
 /* ─── CHARTS ─── */
 .charts-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 28px; }
 .charts-grid.wide { grid-template-columns: 2fr 1fr; }
+.charts-grid-3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; }
+.chart-row { margin-top: 20px; }
 .chart-card { background: #fff; border-radius: 16px; box-shadow: 0 4px 24px rgba(0,0,0,0.06); border: 1px solid rgba(0,0,0,0.05); }
 .chart-card-header { padding: 20px 24px 0; display: flex; justify-content: space-between; align-items: flex-start; }
 .chart-card-title { font-size: 14px; font-weight: 600; color: var(--azul); text-transform: uppercase; letter-spacing: 1px; }
@@ -515,7 +517,7 @@ tr:nth-child(even) td { background: var(--azul-ice); }
 
 /* ─── RESPONSIVE ─── */
 @media (max-width: 960px) {
-  .charts-grid.wide, .charts-grid { grid-template-columns: 1fr; }
+  .charts-grid.wide, .charts-grid, .charts-grid-3 { grid-template-columns: 1fr; }
   .stats-row { grid-template-columns: repeat(3, 1fr); }
   .footer-inner { grid-template-columns: 1fr; }
 }

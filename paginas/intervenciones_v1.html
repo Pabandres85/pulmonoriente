@@ -137,37 +137,37 @@
     <div class="charts-grid wide">
       <div class="chart-card">
         <div class="chart-card-header">
-          <div class="chart-card-title">Top Comunas por Inversión</div>
+          <div class="chart-card-title">Top Comunas · Inversión y Cantidad</div>
         </div>
         <div class="chart-body">
-          <div id="comunasBars"></div>
+          <div class="chart-wrap chart-wrap-tall"><canvas id="chartComunas"></canvas></div>
         </div>
       </div>
       <div class="chart-card">
         <div class="chart-card-header">
-          <div class="chart-card-title">Inversión por Clase de Proyecto</div>
+          <div class="chart-card-title">Estado por Secretaría</div>
         </div>
         <div class="chart-body">
-          <div class="chart-wrap-donut"><canvas id="chartClase"></canvas></div>
+          <div class="chart-wrap chart-wrap-tall"><canvas id="chartSecEstado"></canvas></div>
         </div>
       </div>
     </div>
   </div>
 </section>
 
-<!-- ─── 03 CLASIFICACIÓN ──────────────────────────────────────────────────── -->
+<!-- ─── 03 CLASIFICACIÓN Y TEMPORALIDAD ──────────────────────────────────── -->
 <section class="section pt-0">
   <div class="container">
     <div class="section-header">
       <span class="section-num">03 —</span>
-      <h2>Clasificación de Intervenciones</h2>
+      <h2>Clasificación y Temporalidad</h2>
     </div>
     <div class="divider"></div>
 
-    <div class="charts-grid">
+    <div class="charts-grid wide">
       <div class="chart-card">
         <div class="chart-card-header">
-          <div class="chart-card-title">Top 10 Tipos de Intervención (conteo)</div>
+          <div class="chart-card-title">Top 10 Tipos de Intervención</div>
         </div>
         <div class="chart-body">
           <div class="chart-wrap chart-wrap-tall"><canvas id="chartTipo"></canvas></div>
@@ -175,10 +175,21 @@
       </div>
       <div class="chart-card">
         <div class="chart-card-header">
+          <div class="chart-card-title">Intervenciones por Año de Inicio</div>
+        </div>
+        <div class="chart-body">
+          <div class="chart-wrap chart-wrap-tall"><canvas id="chartAnio"></canvas></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="chart-row">
+      <div class="chart-card">
+        <div class="chart-card-header">
           <div class="chart-card-title">Inversión por Fuente de Financiación</div>
         </div>
         <div class="chart-body">
-          <div class="chart-wrap chart-wrap-tall"><canvas id="chartFuente"></canvas></div>
+          <div class="chart-wrap"><canvas id="chartFuente"></canvas></div>
         </div>
       </div>
     </div>
