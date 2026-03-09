@@ -16,8 +16,8 @@ const ESTADO_COLORS = {
 };
 
 // ── ESTADO GLOBAL ────────────────────────────────────────────────────────────
-let _allData    = null;
-let _topData    = [];   // top 15 visible en tabla (para modal)
+let _allData      = null;
+let _visibleData  = [];   // todas las filas visibles en tabla (para modal)
 let currentSec  = 'all';
 let currentEst  = 'all';
 let currentTipo = 'all';
@@ -217,18 +217,20 @@ function renderDashboard() {
   }
 
   // ── Tabla ────────────────────────────────────────────────────────────────────
-  const top = [...data].sort((a, b) => b.presupuesto_base - a.presupuesto_base).slice(0, 15);
-  _topData = top;
+  const sorted = [...data].sort((a, b) => b.presupuesto_base - a.presupuesto_base);
+  _visibleData = sorted;
   const tb  = document.getElementById('intervencionesTable');
+  const countEl = document.getElementById('tabla-count');
+  if (countEl) countEl.textContent = sorted.length.toLocaleString('es-CO');
 
-  tb.innerHTML = top.length
-    ? top.map((p, i) => {
-        const est  = p.estado || '';
-        const cls  = est === 'En ejecución' ? 'pill-ej'
-                   : est === 'Terminado'    ? 'pill-term'
-                   : est === 'Suspendido'   ? 'pill-susp'
-                   : est === 'Inaugurado'   ? 'pill-inag'
-                   :                          'pill-alist';
+  tb.innerHTML = sorted.length
+    ? sorted.map((p, i) => {
+        const est = p.estado || '';
+        const cls = est === 'En ejecución' ? 'pill-ej'
+                  : est === 'Terminado'    ? 'pill-term'
+                  : est === 'Suspendido'   ? 'pill-susp'
+                  : est === 'Inaugurado'   ? 'pill-inag'
+                  :                          'pill-alist';
         return `<tr data-idx="${i}">
           <td><strong>${shortSec(p.nombre_centro_gestor)}</strong></td>
           <td class="col-opt">${p.clase_up || '-'}</td>
@@ -392,7 +394,7 @@ function closeModal() {
 document.getElementById('intervencionesTable').addEventListener('click', e => {
   const tr = e.target.closest('tr[data-idx]');
   if (!tr) return;
-  showModal(_topData[+tr.dataset.idx]);
+  showModal(_visibleData[+tr.dataset.idx]);
 });
 
 // Cerrar modal
