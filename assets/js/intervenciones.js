@@ -207,6 +207,9 @@ function renderDashboard() {
       options: { indexAxis: 'y', plugins: { legend: { display: false } },
         scales: { x: { grid: { color: 'rgba(0,0,0,0.04)' } } } }
     });
+    const pctTipo = total ? (cTipo[0][1] / total * 100).toFixed(0) : 0;
+    document.getElementById('insight-tipo').innerHTML =
+      `<span class="ci-label">Dominante:</span> <strong>${cTipo[0][0]}</strong> · <strong>${cTipo[0][1].toLocaleString('es-CO')}</strong> intervenciones · <em>${pctTipo}% del total filtrado</em>`;
   }
 
   // ── Gráfica: Estado por Secretaría (stacked) ─────────────────────────────────
@@ -244,6 +247,10 @@ function renderDashboard() {
   // ── Gráfica: Fuente de Financiación ─────────────────────────────────────────
   const cFuente = Object.entries(porFuente).sort((a, b) => b[1] - a[1]);
   if (cFuente.length) {
+    const totalFuente = cFuente.reduce((s, [, v]) => s + v, 0);
+    const pctFuente   = totalFuente ? (cFuente[0][1] / totalFuente * 100).toFixed(0) : 0;
+    document.getElementById('insight-fuente').innerHTML =
+      `<span class="ci-label">Principal:</span> <strong>${cFuente[0][0]}</strong> · <strong>${fmtMM(cFuente[0][1])}</strong> · <em>${pctFuente}% de la inversión con fuente registrada</em>`;
     myCharts.fuente = new Chart(document.getElementById('chartFuente'), {
       type: 'bar',
       data: {
@@ -283,6 +290,11 @@ function renderDashboard() {
         }
       }
     });
+    const topAnio    = cAnio.reduce((max, cur) => cur[1] > max[1] ? cur : max, cAnio[0]);
+    const totalAnio  = cAnio.reduce((s, [, v]) => s + v, 0);
+    const pctAnio    = totalAnio ? (topAnio[1] / totalAnio * 100).toFixed(0) : 0;
+    document.getElementById('insight-anio').innerHTML =
+      `<span class="ci-label">Año pico:</span> <strong>${topAnio[0]}</strong> · <strong>${topAnio[1].toLocaleString('es-CO')}</strong> intervenciones · <em>${pctAnio}% de las fechas registradas</em>`;
   }
 
   // ── Tabla ────────────────────────────────────────────────────────────────────
