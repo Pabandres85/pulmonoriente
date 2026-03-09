@@ -17,6 +17,7 @@ const ESTADO_COLORS = {
 
 // ── ESTADO GLOBAL ────────────────────────────────────────────────────────────
 let _allData    = null;
+let _topData    = [];   // top 15 visible en tabla (para modal)
 let currentSec  = 'all';
 let currentEst  = 'all';
 let currentTipo = 'all';
@@ -217,17 +218,18 @@ function renderDashboard() {
 
   // ── Tabla ────────────────────────────────────────────────────────────────────
   const top = [...data].sort((a, b) => b.presupuesto_base - a.presupuesto_base).slice(0, 15);
+  _topData = top;
   const tb  = document.getElementById('intervencionesTable');
 
   tb.innerHTML = top.length
-    ? top.map(p => {
+    ? top.map((p, i) => {
         const est  = p.estado || '';
         const cls  = est === 'En ejecución' ? 'pill-ej'
                    : est === 'Terminado'    ? 'pill-term'
                    : est === 'Suspendido'   ? 'pill-susp'
                    : est === 'Inaugurado'   ? 'pill-inag'
                    :                          'pill-alist';
-        return `<tr>
+        return `<tr data-idx="${i}">
           <td><strong>${shortSec(p.nombre_centro_gestor)}</strong></td>
           <td class="col-opt">${p.clase_up || '-'}</td>
           <td>${p.tipo_intervencion || '-'}</td>
@@ -319,3 +321,85 @@ document.querySelectorAll('.toggle-btn[data-estado]').forEach(btn => {
 });
 
 initData();
+
+// ── MODAL ─────────────────────────────────────────────────────────────────────
+function badgeClass(estado) {
+  if (!estado) return 'est-otro';
+  const e = estado.toLowerCase();
+  if (e.includes('ejecución') || e.includes('ejecucion')) return 'est-ejecucion';
+  if (e.includes('terminado'))    return 'est-terminado';
+  if (e.includes('alistamiento')) return 'est-alistamiento';
+  if (e.includes('suspendido'))   return 'est-suspendido';
+  if (e.includes('inaugurado'))   return 'est-inaugurado';
+  return 'est-otro';
+}
+
+function showModal(p) {
+  const overlay = document.getElementById('modal-overlay');
+
+  document.getElementById('modal-estado-badge').textContent = p.estado || 'Sin estado';
+  document.getElementById('modal-estado-badge').className   = `modal-badge ${badgeClass(p.estado)}`;
+  document.getElementById('modal-title').textContent        = p.tipo_intervencion || 'Intervención';
+  document.getElementById('modal-secretaria').textContent   = p.nombre_centro_gestor || '-';
+
+  document.getElementById('md-id').textContent         = p.intervencion_id || '-';
+  document.getElementById('md-upid').textContent       = p.upid || '-';
+  document.getElementById('md-clase').textContent      = p.clase_up || '-';
+  document.getElementById('md-tipo').textContent       = p.tipo_intervencion || '-';
+  document.getElementById('md-fuente').textContent     = p.fuente_financiacion || '-';
+  document.getElementById('md-presupuesto').textContent = p.presupuesto_base
+    ? '$' + p.presupuesto_base.toLocaleString('es-CO')
+    : '-';
+  document.getElementById('md-comuna').textContent     = p.comuna_corregimiento || 'Sin dato';
+  document.getElementById('md-barrio').textContent     = p.barrio_vereda || 'Sin dato';
+  document.getElementById('md-inicio').textContent     = p.fecha_inicio || '-';
+  document.getElementById('md-fin').textContent        = p.fecha_fin || '-';
+
+  const inagWrap = document.getElementById('md-inauguracion-wrap');
+  if (p.fecha_inauguracion) {
+    document.getElementById('md-inauguracion').textContent = p.fecha_inauguracion;
+    inagWrap.style.display = '';
+  } else {
+    inagWrap.style.display = 'none';
+  }
+
+  const updWrap = document.getElementById('md-updated-wrap');
+  if (p.updated_at) {
+    document.getElementById('md-updated').textContent = p.updated_at;
+    updWrap.style.display = '';
+  } else {
+    updWrap.style.display = 'none';
+  }
+
+  const descWrap = document.getElementById('md-desc-wrap');
+  if (p.descripcion_intervencion) {
+    document.getElementById('md-desc').textContent = p.descripcion_intervencion;
+    descWrap.style.display = '';
+  } else {
+    descWrap.style.display = 'none';
+  }
+
+  overlay.classList.add('open');
+  document.body.style.overflow = 'hidden';
+}
+
+function closeModal() {
+  document.getElementById('modal-overlay').classList.remove('open');
+  document.body.style.overflow = '';
+}
+
+// Click en fila de tabla
+document.getElementById('intervencionesTable').addEventListener('click', e => {
+  const tr = e.target.closest('tr[data-idx]');
+  if (!tr) return;
+  showModal(_topData[+tr.dataset.idx]);
+});
+
+// Cerrar modal
+document.getElementById('modal-close').addEventListener('click', closeModal);
+document.getElementById('modal-overlay').addEventListener('click', e => {
+  if (e.target === e.currentTarget) closeModal();
+});
+document.addEventListener('keydown', e => {
+  if (e.key === 'Escape') closeModal();
+});

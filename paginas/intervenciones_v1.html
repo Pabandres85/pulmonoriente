@@ -215,6 +215,74 @@
   </div>
 </section>
 
+<!-- ─── MODAL DETALLE ────────────────────────────────────────────────────── -->
+<div id="modal-overlay" class="modal-overlay" role="dialog" aria-modal="true" aria-labelledby="modal-title">
+  <div class="modal-card">
+    <button class="modal-close" id="modal-close" aria-label="Cerrar">&times;</button>
+    <div class="modal-header">
+      <div class="modal-badge" id="modal-estado-badge"></div>
+      <h3 id="modal-title" class="modal-title"></h3>
+      <p class="modal-subtitle" id="modal-secretaria"></p>
+    </div>
+    <div class="modal-body">
+      <div class="modal-grid">
+        <div class="modal-field">
+          <span class="modal-label">ID Intervención</span>
+          <span class="modal-value mono" id="md-id"></span>
+        </div>
+        <div class="modal-field">
+          <span class="modal-label">UP / Proyecto</span>
+          <span class="modal-value mono" id="md-upid"></span>
+        </div>
+        <div class="modal-field">
+          <span class="modal-label">Clase UP</span>
+          <span class="modal-value" id="md-clase"></span>
+        </div>
+        <div class="modal-field">
+          <span class="modal-label">Tipo de Intervención</span>
+          <span class="modal-value" id="md-tipo"></span>
+        </div>
+        <div class="modal-field">
+          <span class="modal-label">Fuente de Financiación</span>
+          <span class="modal-value" id="md-fuente"></span>
+        </div>
+        <div class="modal-field">
+          <span class="modal-label">Presupuesto Base</span>
+          <span class="modal-value modal-value--highlight" id="md-presupuesto"></span>
+        </div>
+        <div class="modal-field">
+          <span class="modal-label">Comuna / Corregimiento</span>
+          <span class="modal-value" id="md-comuna"></span>
+        </div>
+        <div class="modal-field">
+          <span class="modal-label">Barrio / Vereda</span>
+          <span class="modal-value" id="md-barrio"></span>
+        </div>
+        <div class="modal-field">
+          <span class="modal-label">Fecha Inicio</span>
+          <span class="modal-value" id="md-inicio"></span>
+        </div>
+        <div class="modal-field">
+          <span class="modal-label">Fecha Fin</span>
+          <span class="modal-value" id="md-fin"></span>
+        </div>
+        <div class="modal-field" id="md-inauguracion-wrap">
+          <span class="modal-label">Fecha Inauguración</span>
+          <span class="modal-value" id="md-inauguracion"></span>
+        </div>
+        <div class="modal-field" id="md-updated-wrap">
+          <span class="modal-label">Última Actualización</span>
+          <span class="modal-value" id="md-updated"></span>
+        </div>
+      </div>
+      <div class="modal-desc-wrap" id="md-desc-wrap">
+        <span class="modal-label">Descripción</span>
+        <p class="modal-desc" id="md-desc"></p>
+      </div>
+    </div>
+  </div>
+</div>
+
 <!-- ─── NAVEGACIÓN FLOTANTE ───────────────────────────────────────────────── -->
 <nav class="page-switcher" aria-label="Navegación entre vistas">
   <a class="switcher-home" href="../index.html" title="Inicio">
