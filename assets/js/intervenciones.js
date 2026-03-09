@@ -2,8 +2,8 @@ Chart.defaults.font.family = "'Inter', sans-serif";
 
 // ── COLORES ──────────────────────────────────────────────────────────────────
 const COLORES_SEC = [
-  '#1B4D2E','#2E7D52','#4CAF50','#0277BD','#E67E22',
-  '#9B59B6','#E74C3C','#F1C40F','#E91E63','#1ABC9C','#34495E','#FF7043','#7986CB'
+  '#003087','#1565C0','#C1272D','#E6A800','#9B59B6',
+  '#0277BD','#E67E22','#E74C3C','#F1C40F','#1ABC9C','#34495E','#FF7043','#7986CB'
 ];
 
 const ESTADO_COLORS = {
@@ -101,10 +101,10 @@ function renderDashboard() {
   const banner = document.getElementById('alert-banner');
   if ((porEstado['Suspendido'] || 0) > 0) {
     banner.innerHTML = `⚠️ ALERTA: ${porEstado['Suspendido']} intervenciones SUSPENDIDAS · ${pctTerm}% terminadas de ${total.toLocaleString('es-CO')} registros`;
-    banner.style.background = '#7B3535';
+    banner.style.background = '#8B0000';
   } else {
     banner.innerHTML = `✅ ${total.toLocaleString('es-CO')} intervenciones filtradas · ${pctTerm}% terminadas · Inversión total: ${fmtMM(inversion)} COP`;
-    banner.style.background = '#1B4D2E';
+    banner.style.background = '#003087';
   }
 
   // ── Destruir gráficos anteriores ────────────────────────────────────────────
@@ -171,9 +171,10 @@ function renderDashboard() {
       type: 'bar',
       data: {
         labels: cTipo.map(s => s[0]),
-        datasets: [{ data: cTipo.map(s => s[1]), backgroundColor: '#2E7D52', borderRadius: 4 }]
+        datasets: [{ data: cTipo.map(s => s[1]), backgroundColor: '#E6A800', borderRadius: 4 }]
       },
-      options: { indexAxis: 'y', plugins: { legend: { display: false } } }
+      options: { indexAxis: 'y', plugins: { legend: { display: false } },
+        scales: { x: { grid: { color: 'rgba(0,0,0,0.04)' } } } }
     });
   }
 
@@ -202,7 +203,7 @@ function renderDashboard() {
         labels: cFuente.map(s => s[0]),
         datasets: [{
           data: cFuente.map(s => +(s[1] / 1e9).toFixed(2)),
-          backgroundColor: ['#1B4D2E', '#2E7D52', '#0277BD', '#E67E22', '#9B59B6'],
+          backgroundColor: ['#003087', '#1565C0', '#C1272D', '#E6A800', '#9B59B6'],
           borderRadius: 4
         }]
       },
