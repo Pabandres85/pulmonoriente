@@ -67,6 +67,13 @@
   <span class="geofiltro-info">Cali completa · 22 comunas + corregimientos</span>
 </div>
 
+<!-- ─── FILTRO DRILL-DOWN ─────────────────────────────────────────────────── -->
+<div id="filtro-drill-bar" class="filtro-drill-bar" style="display:none">
+  <span>⬡ Drill-down activo:</span>
+  <span id="filtro-drill-texto"></span>
+  <button id="filtro-drill-clear" class="filtro-drill-clear" title="Quitar filtro drill-down">×</button>
+</div>
+
 <!-- ─── BANNER ──────────────────────────────────────────────────────────── -->
 <div class="alert-strip" id="alert-banner">
   Cargando datos de intervenciones...
@@ -146,6 +153,7 @@
       <div class="chart-card">
         <div class="chart-card-header">
           <div class="chart-card-title">Tasa de Alerta por Comuna · % en Alistamiento o Suspendido</div>
+          <button class="chart-expand-btn" data-chart="comunas" data-title="Tasa de Alerta por Comuna · % en Alistamiento o Suspendido" title="Expandir gráfica">⤢</button>
         </div>
         <div class="chart-body">
           <div class="chart-wrap chart-wrap-tall"><canvas id="chartComunas"></canvas></div>
@@ -157,6 +165,7 @@
       <div class="chart-card">
         <div class="chart-card-header">
           <div class="chart-card-title">Salud de la Cartera por Secretaría · % del Presupuesto</div>
+          <button class="chart-expand-btn" data-chart="secEst" data-title="Salud de la Cartera por Secretaría · % del Presupuesto" title="Expandir gráfica">⤢</button>
         </div>
         <div class="chart-body">
           <div class="chart-wrap chart-wrap-xtall"><canvas id="chartSecEstado"></canvas></div>
@@ -213,6 +222,7 @@
       <div class="chart-card">
         <div class="chart-card-header">
           <div class="chart-card-title">Tendencia de Intervenciones por Secretaría · Top 6</div>
+          <button class="chart-expand-btn" data-chart="tendencia" data-title="Tendencia de Intervenciones por Secretaría · Top 6" title="Expandir gráfica">⤢</button>
         </div>
         <div class="chart-body">
           <div class="chart-wrap chart-wrap-tall"><canvas id="chartTendencia"></canvas></div>
@@ -225,6 +235,7 @@
       <div class="chart-card">
         <div class="chart-card-header">
           <div class="chart-card-title">Curva S · Planeado vs Real Ejecutado (% acumulado por trimestre)</div>
+          <button class="chart-expand-btn" data-chart="curvaS" data-title="Curva S · Planeado vs Real Ejecutado" title="Expandir gráfica">⤢</button>
         </div>
         <div class="chart-body">
           <div class="chart-wrap chart-wrap-tall"><canvas id="chartCurvaS"></canvas></div>
@@ -264,6 +275,19 @@
     </div>
   </div>
 </section>
+
+<!-- ─── MODAL EXPANSIÓN CHART ──────────────────────────────────────────── -->
+<div id="chart-expand-overlay" class="chart-expand-overlay">
+  <div class="chart-expand-card">
+    <div class="chart-expand-hdr">
+      <span id="expand-chart-title" class="chart-expand-ttl"></span>
+      <button id="expand-chart-close" class="chart-expand-close" aria-label="Cerrar">&times;</button>
+    </div>
+    <div class="chart-expand-body">
+      <img id="expand-chart-img" class="chart-expand-img" alt="Gráfica expandida">
+    </div>
+  </div>
+</div>
 
 <!-- ─── MODAL DETALLE ────────────────────────────────────────────────────── -->
 <div id="modal-overlay" class="modal-overlay" role="dialog" aria-modal="true" aria-labelledby="modal-title">

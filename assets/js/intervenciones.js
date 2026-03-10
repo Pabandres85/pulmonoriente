@@ -25,6 +25,42 @@ let currentEst  = 'all';
 let currentTipo = 'all';
 let myCharts    = {};
 
+// ── DRILL-DOWN Y EXPANSIÓN ────────────────────────────────────────────────────
+function applyDrillFilter(type, value) {
+  if (type === 'sec') {
+    currentSec = value;
+    document.getElementById('select-sec').value = value;
+  } else if (type === 'estado') {
+    currentEst = value;
+    document.querySelectorAll('.toggle-btn[data-estado]').forEach(b =>
+      b.classList.toggle('active', b.dataset.estado === value)
+    );
+  } else if (type === 'tipo') {
+    currentTipo = value;
+    document.getElementById('select-tipo').value = value;
+  }
+  const label   = type === 'sec' ? shortSec(value) : value;
+  const typeStr = type === 'sec' ? 'Secretaría' : type === 'estado' ? 'Estado' : 'Tipo';
+  document.getElementById('filtro-drill-texto').innerHTML =
+    `<strong>${typeStr}:</strong> ${esc(label)}`;
+  document.getElementById('filtro-drill-bar').style.display = '';
+  renderDashboard();
+}
+
+function openExpandChart(key, title) {
+  const chart = myCharts[key];
+  if (!chart) return;
+  document.getElementById('expand-chart-title').textContent = title;
+  document.getElementById('expand-chart-img').src = chart.toBase64Image();
+  document.getElementById('chart-expand-overlay').classList.add('open');
+  document.body.style.overflow = 'hidden';
+}
+
+function closeExpandChart() {
+  document.getElementById('chart-expand-overlay').classList.remove('open');
+  document.body.style.overflow = '';
+}
+
 // ── UTILIDADES ───────────────────────────────────────────────────────────────
 function shortSec(s) {
   if (!s) return '-';
@@ -192,7 +228,11 @@ function renderDashboard() {
       options: {
         indexAxis: 'y',
         plugins: { legend: { display: false } },
-        scales: { x: { ticks: { callback: v => `$${v} MM` } } }
+        scales: { x: { ticks: { callback: v => `$${v} MM` } } },
+        onClick: (_evt, elements) => {
+          if (!elements.length) return;
+          applyDrillFilter('sec', cSec[elements[0].index][0]);
+        }
       }
     });
     const totalInv   = cSec.reduce((s, [, v]) => s + v, 0);
@@ -213,7 +253,14 @@ function renderDashboard() {
           backgroundColor: estLabels.map(e => ESTADO_COLORS[e] || '#90A4AE')
         }]
       },
-      options: { cutout: '65%', plugins: { legend: { position: 'bottom' } } }
+      options: {
+        cutout: '65%',
+        plugins: { legend: { position: 'bottom' } },
+        onClick: (_evt, elements) => {
+          if (!elements.length) return;
+          applyDrillFilter('estado', estLabels[elements[0].index]);
+        }
+      }
     });
     const topEst    = estLabels.reduce((max, e) => porEstado[e] > porEstado[max] ? e : max, estLabels[0]);
     const pctTopEst = total ? (porEstado[topEst] / total * 100).toFixed(0) : 0;
@@ -278,8 +325,15 @@ function renderDashboard() {
         labels: cTipo.map(s => s[0]),
         datasets: [{ data: cTipo.map(s => s[1]), backgroundColor: '#E6A800', borderRadius: 4 }]
       },
-      options: { indexAxis: 'y', plugins: { legend: { display: false } },
-        scales: { x: { grid: { color: 'rgba(0,0,0,0.04)' } } } }
+      options: {
+        indexAxis: 'y',
+        plugins: { legend: { display: false } },
+        scales: { x: { grid: { color: 'rgba(0,0,0,0.04)' } } },
+        onClick: (_evt, elements) => {
+          if (!elements.length) return;
+          applyDrillFilter('tipo', cTipo[elements[0].index][0]);
+        }
+      }
     });
     const pctTipo = total ? (cTipo[0][1] / total * 100).toFixed(0) : 0;
     document.getElementById('insight-tipo').innerHTML =
@@ -803,5 +857,34 @@ document.getElementById('modal-overlay').addEventListener('click', e => {
   if (e.target === e.currentTarget) closeModal();
 });
 document.addEventListener('keydown', e => {
-  if (e.key === 'Escape') closeModal();
+  if (e.key === 'Escape') {
+    closeExpandChart();
+    closeModal();
+  }
+});
+
+// ── EXPAND CHART ─────────────────────────────────────────────────────────────
+document.querySelectorAll('.chart-expand-btn').forEach(btn => {
+  btn.addEventListener('click', e => {
+    e.stopPropagation();
+    openExpandChart(btn.dataset.chart, btn.dataset.title || '');
+  });
+});
+
+document.getElementById('expand-chart-close').addEventListener('click', closeExpandChart);
+
+document.getElementById('chart-expand-overlay').addEventListener('click', e => {
+  if (e.target === e.currentTarget) closeExpandChart();
+});
+
+// ── LIMPIAR FILTRO DRILL-DOWN ─────────────────────────────────────────────────
+document.getElementById('filtro-drill-clear').addEventListener('click', () => {
+  currentSec  = 'all'; document.getElementById('select-sec').value = 'all';
+  currentEst  = 'all';
+  document.querySelectorAll('.toggle-btn[data-estado]').forEach(b =>
+    b.classList.toggle('active', b.dataset.estado === 'all')
+  );
+  currentTipo = 'all'; document.getElementById('select-tipo').value = 'all';
+  document.getElementById('filtro-drill-bar').style.display = 'none';
+  renderDashboard();
 });

@@ -249,6 +249,26 @@ tr:nth-child(even) td { background: var(--azul-ice); }
   .col-opt { display: none; }
 }
 
+/* ─── FILTRO DRILL-DOWN ─── */
+.filtro-drill-bar { display: flex; align-items: center; gap: 10px; padding: 7px 20px; background: var(--azul-light); border-left: 3px solid var(--azul); font-size: 12px; color: var(--azul); }
+.filtro-drill-clear { margin-left: auto; border: none; background: rgba(0,48,135,0.15); color: var(--azul); border-radius: 50%; width: 22px; height: 22px; font-size: 17px; line-height: 1; cursor: pointer; display: flex; align-items: center; justify-content: center; flex-shrink: 0; transition: background 0.2s; }
+.filtro-drill-clear:hover { background: rgba(193,39,45,0.2); color: var(--rojo); }
+
+/* ─── BOTÓN EXPANDIR CHART ─── */
+.chart-expand-btn { border: none; background: rgba(0,48,135,0.07); color: var(--azul); border-radius: 6px; width: 26px; height: 26px; font-size: 14px; cursor: pointer; display: flex; align-items: center; justify-content: center; flex-shrink: 0; transition: background 0.18s; margin-top: 2px; }
+.chart-expand-btn:hover { background: var(--azul); color: #fff; }
+
+/* ─── MODAL EXPANSIÓN CHART ─── */
+.chart-expand-overlay { display: none; position: fixed; inset: 0; z-index: 4000; background: rgba(0,20,60,0.65); backdrop-filter: blur(6px); -webkit-backdrop-filter: blur(6px); align-items: center; justify-content: center; padding: 24px; }
+.chart-expand-overlay.open { display: flex; }
+.chart-expand-card { background: #fff; border-radius: 20px; width: 100%; max-width: 1100px; max-height: 90vh; overflow: hidden; display: flex; flex-direction: column; box-shadow: 0 32px 80px rgba(0,48,135,0.25); animation: modalIn 0.22s ease; }
+.chart-expand-hdr { display: flex; align-items: center; justify-content: space-between; padding: 16px 24px; border-bottom: 1px solid rgba(0,48,135,0.08); flex-shrink: 0; }
+.chart-expand-ttl { font-family: 'Montserrat', sans-serif; font-size: 12px; font-weight: 700; color: var(--azul); text-transform: uppercase; letter-spacing: 0.5px; }
+.chart-expand-close { width: 30px; height: 30px; border: none; background: rgba(0,48,135,0.08); border-radius: 50%; font-size: 18px; color: var(--azul); cursor: pointer; display: flex; align-items: center; justify-content: center; transition: background 0.2s; }
+.chart-expand-close:hover { background: rgba(193,39,45,0.12); color: var(--rojo); }
+.chart-expand-body { flex: 1; overflow: auto; display: flex; align-items: center; justify-content: center; padding: 20px; background: var(--gris-papel); }
+.chart-expand-img { max-width: 100%; max-height: 100%; border-radius: 8px; object-fit: contain; box-shadow: 0 4px 16px rgba(0,0,0,0.10); }
+
 /* ─── ALERTAS CRÍTICAS ─── */
 .alertas-header { margin: 8px 0 12px; display: flex; align-items: center; gap: 10px; }
 .alertas-titulo { font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: 1px; color: var(--rojo); border-left: 3px solid var(--rojo); padding-left: 10px; }
