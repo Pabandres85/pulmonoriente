@@ -91,12 +91,18 @@
 
     <div class="charts-grid wide">
       <div class="chart-card">
-        <div class="chart-card-header"><div><div class="chart-card-title">Inversión por Secretaría</div></div></div>
-        <div class="chart-body"><div class="chart-wrap"><canvas id="chartSecretaria"></canvas></div></div>
+        <div class="chart-card-header"><div><div class="chart-card-title">Inversión por Secretaría (millones COP)</div></div></div>
+        <div class="chart-body">
+          <div class="chart-wrap chart-wrap-tall"><canvas id="chartSecretaria"></canvas></div>
+          <div class="chart-insight" id="insight-sec"></div>
+        </div>
       </div>
       <div class="chart-card">
-        <div class="chart-card-header"><div><div class="chart-card-title">Estado Físico</div></div></div>
-        <div class="chart-body"><div class="chart-wrap chart-wrap-donut"><canvas id="chartEstado"></canvas></div></div>
+        <div class="chart-card-header"><div><div class="chart-card-title">Distribución por Estado</div></div></div>
+        <div class="chart-body">
+          <div class="chart-wrap chart-wrap-donut"><canvas id="chartEstado"></canvas></div>
+          <div class="chart-insight" id="insight-estado"></div>
+        </div>
       </div>
     </div>
   </div>
@@ -108,12 +114,27 @@
     <div class="divider"></div>
     <div class="charts-grid">
       <div class="chart-card">
-        <div class="chart-card-header"><div><div class="chart-card-title">Inversión por Tipo</div></div></div>
-        <div class="chart-body"><div class="chart-wrap chart-wrap-tall"><canvas id="chartTipo"></canvas></div></div>
+        <div class="chart-card-header"><div><div class="chart-card-title">Inversión por Tipo de Obra</div></div></div>
+        <div class="chart-body">
+          <div class="chart-wrap chart-wrap-tall"><canvas id="chartTipo"></canvas></div>
+          <div class="chart-insight" id="insight-tipo"></div>
+        </div>
       </div>
       <div class="chart-card" id="card-anio">
         <div class="chart-card-header"><div><div class="chart-card-title">Inversión por Año</div></div></div>
-        <div class="chart-body"><div class="chart-wrap"><canvas id="chartAnio"></canvas></div></div>
+        <div class="chart-body">
+          <div class="chart-wrap"><canvas id="chartAnio"></canvas></div>
+          <div class="chart-insight" id="insight-anio"></div>
+        </div>
+      </div>
+    </div>
+    <div class="chart-row">
+      <div class="chart-card">
+        <div class="chart-card-header"><div><div class="chart-card-title">Estado por Secretaría</div></div></div>
+        <div class="chart-body">
+          <div class="chart-wrap-xtall"><canvas id="chartSecEstado"></canvas></div>
+          <div class="chart-insight" id="insight-secest"></div>
+        </div>
       </div>
     </div>
   </div>
@@ -123,14 +144,22 @@
   <div class="container">
     <div class="section-header"><span class="section-num">03 —</span><h2>Territorio</h2></div>
     <div class="divider"></div>
-    <div class="charts-grid wide">
+    <div class="chart-row">
       <div class="chart-card">
-        <div class="chart-card-header"><div><div class="chart-card-title">Top Barrios (Presupuesto)</div></div></div>
-        <div class="chart-body"><div id="barriosBars"></div></div>
+        <div class="chart-card-header"><div><div class="chart-card-title">Top Barrios · Inversión y Cantidad</div></div></div>
+        <div class="chart-body">
+          <div class="chart-wrap chart-wrap-tall"><canvas id="chartBarrios"></canvas></div>
+          <div class="chart-insight" id="insight-barrios"></div>
+        </div>
       </div>
+    </div>
+    <div class="chart-row">
       <div class="chart-card">
-        <div class="chart-card-header"><div><div class="chart-card-title">Conteo por Barrio</div></div></div>
-        <div class="chart-body"><div class="chart-wrap chart-wrap-tall"><canvas id="chartBarrios"></canvas></div></div>
+        <div class="chart-card-header"><div><div class="chart-card-title">Distribución de Avance de Obra</div></div></div>
+        <div class="chart-body">
+          <div class="chart-wrap"><canvas id="chartAvance"></canvas></div>
+          <div class="chart-insight" id="insight-avance"></div>
+        </div>
       </div>
     </div>
   </div>
@@ -138,16 +167,76 @@
 
 <section class="section pt-0">
   <div class="container">
-    <div class="section-header"><span class="section-num">04 —</span><h2>Destacados en Ejecución</h2></div>
+    <div class="section-header"><span class="section-num">04 —</span><h2>Todos los Proyectos · <span id="tabla-count">...</span> registros</h2></div>
     <div class="divider"></div>
     <div class="table-wrap">
       <table>
-        <thead><tr><th>Secretaría</th><th>Tipo</th><th>Nombre</th><th>Barrio</th><th>Año</th><th>Presupuesto</th><th>Avance</th></tr></thead>
+        <thead>
+          <tr>
+            <th>Secretaría</th>
+            <th>Tipo</th>
+            <th>Nombre</th>
+            <th class="col-opt">Barrio</th>
+            <th class="col-opt">Año</th>
+            <th>Presupuesto</th>
+            <th>Avance</th>
+            <th>Estado</th>
+          </tr>
+        </thead>
         <tbody id="proyectosTable"></tbody>
       </table>
     </div>
   </div>
 </section>
+
+<!-- ─── MODAL DETALLE ─── -->
+<div id="modal-overlay" class="modal-overlay" role="dialog" aria-modal="true" aria-labelledby="modal-title">
+  <div class="modal-card">
+    <button class="modal-close" id="modal-close" aria-label="Cerrar">&times;</button>
+    <div class="modal-header">
+      <div class="modal-badge" id="modal-estado-badge"></div>
+      <h3 id="modal-title" class="modal-title"></h3>
+      <p class="modal-subtitle" id="modal-secretaria"></p>
+    </div>
+    <div class="modal-body">
+      <div class="modal-grid">
+        <div class="modal-field">
+          <span class="modal-label">Secretaría</span>
+          <span class="modal-value" id="md-secretaria"></span>
+        </div>
+        <div class="modal-field">
+          <span class="modal-label">Tipo de Obra</span>
+          <span class="modal-value" id="md-tipo"></span>
+        </div>
+        <div class="modal-field">
+          <span class="modal-label">Presupuesto</span>
+          <span class="modal-value modal-value--highlight" id="md-presupuesto"></span>
+        </div>
+        <div class="modal-field">
+          <span class="modal-label">Estado</span>
+          <span class="modal-value" id="md-estado"></span>
+        </div>
+        <div class="modal-field">
+          <span class="modal-label">Barrio</span>
+          <span class="modal-value" id="md-barrio"></span>
+        </div>
+        <div class="modal-field">
+          <span class="modal-label">Dirección</span>
+          <span class="modal-value" id="md-direccion"></span>
+        </div>
+        <div class="modal-field">
+          <span class="modal-label">Año</span>
+          <span class="modal-value" id="md-anio"></span>
+        </div>
+        <div class="modal-field">
+          <span class="modal-label">Avance de Obra</span>
+          <span class="modal-value" id="md-avance"></span>
+          <div class="modal-avance-bar"><div class="modal-avance-fill" id="md-avance-bar"></div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
 
 <nav class="page-switcher" aria-label="Navegación entre vistas">
   <a class="switcher-home" href="../index.html" title="Inicio">

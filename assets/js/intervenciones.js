@@ -78,6 +78,7 @@ function renderDashboard() {
   const porFuente      = {};
   const porAnio        = {};
   const secEstadoMap   = {};
+  const secAnioMap     = {};
   let   inversion      = 0;
 
   data.forEach(r => {
@@ -104,6 +105,11 @@ function renderDashboard() {
     const est = r.estado || 'Sin dato';
     if (!secEstadoMap[sec]) secEstadoMap[sec] = {};
     secEstadoMap[sec][est] = (secEstadoMap[sec][est] || 0) + 1;
+
+    if (anioNum && anioNum >= 2020 && anioNum <= 2030) {
+      if (!secAnioMap[sec]) secAnioMap[sec] = {};
+      secAnioMap[sec][anio] = (secAnioMap[sec][anio] || 0) + 1;
+    }
   });
 
   const total       = data.length;
@@ -335,6 +341,141 @@ function renderDashboard() {
       `<span class="ci-label">Año pico:</span> <strong>${topAnio[0]}</strong> · <strong>${topAnio[1].toLocaleString('es-CO')}</strong> intervenciones · <em>${pctAnio}% de las fechas registradas</em>`;
   }
 
+  // ── Gráfica: Tendencia por Secretaría (línea multi-serie) ───────────────────
+  const LINE_COLORS = ['#003087','#C1272D','#E6A800','#9B59B6','#1ABC9C','#E67E22'];
+  const aniosDisp   = [...new Set(Object.values(secAnioMap).flatMap(m => Object.keys(m)))].sort();
+  const top6Secs    = Object.entries(secAnioMap)
+    .map(([sec, anios]) => [sec, Object.values(anios).reduce((s, v) => s + v, 0)])
+    .sort((a, b) => b[1] - a[1])
+    .slice(0, 6)
+    .map(([sec]) => sec);
+
+  if (aniosDisp.length && top6Secs.length) {
+    myCharts.tendencia = new Chart(document.getElementById('chartTendencia'), {
+      type: 'line',
+      data: {
+        labels: aniosDisp,
+        datasets: top6Secs.map((sec, i) => ({
+          label: sec,
+          data: aniosDisp.map(a => (secAnioMap[sec] && secAnioMap[sec][a]) || 0),
+          borderColor: LINE_COLORS[i],
+          backgroundColor: LINE_COLORS[i] + '18',
+          borderWidth: 2.5,
+          pointRadius: 4,
+          pointHoverRadius: 6,
+          tension: 0.4,
+          fill: false
+        }))
+      },
+      options: {
+        plugins: {
+          legend: { position: 'bottom', labels: { font: { size: 11 }, boxWidth: 14, padding: 16 } }
+        },
+        scales: {
+          x: { grid: { color: 'rgba(0,0,0,0.04)' } },
+          y: { beginAtZero: true, ticks: { stepSize: 1 }, grid: { color: 'rgba(0,0,0,0.04)' } }
+        },
+        interaction: { mode: 'index', intersect: false }
+      }
+    });
+    const topTend   = top6Secs[0];
+    const totalTend = Object.values(secAnioMap[topTend] || {}).reduce((s, v) => s + v, 0);
+    const peakYear  = Object.entries(secAnioMap[topTend] || {}).sort((a, b) => b[1] - a[1])[0];
+    document.getElementById('insight-tendencia').innerHTML =
+      `<span class="ci-label">Mayor actividad:</span> <strong>${topTend}</strong> · pico en <strong>${peakYear?.[0] || '-'}</strong> con <strong>${peakYear?.[1] || 0}</strong> intervenciones · <em>${totalTend} en total</em>`;
+  }
+
+  // ── Curva S: Planeado vs Real (macro distrital por trimestre) ────────────────
+  const conFechas = data.filter(r => r.fecha_fin && /^\d{4}-\d{2}/.test(r.fecha_fin));
+  if (conFechas.length > 10) {
+    // Generar etiquetas trimestrales 2021-Q1 → 2027-Q4
+    const quarters = [];
+    for (let y = 2021; y <= 2027; y++) {
+      for (let q = 1; q <= 4; q++) {
+        quarters.push({ label: `${y}-Q${q}`, date: new Date(y, q * 3, 0) });
+      }
+    }
+
+    const totalFin = conFechas.length;
+    const planeadoData = quarters.map(({ date }) =>
+      +(conFechas.filter(r => new Date(r.fecha_fin) <= date).length / totalFin * 100).toFixed(1)
+    );
+    const realData = quarters.map(({ date }) =>
+      +(conFechas.filter(r =>
+        (r.estado === 'Terminado' || r.estado === 'Inaugurado') && new Date(r.fecha_fin) <= date
+      ).length / totalFin * 100).toFixed(1)
+    );
+
+    myCharts.curvaS = new Chart(document.getElementById('chartCurvaS'), {
+      type: 'line',
+      data: {
+        labels: quarters.map(q => q.label),
+        datasets: [
+          {
+            label: 'Planeado (%)',
+            data: planeadoData,
+            borderColor: '#003087',
+            backgroundColor: 'rgba(0,48,135,0.07)',
+            borderWidth: 2.5,
+            pointRadius: 2,
+            tension: 0.4,
+            fill: true
+          },
+          {
+            label: 'Real Ejecutado (%)',
+            data: realData,
+            borderColor: '#2E7D52',
+            backgroundColor: 'rgba(46,125,82,0.07)',
+            borderWidth: 2.5,
+            pointRadius: 2,
+            tension: 0.4,
+            fill: false,
+            segment: {
+              borderColor: ctx => {
+                const i = ctx.p0DataIndex;
+                const gap = planeadoData[i] - realData[i];
+                return gap > 8 ? '#E74C3C' : '#2E7D52';
+              }
+            }
+          }
+        ]
+      },
+      options: {
+        plugins: {
+          legend: { position: 'top', labels: { font: { size: 11 }, boxWidth: 14, padding: 16 } },
+          tooltip: {
+            mode: 'index',
+            intersect: false,
+            callbacks: {
+              afterBody: items => {
+                const plan = items.find(i => i.datasetIndex === 0);
+                const real = items.find(i => i.datasetIndex === 1);
+                if (plan && real) {
+                  const gap = (plan.parsed.y - real.parsed.y).toFixed(1);
+                  return [`Gap: ${gap > 0 ? '+' : ''}${gap}%`];
+                }
+                return [];
+              }
+            }
+          }
+        },
+        scales: {
+          x: { grid: { color: 'rgba(0,0,0,0.04)' }, ticks: { maxTicksLimit: 14 } },
+          y: { beginAtZero: true, max: 100, ticks: { callback: v => `${v}%` }, grid: { color: 'rgba(0,0,0,0.04)' } }
+        },
+        interaction: { mode: 'index', intersect: false }
+      }
+    });
+
+    // Brecha en el trimestre más cercano a hoy
+    const today = new Date();
+    const nowIdx = quarters.findIndex(q => q.date >= today);
+    const refIdx = nowIdx >= 0 ? nowIdx : quarters.length - 1;
+    const gapNum = +(planeadoData[refIdx] - realData[refIdx]).toFixed(1);
+    document.getElementById('insight-curvaS').innerHTML =
+      `<span class="ci-label">Brecha actual (${quarters[refIdx].label}):</span> Planeado <strong>${planeadoData[refIdx]}%</strong> · Real <strong>${realData[refIdx]}%</strong> · Gap <strong style="color:${gapNum > 8 ? '#E74C3C' : gapNum > 0 ? '#E67E22' : '#2E7D52'}">${gapNum > 0 ? '+' : ''}${gapNum}%</strong> · <em>${totalFin} registros con fecha fin registrada</em>`;
+  }
+
   // ── Tabla ────────────────────────────────────────────────────────────────────
   const sorted = [...data].sort((a, b) => b.presupuesto_base - a.presupuesto_base);
   _visibleData = sorted;
@@ -385,6 +526,7 @@ async function initData() {
       fetch('../data/intervenciones.json'),
       fetch('../data/intervenciones_meta.json').catch(() => null)
     ]);
+    if (!resData.ok) throw new Error(`HTTP ${resData.status}: no se pudo cargar intervenciones.json`);
     _allData = await resData.json();
 
     // Actualizar textos dinámicos con meta
