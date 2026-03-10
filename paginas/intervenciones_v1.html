@@ -104,6 +104,12 @@
       </div>
     </div>
 
+    <!-- Proyectos críticos suspendidos -->
+    <div class="alertas-header">
+      <span class="alertas-titulo">Intervenciones Suspendidas · Mayor Presupuesto en Riesgo</span>
+    </div>
+    <div id="alertas-criticas" class="alertas-grid"></div>
+
     <div class="charts-grid wide">
       <div class="chart-card">
         <div class="chart-card-header">
@@ -139,7 +145,7 @@
     <div class="chart-row" style="margin-top:0">
       <div class="chart-card">
         <div class="chart-card-header">
-          <div class="chart-card-title">Top Comunas · Inversión y Cantidad</div>
+          <div class="chart-card-title">Tasa de Alerta por Comuna · % en Alistamiento o Suspendido</div>
         </div>
         <div class="chart-body">
           <div class="chart-wrap chart-wrap-tall"><canvas id="chartComunas"></canvas></div>
@@ -150,7 +156,7 @@
     <div class="chart-row">
       <div class="chart-card">
         <div class="chart-card-header">
-          <div class="chart-card-title">Estado por Secretaría</div>
+          <div class="chart-card-title">Salud de la Cartera por Secretaría · % del Presupuesto</div>
         </div>
         <div class="chart-body">
           <div class="chart-wrap chart-wrap-xtall"><canvas id="chartSecEstado"></canvas></div>
@@ -319,6 +325,21 @@
           <span class="modal-value" id="md-updated"></span>
         </div>
       </div>
+      <!-- ─ Línea de tiempo del plazo ─ -->
+      <div class="modal-timeline-wrap" id="md-timeline-wrap">
+        <span class="modal-label">Línea de Tiempo del Plazo</span>
+        <div class="modal-timeline-bar">
+          <div class="modal-tl-elapsed" id="md-tl-elapsed"></div>
+          <div class="modal-tl-marker" id="md-tl-marker"></div>
+        </div>
+        <div class="modal-tl-labels">
+          <span id="md-tl-start"></span>
+          <span class="modal-tl-hoy" id="md-tl-hoy">Hoy</span>
+          <span id="md-tl-end"></span>
+        </div>
+        <div class="modal-tl-info" id="md-tl-info"></div>
+      </div>
+
       <div class="modal-desc-wrap" id="md-desc-wrap">
         <span class="modal-label">Descripción</span>
         <p class="modal-desc" id="md-desc"></p>

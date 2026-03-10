@@ -70,16 +70,18 @@ function renderDashboard() {
   const data = applyFilters(_allData);
 
   // ── Agregaciones ────────────────────────────────────────────────────────────
-  const porEstado      = {};
-  const porSec         = {};
-  const porTipo        = {};
-  const porComuna      = {};
-  const porComunaCount = {};
-  const porFuente      = {};
-  const porAnio        = {};
-  const secEstadoMap   = {};
-  const secAnioMap     = {};
-  let   inversion      = 0;
+  const porEstado          = {};
+  const porSec             = {};
+  const porTipo            = {};
+  const porComuna          = {};
+  const porComunaCount     = {};
+  const porFuente          = {};
+  const porAnio            = {};
+  const secEstadoMap       = {};
+  const secAnioMap         = {};
+  const secBudgetEstadoMap = {};   // presupuesto por secretaría × estado (para 100% stacked)
+  const comunaAlertaMap    = {};   // { total, alerta } por comuna (para tasa de riesgo)
+  let   inversion          = 0;
 
   data.forEach(r => {
     const ppto = r.presupuesto_base || 0;
@@ -110,6 +112,17 @@ function renderDashboard() {
       if (!secAnioMap[sec]) secAnioMap[sec] = {};
       secAnioMap[sec][anio] = (secAnioMap[sec][anio] || 0) + 1;
     }
+
+    // Salud presupuestal por secretaría × estado
+    if (!secBudgetEstadoMap[sec]) secBudgetEstadoMap[sec] = {};
+    secBudgetEstadoMap[sec][est] = (secBudgetEstadoMap[sec][est] || 0) + ppto;
+
+    // Tasa de alerta por comuna
+    if (r.comuna_corregimiento) {
+      if (!comunaAlertaMap[r.comuna_corregimiento]) comunaAlertaMap[r.comuna_corregimiento] = { total: 0, alerta: 0 };
+      comunaAlertaMap[r.comuna_corregimiento].total++;
+      if (est === 'Suspendido' || est === 'En alistamiento') comunaAlertaMap[r.comuna_corregimiento].alerta++;
+    }
   });
 
   const total       = data.length;
@@ -136,6 +149,27 @@ function renderDashboard() {
   } else {
     banner.innerHTML = `✅ ${total.toLocaleString('es-CO')} intervenciones filtradas · ${pctTerm}% terminadas · Inversión total: ${fmtMM(inversion)} COP`;
     banner.style.background = '#003087';
+  }
+
+  // ── Top 5: Proyectos Críticos Suspendidos ───────────────────────────────────
+  const top5Susp = [...data]
+    .filter(r => r.estado === 'Suspendido')
+    .sort((a, b) => b.presupuesto_base - a.presupuesto_base)
+    .slice(0, 5);
+  const alertasEl = document.getElementById('alertas-criticas');
+  if (alertasEl) {
+    alertasEl.innerHTML = top5Susp.length
+      ? top5Susp.map(r => `
+          <div class="alerta-card">
+            <div class="alerta-card-header">
+              <span class="pill pill-susp">Suspendido</span>
+              <span class="alerta-card-sec">${esc(shortSec(r.nombre_centro_gestor))}</span>
+            </div>
+            <div class="alerta-card-tipo">${esc(r.tipo_intervencion) || '-'}</div>
+            <div class="alerta-card-meta">${esc(r.comuna_corregimiento) || 'Sin dato'}</div>
+            <div class="alerta-card-presupuesto">${fmtM(r.presupuesto_base)}</div>
+          </div>`).join('')
+      : `<p style="color:var(--gris-light);font-size:13px;padding:8px 0">No hay intervenciones suspendidas en la selección actual.</p>`;
   }
 
   // ── Destruir gráficos anteriores ────────────────────────────────────────────
@@ -187,46 +221,52 @@ function renderDashboard() {
       `<span class="ci-label">Estado predominante:</span> <strong>${topEst}</strong> · <strong>${porEstado[topEst].toLocaleString('es-CO')}</strong> intervenciones · <em>${pctTopEst}% del total</em>`;
   }
 
-  // ── Gráfica: Top Comunas (inversión + conteo agrupado) ───────────────────────
-  const cComunaAll = Object.entries(porComuna).sort((a, b) => b[1] - a[1]);
-  const cComunaTop = cComunaAll.slice(0, 12);
-  if (cComunaTop.length) {
+  // ── Gráfica: Tasa de Alerta por Comuna ──────────────────────────────────────
+  const comunaAlertaArr = Object.entries(comunaAlertaMap)
+    .map(([name, d]) => ({ name, tasa: d.total >= 3 ? +(d.alerta / d.total * 100).toFixed(1) : 0, total: d.total, alerta: d.alerta }))
+    .filter(d => d.total >= 3)
+    .sort((a, b) => b.tasa - a.tasa)
+    .slice(0, 15);
+  if (comunaAlertaArr.length) {
+    const alertaColors = comunaAlertaArr.map(d =>
+      d.tasa > 50 ? '#E74C3C' : d.tasa > 30 ? '#E67E22' : '#2E7D52'
+    );
     myCharts.comunas = new Chart(document.getElementById('chartComunas'), {
       type: 'bar',
       data: {
-        labels: cComunaTop.map(([nom]) => nom),
-        datasets: [
-          {
-            label: 'Inversión (miles mill. COP)',
-            data: cComunaTop.map(([, val]) => +(val / 1e9).toFixed(2)),
-            backgroundColor: '#003087',
-            borderRadius: 4,
-            xAxisID: 'x'
-          },
-          {
-            label: 'N° Intervenciones',
-            data: cComunaTop.map(([nom]) => porComunaCount[nom] || 0),
-            backgroundColor: 'rgba(230,168,0,0.85)',
-            borderRadius: 4,
-            xAxisID: 'x2'
-          }
-        ]
+        labels: comunaAlertaArr.map(d => d.name),
+        datasets: [{
+          label: '% en Alistamiento o Suspendido',
+          data: comunaAlertaArr.map(d => d.tasa),
+          backgroundColor: alertaColors,
+          borderRadius: 4
+        }]
       },
       options: {
         indexAxis: 'y',
-        plugins: { legend: { position: 'top', labels: { font: { size: 11 } } } },
+        plugins: {
+          legend: { display: false },
+          tooltip: {
+            callbacks: {
+              label: ctx => {
+                const d = comunaAlertaArr[ctx.dataIndex];
+                return `${ctx.parsed.x}% en alerta (${d.alerta} de ${d.total} intervenciones)`;
+              }
+            }
+          }
+        },
         scales: {
-          x:  { position: 'bottom', ticks: { callback: v => `$${v}MM` }, grid: { color: 'rgba(0,0,0,0.04)' } },
-          x2: { position: 'top',   grid: { drawOnChartArea: false }, ticks: { color: '#B8860B' } }
+          x: { max: 100, ticks: { callback: v => `${v}%` }, grid: { color: 'rgba(0,0,0,0.04)' } },
+          y: { grid: { display: false } }
         }
       }
     });
-    const topCom     = cComunaTop[0];
-    const totalCom   = cComunaAll.reduce((s, [, v]) => s + v, 0);
-    const pctCom     = totalCom ? (topCom[1] / totalCom * 100).toFixed(0) : 0;
-    const topComCnt  = porComunaCount[topCom[0]] || 0;
+    const topAlerta   = comunaAlertaArr[0];
+    const zonasRojas  = comunaAlertaArr.filter(d => d.tasa > 50).length;
+    const zonasNaranjas = comunaAlertaArr.filter(d => d.tasa > 30 && d.tasa <= 50).length;
     document.getElementById('insight-comunas').innerHTML =
-      `<span class="ci-label">Mayor inversión:</span> <strong>${topCom[0]}</strong> · <strong>${fmtMM(topCom[1])}</strong> · <strong>${topComCnt.toLocaleString('es-CO')}</strong> intervenciones · <em>${pctCom}% de la inversión territorial</em>`;
+      `<span class="ci-label">Mayor alerta:</span> <strong>${topAlerta.name}</strong> · <strong style="color:#E74C3C">${topAlerta.tasa}%</strong> sin ejecutar` +
+      ` · <em>${zonasRojas} zona${zonasRojas !== 1 ? 's' : ''} crítica${zonasRojas !== 1 ? 's' : ''} (>50%) · ${zonasNaranjas} en vigilancia (30–50%)</em>`;
   }
 
   // ── Gráfica: Conteo por Tipo de Intervención ─────────────────────────────────
@@ -246,46 +286,75 @@ function renderDashboard() {
       `<span class="ci-label">Dominante:</span> <strong>${cTipo[0][0]}</strong> · <strong>${cTipo[0][1].toLocaleString('es-CO')}</strong> intervenciones · <em>${pctTipo}% del total filtrado</em>`;
   }
 
-  // ── Gráfica: Estado por Secretaría (stacked) ─────────────────────────────────
-  const secLabels = Object.keys(secEstadoMap).sort((a, b) => {
-    const totA = Object.values(secEstadoMap[a]).reduce((s, v) => s + v, 0);
-    const totB = Object.values(secEstadoMap[b]).reduce((s, v) => s + v, 0);
+  // ── Gráfica: Salud de la Cartera por Secretaría (100% budget stacked) ──────────
+  const secBudgetLabels = Object.keys(secBudgetEstadoMap).sort((a, b) => {
+    const totA = Object.values(secBudgetEstadoMap[a]).reduce((s, v) => s + v, 0);
+    const totB = Object.values(secBudgetEstadoMap[b]).reduce((s, v) => s + v, 0);
     return totB - totA;
   });
-  const estadosOrden = ['Terminado','En ejecución','En alistamiento','Proyectado','Inaugurado','Suspendido'];
-  const estadoSet2   = new Set(data.map(r => r.estado).filter(Boolean));
+  const estadosOrden = ['Terminado','Inaugurado','En ejecución','En alistamiento','Proyectado','Suspendido'];
+  const ESTADO_COLORS_PCT = {
+    'Terminado': '#4CAF50', 'Inaugurado': '#F1C40F',
+    'En ejecución': '#0277BD', 'En alistamiento': '#9B59B6',
+    'Proyectado': '#90A4AE', 'Suspendido': '#E74C3C'
+  };
+  const estadoSet2 = new Set(data.map(r => r.estado).filter(Boolean));
   const estadosPresentes = [
     ...estadosOrden.filter(e => estadoSet2.has(e)),
     ...[...estadoSet2].filter(e => !estadosOrden.includes(e))
   ];
-  if (secLabels.length) {
+  if (secBudgetLabels.length) {
     myCharts.secEst = new Chart(document.getElementById('chartSecEstado'), {
       type: 'bar',
       data: {
-        labels: secLabels,
+        labels: secBudgetLabels,
         datasets: estadosPresentes.map(est => ({
           label: est,
-          data: secLabels.map(sec => (secEstadoMap[sec] && secEstadoMap[sec][est]) || 0),
-          backgroundColor: ESTADO_COLORS[est] || '#90A4AE',
+          data: secBudgetLabels.map(sec => {
+            const tot = Object.values(secBudgetEstadoMap[sec]).reduce((s, v) => s + v, 0);
+            return tot ? +((secBudgetEstadoMap[sec][est] || 0) / tot * 100).toFixed(1) : 0;
+          }),
+          backgroundColor: ESTADO_COLORS_PCT[est] || '#90A4AE',
           borderRadius: 2
         }))
       },
       options: {
         indexAxis: 'y',
         layout: { padding: { right: 8 } },
-        plugins: { legend: { position: 'bottom', labels: { font: { size: 11 }, boxWidth: 14, padding: 16 } } },
+        plugins: {
+          legend: { position: 'bottom', labels: { font: { size: 11 }, boxWidth: 14, padding: 16 } },
+          tooltip: {
+            callbacks: {
+              label: ctx => {
+                const sec = secBudgetLabels[ctx.dataIndex];
+                const est = ctx.dataset.label;
+                const val = secBudgetEstadoMap[sec]?.[est] || 0;
+                const tot = Object.values(secBudgetEstadoMap[sec]).reduce((s, v) => s + v, 0);
+                return `${est}: ${ctx.parsed.x}%  (${fmtM(val)} de ${fmtM(tot)})`;
+              }
+            }
+          }
+        },
         scales: {
-          x: { stacked: true, grid: { color: 'rgba(0,0,0,0.04)' } },
+          x: { stacked: true, max: 100, ticks: { callback: v => `${v}%` }, grid: { color: 'rgba(0,0,0,0.04)' } },
           y: { stacked: true, ticks: { font: { size: 12 } } }
         }
       }
     });
-    const topSec     = secLabels[0];
-    const topSecTot  = Object.values(secEstadoMap[topSec]).reduce((s, v) => s + v, 0);
-    const topSecTerm = secEstadoMap[topSec]['Terminado'] || 0;
-    const pctSecTerm = topSecTot ? (topSecTerm / topSecTot * 100).toFixed(0) : 0;
+    // Insight: mayor riesgo por presupuesto suspendido
+    const riesgos = secBudgetLabels.map(sec => {
+      const tot  = Object.values(secBudgetEstadoMap[sec]).reduce((s, v) => s + v, 0);
+      const susp = secBudgetEstadoMap[sec]['Suspendido'] || 0;
+      const term = (secBudgetEstadoMap[sec]['Terminado'] || 0) + (secBudgetEstadoMap[sec]['Inaugurado'] || 0);
+      return { sec, pctSusp: tot ? +(susp / tot * 100).toFixed(0) : 0, pctTerm: tot ? +(term / tot * 100).toFixed(0) : 0 };
+    });
+    const topRiesgo = riesgos.sort((a, b) => b.pctSusp - a.pctSusp)[0];
+    const topTerm   = [...riesgos].sort((a, b) => b.pctTerm - a.pctTerm)[0];
     document.getElementById('insight-secest').innerHTML =
-      `<span class="ci-label">Más intervenciones:</span> <strong>${topSec}</strong> · <strong>${topSecTot.toLocaleString('es-CO')}</strong> intervenciones · <em>${pctSecTerm}% terminadas</em>`;
+      `<span class="ci-label">Mayor avance:</span> <strong>${topTerm.sec}</strong> · <strong>${topTerm.pctTerm}%</strong> del presupuesto terminado/inaugurado` +
+      (topRiesgo.pctSusp > 5
+        ? ` · <strong style="color:#E74C3C">⚠ ${topRiesgo.sec}: ${topRiesgo.pctSusp}% suspendido</strong>`
+        : '');
   }
 
   // ── Gráfica: Fuente de Financiación ─────────────────────────────────────────
@@ -621,6 +690,72 @@ function showModal(p) {
   document.getElementById('md-barrio').textContent     = p.barrio_vereda || 'Sin dato';
   document.getElementById('md-inicio').textContent     = p.fecha_inicio || '-';
   document.getElementById('md-fin').textContent        = p.fecha_fin || '-';
+
+  // ── Línea de Tiempo del Plazo ─────────────────────────────────────────────
+  const tlWrap    = document.getElementById('md-timeline-wrap');
+  const tlElapsed = document.getElementById('md-tl-elapsed');
+  const tlMarker  = document.getElementById('md-tl-marker');
+  const tlStart   = document.getElementById('md-tl-start');
+  const tlEnd     = document.getElementById('md-tl-end');
+  const tlHoy     = document.getElementById('md-tl-hoy');
+  const tlInfo    = document.getElementById('md-tl-info');
+
+  if (p.fecha_inicio && p.fecha_fin) {
+    tlWrap.style.display = '';
+    const inicio     = new Date(p.fecha_inicio);
+    const fin        = new Date(p.fecha_fin);
+    const hoy        = new Date();
+    const totalMs    = fin - inicio;
+    const elapsedMs  = hoy - inicio;
+    const pctRaw     = totalMs > 0 ? elapsedMs / totalMs * 100 : 0;
+    const pct        = Math.max(0, Math.min(100, pctRaw));
+    const diasRest   = Math.round((fin - hoy) / 86400000);
+    const terminado  = p.estado === 'Terminado' || p.estado === 'Inaugurado';
+    const suspendido = p.estado === 'Suspendido';
+
+    // Colores según situación
+    let barColor, markerBorder, infoHtml;
+    if (terminado) {
+      barColor     = '#4CAF50';
+      markerBorder = '#4CAF50';
+      infoHtml     = `<span class="tl-ok">✓ Intervención completada</span>`;
+      if (p.fecha_inauguracion) infoHtml += ` · Inaugurada: <strong>${p.fecha_inauguracion}</strong>`;
+    } else if (hoy < inicio) {
+      barColor     = '#90A4AE';
+      markerBorder = '#90A4AE';
+      const diasInicio = Math.round((inicio - hoy) / 86400000);
+      infoHtml = `<span style="color:var(--gris-light)">Plazo aún no iniciado · comienza en <strong>${diasInicio}</strong> día${diasInicio !== 1 ? 's' : ''}</span>`;
+    } else if (pctRaw > 100 && !terminado) {
+      barColor     = '#C1272D';
+      markerBorder = '#C1272D';
+      const diasVenc = Math.abs(diasRest);
+      infoHtml = `<span class="tl-bad">⚠ Plazo vencido hace ${diasVenc} día${diasVenc !== 1 ? 's' : ''}</span>` +
+                 (suspendido ? ` · <em>Intervención suspendida</em>` : '');
+    } else if (pct > 80 || suspendido) {
+      barColor     = '#E67E22';
+      markerBorder = '#E67E22';
+      infoHtml = `<span class="tl-warn">${pct.toFixed(0)}% del plazo transcurrido</span>` +
+                 ` · <strong>${Math.max(0, diasRest)}</strong> día${diasRest !== 1 ? 's' : ''} restantes` +
+                 (suspendido ? ` · <em style="color:var(--rojo)">Suspendida</em>` : '');
+    } else {
+      barColor     = '#0277BD';
+      markerBorder = '#0277BD';
+      infoHtml = `<span class="tl-ok">${pct.toFixed(0)}% del plazo transcurrido</span>` +
+                 ` · <strong>${diasRest}</strong> día${diasRest !== 1 ? 's' : ''} restantes`;
+    }
+
+    tlElapsed.style.width            = `${pct}%`;
+    tlElapsed.style.background       = barColor;
+    tlMarker.style.left              = `${pct}%`;
+    tlMarker.style.borderColor       = markerBorder;
+    tlStart.textContent              = p.fecha_inicio;
+    tlEnd.textContent                = p.fecha_fin;
+    tlHoy.style.left                 = `${pct}%`;
+    tlHoy.style.display              = (hoy >= inicio && hoy <= fin) ? '' : 'none';
+    tlInfo.innerHTML                 = infoHtml;
+  } else {
+    tlWrap.style.display = 'none';
+  }
 
   const inagWrap = document.getElementById('md-inauguracion-wrap');
   if (p.fecha_inauguracion) {
